@@ -105,9 +105,7 @@ Documentation is available on the
 ## Contact
 
 Follow [@clockworkraven](https://twitter.com/clockworkraven) for updates and
-notifications.
-
-Submit bug report and feature requests to the
+notifications. Submit bug report and feature requests to the
 [issue tracker](https://github.com/twitter/clockworkraven/issues).
 
 Join the mailing list,
@@ -117,6 +115,8 @@ on
 ask questions and discuss development.
 
 ## Roadmap
+
+We would love any help adding ideas or implementing them!
 
 * JSON/REST API
 * Provide the option to have multiple Mechanical Turk users complete each task
