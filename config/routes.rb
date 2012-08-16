@@ -58,6 +58,7 @@ ClockworkRaven::Application.routes.draw do
   get 'account' => 'users#show', :as => 'account'
   get 'account/edit' => 'users#edit', :as => 'edit_account'
   put 'account' => 'users#update', :as => 'update_account'
+  post 'account/reset_key' => 'users#reset_key', :as => 'reset_key'
 
   # default: /evaluations
   root :to => 'evaluations#index'
