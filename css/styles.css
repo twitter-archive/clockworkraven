@@ -1,0 +1,143 @@
+img.logo {
+    padding-top: 2px;
+    padding-right: 10px;
+    float: left;
+}
+
+body > .container {
+  padding-top: 60px;
+}
+
+@media (max-width: 979px) {
+  body > .container {
+    padding-top: 0;
+  }
+}
+
+@media(max-width: 420px) {
+  .hero-unit {
+    padding: 10px ;
+  }
+}
+
+.get-button {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.modal {
+  display: none;
+  width: auto;
+  max-width: 90%;
+  height: auto;
+  max-height: 90%;
+  top: 5%;
+  left: 5%;
+  right: 5%;
+  margin: 0;
+  text-align: center
+}
+
+.modal-body {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: 15px 0;
+}
+
+.modal-body img {
+  border-radius: 5px;
+}
+
+.thumbnail img {
+  border-radius: 3px;
+}
+
+.section-header {
+  text-align: center;
+  margin: 180px 0 40px;
+  border-bottom: 1px solid #ccc;
+}
+
+@media(max-width: 979px) {
+  .section-header {
+    margin-top: 60px;
+  }
+
+  h2 {
+    margin-top: 60px;
+  }
+}
+
+@media(max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
+}
+
+.section-header h1 {
+  font-size: 400%;
+}
+
+@media(min-width: 768px) {
+  .section-header {
+    margin-left: 20px;
+  }
+}
+
+@media(min-width: 1200px) {
+  .section-header {
+    margin-left: 30px;
+  }
+}
+
+
+
+.feature {
+  min-height: 38em;
+  margin-bottom: -300px;
+}
+
+@media (max-width: 1200px) {
+  .feature {
+    min-height: 40em;
+  }
+}
+
+@media (max-width: 979px) {
+  .feature {
+    min-height: 44em;
+  }
+}
+
+@media (max-width: 767px) {
+  .feature {
+    min-height: 0;
+    margin-bottom: 0;
+  }
+}
+
+.navbar-fixed-top .navbar-inner {
+    background-color: white;
+    background-image: none;
+}
+
+@media (min-width: 980px) {
+
+  body.scroll-top .navbar-fixed-top .navbar-inner {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+
+  body.scroll-top .navbar .nav .active > a, body.scroll-top .navbar .nav .active > a:hover, body.scroll-top .navbar .nav .active > a:focus {
+    background-color: white;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  body.scroll-top .navbar .nav .active > a:hover {
+    color: black;
+  }
+
+}

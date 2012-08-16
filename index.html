@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Clockwork Raven, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Clockwork Raven, from Twitter: a human evaluation tool that uses Mechanical Turk">
+    <meta name="author" content="Ben Weissmann">
+
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+
+    <link href='img/raven.png' rel='icon' type='image/png'>
+  </head>
+
+  <body data-spy="scroll" data-target=".navbar" class="scroll-top">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <img class='logo' height='32' src='img/raven-gray-dark.png' width='32'>
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Clockwork Raven</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#home">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#more">Learn More</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <a name="home" id="home"></a>
+
+      <div class="hero-unit">
+        <h1>Clockwork Raven, from Twitter</h1>
+        <h2>Human-Powered Data Analysis.</h2>
+        <p>
+          Clockwork Raven steps in to do what algorithms can't: it sends your
+          data analysis tasks to real people and gets fast, cheap, accurate
+          results from Mechanical Turk.
+        </p>
+        <p>
+          Clockwork Raven is a web application that you set up for yourself
+          or your organization. You upload your data, build a form to send
+          out to reviewers, and then send it off to Mechanical Turk to have
+          real people answer your questions. Then, you can review the results
+          in Clockwork Raven or export them to a number of formats and use
+          whatever tools you like.
+        </p>
+        <p class="get-button">
+          <a class="btn btn-inverse btn-large" target="_blank" href="https://github.com/twitter/clockworkraven">
+            Get Clockwork Raven
+            <i class="icon-arrow-right"></i>
+          </a>
+        </p>
+      </div>
+
+      <div class="row" id="about">
+        <div class="span12 section-header">
+          <h1>About</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span4">
+          <h2><i class="icon-thumbs-up"></i> What's it good for?</h2>
+          <p>
+            Here at Twitter, we use it to get large number of subjective
+            judgments (&ldquo;How relevant is this Tweet to this user?&rdquo;),
+            complete tasks that require human intelligence (&ldquo;Find 10
+            Twitter users that relate to this topic&rdquo;) and evaluate
+            algorithms (&ldquo;Here's what topic we think this tweet belongs
+            to. Is that right?&rdquo;). Use it to analyze data, evaluate your
+            algorithms, train machine learning models, or anything else you'd
+            normally have to do yourself.
+          </p>
+        </div>
+        <div class="span4">
+          <h2><i class="icon-globe"></i> Built For Everyone.</h2>
+          <p>
+            Clockwork Raven is simple to use. Use the drag-and-drop form
+            builder to build complex analysis tasks without any knowledge
+            of HTML. Import and export data from CSVs, which work with
+            everything from spreadsheet programs like Excel to statistical
+            analysis tools like R.
+          </p>
+        </div>
+        <div class="span4">
+          <h2><i class="icon-github icon-unlock"></i> Open Source.</h2>
+          <p>
+            Clockwork is free to use and the source is available on GitHub.
+            Missing something? Find a bug? let us know, or fix it yourself.
+            You can do whatever you need to make Clockwork Raven work for you.
+          </p>
+        </div>
+      </div>
+
+      <div class="row" id="features">
+        <div class="span12 section-header">
+          <h1>Features</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span4">
+          <div class="feature">
+            <h2><i class="icon-share"></i> Share Everything.</h2>
+            <p>
+              Clockwork Raven has a master list of every evaluation you've
+              launched. Send links to teammates so that can see your results,
+              and copy others' evaluations to use as a starting point for your
+              own. Clockwork Raven even integrates with LDAP so users can log
+              in with their existing credentials.
+            </p>
+          </div>
+          <a href="#homeModal" role="button" class="thumbnail" data-toggle="modal">
+            <img src="img/thumbs/home.png" />
+          </a>
+
+          <div class="modal" id="homeModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h3>Home Screen</h3>
+            </div>
+            <div class="modal-body">
+              <img src="img/home.png" />
+            </div>
+          </div>
+        </div>
+        <div class="span4">
+          <div class="feature">
+            <h2><i class="icon-magic"></i> Build Easily.</h2>
+            <p>
+              The drag-and-drop form builder allows you to design forms to send
+              send out to Mechanical Turk with no knowledge of HTML. Easily
+              add items from your uploaded data to create dynamic tasks. Create
+              reusable components to display commonly-used items: here at
+              Twitter, we have components for tweets, timelines, and search
+              queries, which makes launching rich tasks dead simple.
+            </p>
+          </div>
+          <a href="#tbModal" role="button" class="thumbnail" data-toggle="modal">
+            <img src="img/thumbs/template-builder.png" />
+          </a>
+
+          <div class="modal" id="tbModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h3>Template Builder</h3>
+            </div>
+            <div class="modal-body">
+              <img src="img/template-builder.png" />
+            </div>
+          </div>
+        </div>
+        <div class="span4">
+          <div class="feature">
+            <h2><i class="icon-bar-chart"></i> Analyze.</h2>
+            <p>
+              The integrated analysis tools displays your data and lets you slice
+              it across multiple variables. See the results of any
+              multiple-choice question you asked the Mechanical Turk workers,
+              and segment that data by metadata fields in the data you uploaded.
+              You can also see individual results and search through responses
+              to your free-response questions.
+            </p>
+          </div>
+          <a href="#resultsModal" role="button" class="thumbnail" data-toggle="modal">
+            <img src="img/thumbs/results.png" />
+          </a>
+
+          <div class="modal" id="resultsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h3>Analysis Page</h3>
+            </div>
+            <div class="modal-body">
+              <img src="img/results.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="more">
+        <div class="span12 section-header">
+          <h1>Learn More</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span4">
+          <h2><i class="icon-group"></i> Who We Are.</h2>
+          <h4>Principal Developer</h4>
+          <ul>
+            <li><a href="https://twitter.com/benweissmann">Ben Weissmann</a></li>
+          </ul>
+          <h4>Additional Developers</h4>
+          <ul>
+            <li><a href="https://twitter.com/echen">Edwin Chen</a></li>
+            <li><a href="https://twitter.com/daveFNbuck">Dave Buchfuhrer</a></li>
+          </ul>
+        </div>
+        <div class="span4">
+          <h2><i class="icon-envelope-alt"></i> Keep in Touch.</h2>
+          <p>
+            Follow <a href="https://twitter.com/clockworkraven">@clockworkraven</a>
+            to get updates about Clockwork Raven.
+          </p>
+          <p>
+            Join the
+            <a href="http://groups.google.com/group/twitter-clockworkraven">
+              mailing list
+            </a>
+            to ask questions and get advice from other Clockwork Raven users,
+            and to discuss future development of Clockwork Raven.
+          </p>
+        </div>
+        <div class="span4">
+          <h2><i class="icon-github"></i> Get Involved.</h2>
+          <p>
+            All development is done on the
+            <a href="https://github.com/twitter/clockworkraven">GitHub Repo</a>.
+          </p>
+          <p>
+            <a href="https://github.com/twitter/clockworkraven/issues">File an issue</a>,
+            <a href="https://github.com/twitter/clockworkraven/blob/master/README.md">
+              learn how to get set up
+            </a>,
+            or
+            <a href="https://github.com/twitter/clockworkraven/wiki">
+              read the docs on the wiki
+            </a>.
+          </p>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="footer">
+        <p>
+          &copy; 2012 Twitter, Inc. and others
+          &middot;
+          Icons by <a href="http://fortawesome.github.com/Font-Awesome">Font Awesome</a>
+          &middot;
+          Built with <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>
+        </p>
+      </div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/topbar.js"></script>
+  </body>
+</html>
+
