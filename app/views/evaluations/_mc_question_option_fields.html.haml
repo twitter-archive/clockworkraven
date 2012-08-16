@@ -1,0 +1,20 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+.field.subsection.mc-option
+  = f.hidden_field :order, 'data-order' => 'true'
+  .input-append
+    = f.text_field :label, :placeholder => 'Answer', :class => 'answer-input'
+    = f.number_field :value, :placeholder => 'Value', :class => 'value-input'
+    = link_to_remove_fields f

@@ -1,0 +1,8 @@
+---
+:not_logged_in: You must log in to use Clockwork Raven
+:invalid_login: "Could not authenticate. Your username or password may be incorrect, or you may not be allowed to use this tool."
+:logged_out: You have been logged out
+:logged_in_prefix: You have logged in as
+:not_privileged: You can't do that. You must be a privileged user to work with production jobs.
+:bad_key: Invalid API Key
+:password_auth_required: "You can't do that when using the LDAP authentication system."

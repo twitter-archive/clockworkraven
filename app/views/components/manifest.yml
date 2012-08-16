@@ -1,0 +1,48 @@
+:query:
+  :desc: Embedded Search Query
+  :vars:
+    :query:
+      :desc: Query
+      :required: true
+:tweet:
+  :desc: Embedded Tweet
+  :vars:
+    :tweet_id:
+      :desc: Tweet ID
+      :required: true
+:user:
+  :desc: Embedded User Information
+  :vars:
+    :profile_image:
+      :desc: Profile Image URL
+      :required: false
+    :name:
+      :desc: Name
+      :required: false
+    :username:
+      :desc: Username (without "@" prefix)
+      :required: false
+    :bio:
+      :desc: Bio
+      :required: false
+    :location:
+      :desc: Location
+      :required: false
+    :website:
+      :desc: Website (should be a valid URL)
+      :required: false
+    :recent_tweets:
+      :desc: Recent Tweets (whitespace-separated ids)
+      :required: false
+    :retweets:
+      :desc: Retweets (whitespace-separated ids)
+      :required: false
+    :favorites:
+      :desc: Favorite Tweets (whitespace-separated ids)
+:user_link:
+  :desc: Link to User
+  :vars:
+    :username:
+      :desc: Username (without "@" prefix)
+      :required: true
+

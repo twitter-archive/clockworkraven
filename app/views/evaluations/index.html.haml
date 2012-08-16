@@ -1,0 +1,41 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+%h1 Evaluations
+
+= link_to 'Create New Evaluation', new_evaluation_path, :class => 'btn btn-primary'
+
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Mode
+      %th Status
+      %th Creator
+      %th Created At
+      %th
+      %th
+  %tbody
+    - @evaluations.each do |evaluation|
+      %tr
+        %td= evaluation.name
+        %td= evaluation.prod? ? 'Production' : 'Sandbox'
+        %td= evaluation.status_name
+        %td= evaluation.user.name
+        %td= evaluation.created_at.in_time_zone("Pacific Time (US & Canada)").strftime(ClockworkRaven::Application::TIME_FORMAT)
+        %td= link_to 'Show', evaluation, :class => 'btn'
+        %td= link_to 'Copy', new_evaluation_path(:based_on => evaluation.id), :class => 'btn btn-success'
+        %td= link_to 'Remove', evaluation, :method => :delete, :class => 'btn btn-danger',
+          :confirm => "Are you sure you want to remove this evaluation from Clockwork Raven? This does not close the evaluation or remove it from Mechanical Turk."
+= will_paginate @evaluations

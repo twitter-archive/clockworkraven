@@ -1,0 +1,117 @@
+/* Copyright 2012 Twitter, Inc. and others.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+body.evaluations.edit_template, body.evaluations.update_template {
+    /* Make the text areas a bit wider */
+    textarea {
+        width: 500px;
+    }
+
+    input.header-label {
+        width: 500px;
+        height: 50px;
+        font-size: 40px;
+
+        /* Placeholder text appears too high in Chrome */
+        &::-webkit-input-placeholder {
+            padding-top: 13px;
+        }
+
+        /* Placeholder text isn't grayed in FF */
+        &:-moz-placeholder {
+            color: #aaa;
+        }
+    }
+
+    /* Top level fields */
+    .fields > .field {
+        border: 1px dashed black;
+        padding: 10px;
+        background-color: white;
+        border-radius: 5px;
+    }
+
+    .fields > .field, .ui-state-highlight {
+        margin-top: 10px;
+    }
+
+    .field .ui-state-highlight {
+        margin-left: 40px;
+        width: 370px;
+    }
+
+    .field > .btn-remove {
+        float: right;
+    }
+
+    .subsection.control-group {
+        margin-top: 10px;
+    }
+
+    .fr-optional {
+        margin-left: 20px;
+
+        input[type=checkbox] {
+            margin-bottom: 5px;
+        }
+    }
+
+    /* These margins are for the add/remove buttons */
+
+    .input-prepend .add-on, .input-append .add-on, .input-prepend .btn, .input-append .btn {
+        margin-left: -5px;
+    }
+
+    .input-prepend .add-on, .input-prepend .btn {
+        margin-right: -5px;
+    }
+
+    .value-input {
+        margin-left: -5px;
+        border-radius: 0;
+        width: 5em;
+    }
+
+    .field:first-child {
+        margin-top: 8px;
+    }
+
+    .btn-success {
+        margin-top: 10px;
+    }
+
+    .mc-option {
+        margin-top: 10px;
+        width: 350px;
+    }
+
+    /* Indent sub-forms for questions/options */
+    .subsection {
+        margin-left: 40px;
+    }
+
+    .subsection .subsection {
+        padding-bottom: 0px;
+    }
+
+    .btn-group {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-actions {
+        padding-left: 10px;
+    }
+}

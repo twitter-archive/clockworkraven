@@ -1,0 +1,29 @@
+# To get an access key, amke sure you have a Mechanical Turk requester acccount,
+# then go to http://aws.amazon.com/ and sign up or log in to your AWS acccount.
+# Your access key id and access key can be found at
+# https://portal.aws.amazon.com/gp/aws/securityCredentials#access_credentials
+
+# Your AWSAccessKeyId
+:access_key_id: YOUR-ACCESS-KEY-ID
+# Your AWSAccessKey
+:access_key: YOUR-ACCESS-KEY
+
+# Qualification IDs
+:qualifications:
+  # Don't change these 2 IDs
+  :master:
+    :prod: 2NDP2L92HECWY8NS8H3CK0CP5L9GHO
+    :sandbox: 2F1KVCNHMVHV8E9PBUB2A4J79LU20F
+
+  # You'll need to fill these in the use the "Trusted Workers" features of
+  # Clockwork Raven.
+  #
+  # Go to you requester dashboard (https://requester.mturk.com/ for production,
+  # https://requestersandbox.mturk.com/ for sandbox)
+  #
+  # -> Manage -> Qualification Types -> Create New Qualifcation Type -> Create
+  # Then copy the ID of the qualification type below. Note the ID will be
+  # different for requester.mturk.com and requestersandbox.mturk.com
+  :trusted:
+    :prod: ID-FROM-https://requester.mturk.com/
+    :sandbox: ID-FROM-https://requestersandbox.mturk.com/

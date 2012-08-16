@@ -1,0 +1,5 @@
+development: localhost:6379
+devprod: localhost:6379
+prod_with_assets: localhost:6379
+production: localhost:6379
+test: localhost:6379

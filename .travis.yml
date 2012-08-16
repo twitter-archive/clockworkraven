@@ -1,0 +1,2 @@
+before_script:
+  - rake raven:travis_setup

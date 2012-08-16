@@ -1,0 +1,45 @@
+# This configures Clockwork Raven to use an LDAP server for authentication
+# and authorization. If you can connect to our LDAP server over SSL/TLS,
+# use the configuration in auth.example_ldap_encrypted.yml, NOT this
+# configuration.
+#
+# This configuration does NOT encrypt communication between Clockwork Raven
+# and your LDAP server. Passwords are sent in clear text over the network!
+# It is strongly recommended that you set up SSL/TLS on your LDAP server
+# and use auth.example_ldap_encrypted.yml.
+
+# tells Clockwork Raven to use LDAP. Do not change this line.
+:type: :ldap
+
+# Change this line to point to your LDAP host.
+:host: ldap.example.com
+
+# Change this line to be the port your LDAP server listens on. 389 is these
+# default for LDAP.
+:port: 389
+
+# Tells LDAP not to connect using SSL/TLS. Do not change this line.
+:tls: false
+
+# This is the base DN to use when searching your LDAP server. Change this to
+# the value provided by your LDAP server administrator.
+:base_dn: "dc=ldap,dc=example,dc=com"
+
+# Users in these LDAP groups will be able to launch production-mode jobs (which
+# cost money.)
+:priv_groups: ['admin', 'root']
+
+# These LDAP users will be able to launch production-mode jobs even if they are
+# not in the groups listed in :priv_groups
+:priv_users: ['joe_admin', 'nancy_admin']
+
+# Users in these LDAP groups will be allowed to log in to Clockwork Raven,
+# have read-only access to production jobs, and have read-write access
+# to sandbox jobs (which don't cost money). They can also create (but not
+# submit) production jobs and ask that a user with production-mode privileges
+# submit the job.
+:access_groups: ['users', 'employees']
+
+# These LDAP users will have access to Clockwork Raven just like users in the
+# groups specified by :access_groups.
+:access_users: ['jim_user', 'jane_user']

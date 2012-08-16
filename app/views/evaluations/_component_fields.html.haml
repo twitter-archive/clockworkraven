@@ -1,0 +1,32 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+.field
+  = link_to_remove_static_fields "evaluation[components_attributes][#{id}][_destroy]"
+  %input{:type => 'hidden', :name => "evaluation[components_attributes][#{id}][order]", 'data-order' => 'true'}
+  Component:
+  %select.component-select{:name => "evaluation[components_attributes][#{id}][type]", :onchange => 'TemplateBuilder.update_component(this);'}
+    = options_for_select([['Select A Component...', '']] + component_options, item[:type])
+
+  - COMPONENTS.each do |name, data|
+    .component-details{'data-component' => name, :style => 'display: none'}
+      - data[:vars].each do |var_name, var_data|
+        .control-group.subsection
+          %label.control-label{:for => "evaluation[components_attributes][#{id}][data][#{name}][#{var_name}][value]"}
+            = succeed ':' do
+              = var_data[:desc]
+          .controls
+            %select.value-select{:name => "evaluation[components_attributes][#{id}][data][#{name}][#{var_name}][value]", :onchange => 'TemplateBuilder.update_literal(this)'}
+              = options_for_component_select(var_name, var_data, @fields, item)
+            %input{:type => 'text', :placeholder => 'String Literal', :value => value_for_data(var_name, item, :literal), :name => "evaluation[components_attributes][#{id}][data][#{name}][#{var_name}][literal]"}

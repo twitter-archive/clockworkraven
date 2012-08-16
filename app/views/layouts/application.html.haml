@@ -1,0 +1,62 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+!!!
+%html
+  %head
+    %title Clockwork Raven
+    = stylesheet_link_tag    "application", :media => "all"
+    %script{:type => 'text/javascript', :src => '//platform.twitter.com/widgets.js', :charset => 'utf-8'}
+    %script{:type => 'text/javascript', :src => '//www.google.com/jsapi'}
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+    %link{:rel => 'icon', :type => 'image/png', :href => '/assets/raven.png'}
+
+  %body{:class => [controller.controller_name, controller.action_name]}
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container-fluid
+          %img.logo{:src => '/assets/raven-icon-32.png', :width => 32, :height => 32}
+          %a.brand{'href' => '/'}
+            Clockwork Raven
+            -if Rails.env == 'development'
+              (Development)
+          %ul.nav
+            %li#evaluations_link{:class => active_in(:evaluations)}
+              %a{'href' => '/evaluations'} Evaluations
+            %li#jobs_link{:class => active_in(:jobs)}
+              %a{'href' => '/jobs'} Background Jobs
+            %li#accounts_link{:class => active_in(:accounts)}
+              %a{'href' => account_path} My Account
+          - if current_user
+            %ul.nav.pull-right#current_user
+              %li
+                .nav-text
+                  Logged in as #{current_user.username}
+              %li
+                = link_to 'Log Out', '/logout', :method => 'post'
+    .container-fluid
+      .content
+        = alert flash[:error], 'error'
+        = alert flash[:notice], 'info'
+
+        = yield
+
+        %hr
+        %footer
+          = succeed ',' do
+            %a{:href => 'http://twitter.github.com/clockworkraven', :target => '_blank'} Clockwork Raven
+          version #{ClockworkRaven::VERSION}
+          &middot;
+          %a{:href => 'https://github.com/twitter/clockworkraven/wiki', :target => '_blank'} Docs

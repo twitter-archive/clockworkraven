@@ -1,0 +1,190 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+%h1= @eval.name
+
+-# placeholder for bar chart
+.row-fluid.chart-container
+  .span12
+    #bar_chart
+    #average_value_wrapper
+      %span#average_value_text{:style => 'display:none'}
+        Average Value:
+        %span#average_value
+
+
+-# Chart options
+.row-fluid
+  .span4
+    %h3 Chart:
+    .chart-options
+      - @eval.mc_questions.each_with_index do |mc_q, i|
+        %input{:type => 'radio', :name => 'chart_option', :value => mc_q.id, :checked => (i == 0)}
+        = mc_q.label
+        %br
+  .span4
+    %h3 Segment Bars By:
+    .segment-options
+      %input{:type => 'radio', :name => 'segment_option', :value => 'none', :checked => true}
+      None
+      %br
+
+      - @eval.mc_questions.each do |mc_q|
+        %input{:type => 'radio', :name => 'segment_option', :value => mc_q.id}
+        = mc_q.label
+        %br
+
+  .span4
+    %h3 Display:
+    .display-options
+      %input{:type => 'radio', :name => 'display_option', :value => 'count', :checked => true}
+      Count
+      %br
+      %input{:type => 'radio', :name => 'display_option', :value => 'normalized'}
+      Normalized
+      %br
+
+      - @eval.mc_questions.each do |mc_q|
+        - next unless mc_q.has_values?
+        %input{:type => 'radio', :name => 'display_option', :value => mc_q.id, 'data-display_question' => true}
+        Average value of #{mc_q.label}
+        %br
+
+-# Chart filters
+
+%h3 Filter By
+
+.row-fluid
+  - @eval.mc_questions.each do |mc_q|
+    .filter-pane
+      %h5= mc_q.label
+
+      %input{:type => 'radio', :name => "filter_#{mc_q.id}", :class => 'filter-by', :value => 'none', :checked => true}
+      Do not filter
+      %br
+
+      - mc_q.mc_question_options.each do |opt|
+        %input{:type => 'radio', :name => "filter_#{mc_q.id}", :class => 'filter-by', :value => opt.id}
+        = opt.label
+        %br
+
+%hr
+
+-# Response table
+
+%h1.table-header All Responses
+
+-# Task completion time stats
+Mean time to complete a task: #{@eval.mean_time.round(2)} seconds
+%br
+Median time to complete a task: #{@eval.median_time} seconds
+%br
+Effective pay rate, based on mean time: #{format_cents @eval.mean_pay_rate} / hr
+%br
+Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} / hr
+%br
+- if @eval.status_name == :closed
+  = link_to 'Approve All Unapproved Responses', 'approve_all',
+            :class => 'btn btn-primary', :method => 'post',
+            :confirm => "Are you sure? All responses you haven't rejected will be approved and MTurk users will be paid."
+
+-# Table
+%table.table#data_table{:width => "100%"}
+  %thead
+    %tr
+      %th Actions
+      - @eval.mc_questions.each do |mc_q|
+        %th= mc_q.label
+      - @eval.fr_questions.each do |fr_q|
+        %th= fr_q.label
+      %th MTurk user
+      %th Work duration
+      %th Approval
+  %tbody
+    - @task_responses.each do |task_response|
+      %tr
+        %td
+          %div
+            -# Approve/Reject buttons
+            .approval-controls
+              - if task_response.approved.nil?
+                = link_to('Approve', approve_evaluation_task_response_path(@eval, task_response),
+                          :method => 'post', :remote => true,
+                          :class => 'btn btn-success btn-approval',
+                          :data => {:response => task_response.id})
+                = link_to('Reject', reject_evaluation_task_response_path(@eval, task_response),
+                          :method => 'post', :remote => true,
+                          :class => 'btn btn-danger btn-approval',
+                          :data => {:response => task_response.id})
+            .approval-spinner{:style => 'display:none'}
+              %img{:src => '/assets/ajax-loader.gif'}
+            %div
+              .clear
+              -# Ban/Unban buttons
+              .controls-wrapper
+                .ban-controls
+                  = link_to('Ban', ban_m_turk_user_path(task_response.m_turk_user),
+                            :method => 'post', :remote => true,
+                            :class => 'btn btn-inverse btn-ban',
+                            :style => hide_if(task_response.m_turk_user.banned))
+                  = link_to('Unban', unban_m_turk_user_path(task_response.m_turk_user),
+                            :method => 'post', :remote => true,
+                            :class => 'btn btn-inverse btn-unban',
+                            :style => hide_if(!task_response.m_turk_user.banned))
+                .ban-spinner{:style => 'display:none'}
+                  %img{:src => '/assets/ajax-loader.gif'}
+
+              -# Trust/Untrust buttons
+              .controls-wrapper
+                .trust-controls
+                  = link_to('Trust', trust_m_turk_user_path(task_response.m_turk_user),
+                            :method => 'post', :remote => true,
+                            :class => 'btn btn-warning btn-trust',
+                            :style => hide_if(task_response.m_turk_user.trusted))
+                  = link_to('Untrust', untrust_m_turk_user_path(task_response.m_turk_user),
+                            :method => 'post', :remote => true,
+                            :class => 'btn btn-warning btn-untrust',
+                            :style => hide_if(!task_response.m_turk_user.trusted))
+                .trust-spinner{:style => 'display:none'}
+                  %img{:src => '/assets/ajax-loader.gif'}
+              .clear
+
+          -# links for more info
+          %div
+            = link_to('Manage on MTurk', task_response.task.mturk_url,
+                      :target => '_blank')
+            &middot;
+            = link_to('View Task', evaluation_task_path(@eval, task_response.task), :target => '_blank')
+
+        -# Row content
+        - @eval.mc_questions.each do |mc_q|
+          -# We need the answers to be in the same order as the headers, so we
+          -# have to look up the response by the question, becuase the questions
+          -# have a stable order.
+          - option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id]
+          -# check for nil in case the worker didn't submit a response to the
+          -# question
+          - mc_q_resp = option_id.nil? ? nil : @data[:mcQuestionOptions][option_id][:label]
+          %td= mc_q_resp.nil? ? nil : mc_q_resp
+        - @eval.fr_questions.each do |fr_q|
+          - fr_q_resp = @data[:responses][task_response.id][:frQuestions][fr_q.id]
+          %td= fr_q_resp.nil? ? nil: fr_q_resp
+        %td.mturk-user= task_response.m_turk_user_id
+        %td= task_response.work_duration
+        %td.approval
+          .approval-status= task_response_status_name(task_response)
+
+-# Include the data as JSON for the chart
+:javascript
+  DATA = #{@data.to_json}

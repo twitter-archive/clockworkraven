@@ -1,0 +1,55 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+%form{:name => 'mturk_form', :id => 'mturk_form', :method => 'post', :action => 'https://www.mturk.com/mturk/externalSubmit'}
+  -# This hidden field is for MTurk -- it gets populated by the
+  -# turkSetAssignmentID() javascript call below
+  %input{:type => 'hidden', :value => '', :name => 'assignmentId', :id => 'assignmentId'}
+
+  - @task.evaluation.template.each do |section|
+    .section
+      - case section[:type]
+      - when :_mc
+        -# Render radio buttons for MC questions
+        - mc_q = @task.evaluation.mc_questions.find_by_order(section[:order])
+        - id = 'mc:' + mc_q.id.to_s
+        %fieldset
+          %legend= mc_q.label
+          %label.error.alert.alert-error{:for => id} Please select a response.
+          - mc_q.mc_question_options.each do |option|
+            %label.option-label{:for => option.id}
+              %input{:type => 'radio', :name => id, :value => option.id, :class => 'required', :id => option.id}
+              %span.option-label-text= option.label
+      - when :_fr
+        -# Render textareas for FR Questions
+        - fr_q = @task.evaluation.fr_questions.find_by_order(section[:order])
+        - id = 'fr:' + fr_q.id.to_s
+        %legend{:for => id}= fr_q.label
+        %label.error.alert.alert-error{:for => id} Please enter a response.
+        %textarea{:cols => 40, :rows => 5, :name => id, :class => (fr_q.required? ? 'required' : '')}
+      - when :_text
+        %div= interpolate(section[:content], @task.data)
+      - when :_header
+        %h1= interpolate(section[:content], @task.data)
+      - else
+        = render :partial => "components/#{section[:type]}", :locals => {:data => resolve_data(section[:data], @task.data)}
+
+  %input.btn.btn-primary{:type => 'submit', :value => 'Submit', :id => 'submitButton'}
+
+  -# Set up MTurk hidden field and javascript validation
+  %script{:language => 'Javascript'}
+    :plain
+      turkSetAssignmentID();
+      $('#mturk_form').validate();
+

@@ -1,0 +1,64 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+%h1 Template Editor
+
+- if @evaluation.errors.any?
+  #error_explanation.alert.alert-error
+    %a.close{'data-dismiss' => 'alert', 'href' => '#'} ×
+    %h4.alert-heading= "#{pluralize(@evaluation.errors.count, "error")} prohibited this evaluation from being saved:"
+    %ul
+      - @evaluation.errors.full_messages.each do |msg|
+        %li= msg
+
+= form_for @evaluation, :html => {:class => 'form form-horizontal'}, :url => update_template_evaluation_path(@evaluation) do |f|
+  .fields
+    - if @evaluation.template
+      - @evaluation.template.each_with_index do |item, i|
+        - if item[:type] == :_mc
+          = f.fields_for :mc_questions, @evaluation.mc_questions.select{|q| q.order == item['order'].to_i} do |builder|
+            = render :partial => 'mc_question_fields', :locals => {:f => builder}
+        - elsif item[:type] == :_fr
+          = f.fields_for :fr_questions, @evaluation.fr_questions.select{|q| q.order == item['order'].to_i} do |builder|
+            = render :partial => 'fr_question_fields', :locals => {:f => builder}
+        - elsif item[:type] == :_text
+          = render :partial => 'text_fields', :locals => {:item => item, :id => i}
+        - elsif item[:type] == :_header
+          = render :partial => 'header_fields', :locals => {:item => item, :id => i}
+        - else
+          = render :partial => 'component_fields', :locals => {:item => item, :id => i}
+
+  .btn-group.add-parent
+    %a.btn.btn-success.dropdown-toggle{'data-toggle' => 'dropdown', :href => '#'}
+      %i.icon-plus
+      Add Item
+      %span.caret
+    %ul.dropdown-menu
+      %li= link_to_add_static_fields "Header", 'icon-bullhorn', 'header'
+      %li= link_to_add_static_fields "Text", 'icon-font', 'text'
+      %li= link_to_add_static_fields "Component", 'icon-file', 'component'
+      %li= link_to_add_fields "Multiple-Choice Question", "icon-list", f, :mc_questions, '', :mc_question_options
+      %li= link_to_add_fields "Free-Response Question", "icon-pencil", f, :fr_questions
+
+  .metadata-select
+    Fields to save as metadata:
+    %br
+    %select.metadata-select-box{:name => 'evaluation[metadata][]', :multiple => true}
+      = options_for_select @fields.map{ |field| [field.to_s, field.to_s] }, @evaluation.metadata
+
+  .form-actions
+    = f.submit 'Save', :class => 'btn btn-primary'
+    %br
+    %br
+    = link_to "&laquo; Back To Evaluation".html_safe, @evaluation

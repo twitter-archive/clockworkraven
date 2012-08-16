@@ -1,0 +1,145 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+%h1= @evaluation.name
+
+%p
+  %b
+    = @evaluation.prod? ? 'Production' : 'Sandbox'
+    Job
+
+%p
+  Created by
+  = @evaluation.user.name
+  %a{:href => "mailto:#{@evaluation.user.email}"}= "<#{@evaluation.user.email}>"
+  at
+  = @evaluation.created_at.in_time_zone("Pacific Time (US & Canada)").strftime(ClockworkRaven::Application::TIME_FORMAT)
+
+- if @evaluation.note
+  %p
+    = @evaluation.note
+
+%p
+  %b Title:
+  = @evaluation.title
+
+%p
+  %b Description:
+  = @evaluation.desc
+
+%p
+  %b Payment:
+  = @evaluation.payment
+  cents
+
+%p
+  %b Total Cost:
+  = format_cents @evaluation.cost
+
+%p
+  %b Number of tasks:
+  = @evaluation.tasks.size
+
+%p
+  %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
+
+%p
+  %b Qualifications:
+  - if @evaluation.mturk_qualification == 'trusted'
+    Trusted workers only
+  - elsif @evaluation.mturk_qualification == 'master'
+    Mechanical Turk Categorization Masters only
+  - else
+    No qualifications required
+
+%h2 Questions
+
+%h3 Multiple-Choice
+
+%ol
+  - @evaluation.mc_questions.reject{|q| q.metadata}.each do |q|
+    %li
+      = q.label
+      %ul
+        - q.mc_question_options.each do |o|
+          %li
+            = o.label
+            - if o.value?
+              (value: #{o.value})
+
+%h3 Free-Response
+
+%ol
+  - @evaluation.fr_questions.each do |q|
+    %li= q.label
+
+.eval-actions
+  .clear
+
+  - if @evaluation.job and !@evaluation.job.ended?
+    %p
+      This evaluation is being processed.
+      = link_to "View Job &raquo;".html_safe, @evaluation.job
+  - else
+
+    - if @evaluation.status_name == :new
+      = link_to 'Edit Properties', edit_evaluation_path(@evaluation), :class => 'btn'
+      = link_to 'Edit Template', edit_template_evaluation_path(@evaluation), :class => 'btn'
+      - if @evaluation.prod?
+        - confirm = "Are you sure you want to send this to Mechanical Turk Production? The total cost is #{format_cents @evaluation.cost}"
+      - else
+        - confirm = "Are you sure you want to send this to Mechanical Turk Sandbox? There is no cost to deploy to the sandbox."
+      = link_to 'Submit to MTurk', submit_evaluation_path(@evaluation),
+                :class => 'btn btn-primary', :method => 'post',
+                :confirm => confirm
+
+    - if @evaluation.status_name == :submitted
+      %p
+        %b Number of tasks completed:
+        = @evaluation.available_results_count
+
+      = link_to 'View on MTurk', @evaluation.mturk_url, :class => 'btn', :target => '_blank'
+
+      = link_to 'Close Evaluation', close_evaluation_path(@evaluation),
+                :class => 'btn btn-primary', :method => 'post',
+                :confirm => "Are you sure? All tasks will be closed and no more MTurk users will be able to complete tasks."
+
+    - if [:closed, :approved, :purged].include? @evaluation.status_name
+      %p
+        %b Number of results:
+        = @evaluation.task_responses.size
+
+      = link_to 'View Responses', evaluation_task_responses_path(@evaluation), :class => 'btn'
+
+      .btn-group
+        %a.btn.btn-success.dropdown-toggle{:href => '#', 'data-toggle' => 'dropdown'}
+          Download Results
+          %span.caret
+        %ul.dropdown-menu
+          %li
+            = link_to 'TSV', evaluation_task_responses_path(@evaluation, :format => 'tsv')
+            = link_to 'CSV', evaluation_task_responses_path(@evaluation, :format => 'csv')
+            = link_to 'JSON', evaluation_task_responses_path(@evaluation, :format => 'json')
+
+    - if @evaluation.status_name == :closed
+      = link_to 'Approve All Unapproved Responses', approve_all_evaluation_path(@evaluation),
+              :class => 'btn btn-primary', :method => 'post',
+              :confirm => "Are you sure? All responses you haven't rejected will be approved and MTurk users will be paid."
+
+    - if @evaluation.status_name == :approved
+      = link_to 'Remove from MTurk', purge_evaluation_path(@evaluation),
+                :class => 'btn btn-danger', :method => 'post',
+                :confirm => "Are you sure? All tasks associated with this evaluation will be deleted from MTurk."
+
+  .clear

@@ -1,0 +1,69 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+!!!
+%html
+  %head
+    %title Task
+    %meta{"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}
+    %link{:rel => 'stylesheet', :type => 'text/css', :href => '//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css'}
+    %script{:type => 'text/javascript', :src => '//s3.amazonaws.com/mturk-public/externalHIT_v1.js'}
+    %script{:type => 'text/javascript', :src => '//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'}
+    %script{:type => 'text/javascript', :src => '//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js'}
+    %style{:type => 'text/css'}
+      :plain
+        body {
+          padding: 20px;
+          padding-top: 0;
+        }
+
+        .timeline {
+          height: 200px;
+          width: 500px;
+          overflow-y: scroll;
+          padding: 10px;
+          border: 1px solid black;
+        }
+
+        h1 {
+          margin-top: 20px;
+          margin-bottom: 5px;
+          width: 100%;
+          border-bottom: 1px solid black;
+        }
+
+        h3 {
+          margin-top: 10px;
+        }
+
+        form label {
+          font-weight: bold;
+          margin-top: 10px;
+        }
+
+        label.error {
+          display:none;
+        }
+
+        legend {
+          border-bottom: none;
+          margin-bottom: 5px;
+        }
+
+        .section {
+          margin-bottom: 20px;
+        }
+    = yield :required_headers
+  %body
+    = yield

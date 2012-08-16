@@ -1,0 +1,173 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+-if @evaluation.errors.any?
+  #error_explanation.alert.alert-error
+    %a.close{'data-dismiss' => 'alert', 'href' => '#'} ×
+    %h4.alert-heading= "#{pluralize(@evaluation.errors.count, "error")} prohibited this evaluation from being saved:"
+    %ul
+      - @evaluation.errors.full_messages.each do |msg|
+        %li= msg
+
+= form_for @evaluation, :html => {:class => 'form-horizontal'} do |f|
+  -# pass along based_on for the create form
+  - if params[:based_on]
+    %input{:type => 'hidden', :name => 'based_on', :value => params[:based_on]}
+
+  %legend
+    Fields in
+    %b bold
+    are required
+
+  .control-group
+    %label.control-label{:for => 'evaluation_name'}
+      %span.form-required
+        Name
+      %br
+      %span.label-help Internal use only
+    .controls
+      = f.text_field :name
+
+  .control-group
+    %label.control-label{:for => 'evaluation_prod'}
+      Production?
+      %br
+      %span.label-help
+        If checked, the job will be sent to the real MTurk. Else, it will be
+        sent to the sandbox.
+    .controls
+      = f.check_box :prod
+
+  .control-group
+    %label.control-label{:for => 'evaluation_title'}
+      %span.form-required
+        Title
+      %br
+      %span.label-help Shown to MTurk Users
+    .controls
+      = f.text_field :title
+
+  .control-group
+    %label.control-label{:for => 'evaluation_note'}
+      Note
+      %br
+      %span.label-help Internal use only
+    .controls
+      = f.text_area :note, :rows => 5
+
+  .control-group
+    %label.control-label{:for => 'evaluation_data'}
+      Data
+      %br
+      %span.label-help CSV, TSV, or JSON. Must be UTF-8 encoded.
+    .controls
+      = f.file_field :data
+
+  - unless @evaluation.new_record?
+    .control-group
+      %label.control-label{:for => 'evaluation_replace_data'}
+        Replace data?
+        %br
+        %span.label-help If checked, existing data will be deleted
+      .controls
+        = f.check_box :replace_data
+
+  .control-group
+    %label.control-label{:for => 'evaluation_desc'}
+      %span.form-required
+        Description
+      %br
+      %span.label-help Shown to MTurk users searching for a task
+    .controls
+      = f.text_area :desc, :rows => 5
+
+  .control-group
+    %label.control-label{:for => 'evaluation_keywords'}
+      Keywords
+      %br
+      %span.label-help Comma-separated keywords to help MTurk users find the task
+    .controls
+      = f.text_field :keywords
+
+  .control-group
+    %label.control-label{:for => 'evaluation_mturk_qualification'}
+      Qualification
+      %br
+      %span.label-help
+        "Masters" restricts this evaluation to users MTurk considers categorization masters.
+        "Trusted" restricts this evaluation to users marked as trusted in Clockwork Raven.
+    .controls
+      = f.radio_button :mturk_qualification, 'none'
+      None
+      %br
+      = f.radio_button :mturk_qualification, 'master'
+      Masters
+      %br
+      = f.radio_button :mturk_qualification, 'trusted'
+      Trusted
+
+  .control-group
+    %label.control-label{:for => 'evaluation_payment'}
+      %span.form-required
+        Payment
+      %br
+      %span.label-help Amount payed to MTurk workers for each task, in cents
+    .controls
+      .input-prepend
+        %span.add-on
+          $0.
+        = f.number_field :payment
+
+  .control-group
+    %label.control-label{:for => 'evaluation_duration'}
+      %span.form-required
+        Duration
+      %br
+      %span.label-help
+        Amount of time, in seconds, a worker has to complete this task before
+        it can be given to someone else
+    .controls
+      .input-append
+        = f.number_field :duration
+        = render :partial => 'time_buttons'
+
+  .control-group
+    %label.control-label{:for => 'evaluation_lifetime'}
+      %span.form-required
+        Lifetime
+      %br
+      %span.label-help
+        Amount of time, in seconds, this evaluation will be available on MTurk
+        after it is submitted
+    .controls
+      .input-append
+        = f.number_field :lifetime
+        = render :partial => 'time_buttons'
+
+  .control-group
+    %label.control-label{:for => 'evaluation_auto_approve'}
+      %span.form-required
+        Auto-approve After
+      %br
+      %span.label-help
+        Tasks will be automatically approved after this amount of time, in
+        seconds, unless you explicitly approve or reject the worker's
+        response
+    .controls
+      .input-append
+        = f.number_field :auto_approve
+        = render :partial => 'time_buttons'
+
+  .form-actions
+    = f.submit 'Save', :class => 'btn btn-primary'

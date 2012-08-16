@@ -1,0 +1,49 @@
+# This configures Clockwork Raven to use an LDAP server for authentication
+# and authorization, and to connect to that LDAP server over SSL/TLS so
+# passwords are encrypted.
+#
+# WARNING: Clockwork Raven uses Net::LDAP for LDAP connections.
+# Net::LDAP does NOT perform validation of the LDAP server's SSL certificate.
+# From the Net::LDAP docs (http://net-ldap.rubyforge.org/Net/LDAP.html):
+#
+# "It’s intended for cases where you have an implicit level of trust in the
+# authenticity of the LDAP server"
+#
+# This should not be a security issue as long as you are not concerned about
+# man-in-the-middle attacks (e.g. if you are behind a VPN or private network).
+
+# tells Clockwork Raven to use LDAP. Do not change this line.
+:type: :ldap
+
+# Change this line to point to your LDAP host.
+:host: ldap.example.com
+
+# Change this line to be the port your LDAP server listens on. 636 is the
+# default for LDAP over SSL/TLS
+:port: 636
+
+# Tells LDAP to connect using SSL/TLS. Do not change this line.
+:tls: true
+
+# This is the base DN to use when searching your LDAP server. Change this to
+# the value provided by your LDAP server administrator.
+:base_dn: "dc=ldap,dc=example,dc=com"
+
+# Users in these LDAP groups will be able to launch production-mode jobs (which
+# cost money.)
+:priv_groups: ['admin', 'root']
+
+# These LDAP users will be able to launch production-mode jobs even if they are
+# not in the groups listed in :priv_groups
+:priv_users: ['joe_admin', 'nancy_admin']
+
+# Users in these LDAP groups will be allowed to log in to Clockwork Raven,
+# have read-only access to production jobs, and have read-write access
+# to sandbox jobs (which don't cost money). They can also create (but not
+# submit) production jobs and ask that a user with production-mode privileges
+# submit the job.
+:access_groups: ['users', 'employees']
+
+# These LDAP users will have access to Clockwork Raven just like users in the
+# groups specified by :access_groups.
+:access_users: ['jim_user', 'jane_user']

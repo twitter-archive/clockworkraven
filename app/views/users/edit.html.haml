@@ -1,0 +1,46 @@
+-# Copyright 2012 Twitter, Inc. and others.
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+
+-if current_user.errors.any?
+  #error_explanation.alert.alert-error
+    %a.close{'data-dismiss' => 'alert', 'href' => '#'} ×
+    %h4.alert-heading= "#{pluralize(current_user.errors.count, "error")} prohibited your changes from being saved:"
+    %ul
+      - current_user.errors.full_messages.each do |msg|
+        %li= msg
+
+= form_for current_user, :url => update_account_path, :html => {:class => 'form-horizontal'} do |f|
+  .control-group
+    = f.label :name, :class => 'control-label'
+    .controls
+      = f.text_field :name
+
+  .control-group
+    = f.label :email, :class => 'control-label'
+    .controls
+      = f.text_field :email
+
+  .control-group
+    = f.label :password, :class => 'control-label'
+    .controls
+      = f.password_field :password
+
+  .control-group
+    = f.label :password_confirmation, 'Confirm Password', :class => 'control-label'
+    .controls
+      = f.password_field :password_confirmation
+
+  .form-actions
+    %p= f.submit 'Save', :class => 'btn btn-primary'
+    %p= link_to '&laquo; Back to Account'.html_safe, account_path
