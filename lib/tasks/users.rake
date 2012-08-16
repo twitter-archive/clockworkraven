@@ -22,15 +22,23 @@ namespace :users do
   task :change_password => :environment do
     UserTasks.new.change_password
   end
+
+  desc "Reset all API keys in the system"
+  task :reset_keys => :environment do
+    UserTasks.new.reset_keys
+  end
 end
 
 class UserTasks
   NON_PASS_WARNING = <<END_S
 WARNING:
 You are not currently configured to use password authentication. Users created
-in this interface will not be usable unless you modify config/auth.yml to use
-password authentication. To do this, copy config/auth.example_password.yml
+in this interface will not be able to log in unless you modify config/auth.yml
+to use password authentication. To do this, copy config/auth.example_password.yml
 to config/auth.yml.
+
+Note that users created this way will be able to use the API, even if you don't
+use password authentication.
 END_S
 
   def initialize
@@ -96,6 +104,13 @@ END_S
     @in.choose do |menu|
       menu.layout = :one_line
       menu.header = "Successfully created user \"#{username}\""
+      menu.prompt = 'Show API key? '
+      menu.choice('yes') { puts "The user's API key is #{user.key}" }
+      menu.choice('no')  {                                               }
+    end
+
+    @in.choose do |menu|
+      menu.layout = :one_line
       menu.prompt = 'Create another? '
       menu.choice('yes') { add }
       menu.choice('no')  {     }
@@ -121,6 +136,22 @@ END_S
       menu.header = "Successfully changed password for \"#{username}\""
       menu.prompt = 'Change another? '
       menu.choice('yes') { change_password }
+      menu.choice('no')  {     }
+    end
+  end
+
+  def reset_keys
+    @in.choose do |menu|
+      menu.prompt = 'This will invalidate all API keys and prevent API calls using old keys. Are you sure you want to reset keys? '
+      menu.choice('yes') do
+        User.all.each do |u|
+          u.generate_key
+          u.save!
+          print '.'
+        end
+
+        puts "\nAPI keys have been reset."
+      end
       menu.choice('no')  {     }
     end
   end

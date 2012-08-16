@@ -20,6 +20,7 @@ class NonLoginsControllerTest < ActionController::TestCase
 
   setup do
     @user = create :user
+    session.clear
   end
 
   test "no credentials" do
@@ -56,10 +57,24 @@ class NonLoginsControllerTest < ActionController::TestCase
     assert_forbidden
   end
 
-  test "valid" do
+  test "valid user id" do
     user = create :user
     session[:db_sig] = DatabaseSignature.generate
     session[:user_id] = user.id
+
+    get :index
+    assert_response :success
+  end
+
+  test "invalid api key" do
+    user = create :user
+    get :index, :api_key => 'wrong'
+    assert_forbidden
+  end
+
+  test "valid api key" do
+    user = create :user
+    get :index, :api_key => user.key
 
     get :index
     assert_response :success
