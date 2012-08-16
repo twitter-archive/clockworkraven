@@ -6,7 +6,7 @@ $(function() {
   }
 
   $(window).scroll(function() {
-    if(scrollEl.scrollTop()  == 0) {
+    if(scrollEl.scrollTop() <= 0) {
       $('body').addClass('scroll-top');
     }
     else {
