@@ -106,7 +106,7 @@ END_S
       menu.header = "Successfully created user \"#{username}\""
       menu.prompt = 'Show API key? '
       menu.choice('yes') { puts "The user's API key is #{user.key}" }
-      menu.choice('no')  {                                               }
+      menu.choice('no')  {                                          }
     end
 
     @in.choose do |menu|
@@ -136,7 +136,7 @@ END_S
       menu.header = "Successfully changed password for \"#{username}\""
       menu.prompt = 'Change another? '
       menu.choice('yes') { change_password }
-      menu.choice('no')  {     }
+      menu.choice('no')  {                 }
     end
   end
 
@@ -152,7 +152,7 @@ END_S
 
         puts "\nAPI keys have been reset."
       end
-      menu.choice('no')  {     }
+      menu.choice('no') {}
     end
   end
 
