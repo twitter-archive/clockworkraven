@@ -100,4 +100,14 @@ class UsersControllerTest < ActionController::TestCase
       assert_validations_fail :password => '1', :password_confirmation => ''
     end
   end
+
+  test "reset_key" do
+    old_key = @controller.current_user.key
+
+    post :reset_key
+
+    @controller.current_user.reload
+    assert_not_nil @controller.current_user.key
+    assert_not_equal old_key, @controller.current_user.key
+  end
 end

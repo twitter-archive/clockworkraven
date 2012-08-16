@@ -21,13 +21,16 @@ class ApplicationController < ActionController::Base
   def current_user
     return @current_user if @current_user
 
+    # if an API key parameter was given, try to auth with that.
+    if params[:api_key]
+      return (@current_user = User.find_by_key(params[:api_key]))
+    end
+
     # we only load the user from a session cookie if we're using the same
     # database we were using when the cookie was issued
     if session[:db_sig] == DatabaseSignature.generate
-      @current_user = User.find_by_id(session[:user_id])
+      return (@current_user = User.find_by_id(session[:user_id]))
     end
-
-    return @current_user
   end
 
   private

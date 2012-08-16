@@ -26,6 +26,7 @@ class UsersShowTest < ActionController::TestCase
     assert_select "span.username:content('#{@user.username}')"
     assert_select "span.realname:content('#{@user.name}')"
     assert_select "span.email:content('#{@user.email}')"
+    assert_select "span.apikey:content('#{@user.key}')"
     assert_select "span.priv:content('No')"
   end
 
