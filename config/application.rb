@@ -24,7 +24,7 @@ if defined?(Bundler)
 end
 
 module ClockworkRaven
-  VERSION = '0.1.0'
+  VERSION = '0.2.0'
 
   class Application < Rails::Application
     TIME_FORMAT = "%a, %b %d, %Y %H:%M:%S %Z"
