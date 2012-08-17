@@ -59,7 +59,7 @@ create accounts for themselves.
        credentials will be sent over the network in the clear!
 3. Configure:
     1. Generate a secret key. Copy `config/secret.example.yml` to
-       `config/secret.yml`. Then, run `rake secret` and copy the output the
+       `config/secret.yml`. Then, run `rake secret` and copy the output to
        `config/secret.yml`.
     2. Copy `config/database.example.yml` to `config/database.yml` and modify it
        to point to your MySQL database. Currently, Clockwork Raven only supports
