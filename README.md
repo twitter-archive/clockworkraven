@@ -53,17 +53,13 @@ create accounts for themselves.
        [Resque's instructions for installing Redis](https://github.com/defunkt/resque/#installing-redis).
        By default Clockwork Raven assumes your Redis server is running on
        `localhost:6379`. If this isn't the case, edit config/resque.yml.
-       You'll also need to start up some background workers -- just
-       run `rake raven:resque` to start up 4 background workers. You can start
-       up more background workers by passing an argument to the rake task:
-       `rake raven:resque[16]` will start up 16 background workers.
     4. In a production environment (e.g. any environment where Clockwork
        Raven will be accessible to users), it should be run over SSL to protect
        users' credentials when they log in. If you don't use SSL, these
        credentials will be sent over the network in the clear!
 3. Configure:
     1. Generate a secret key. Copy `config/secret.example.yml` to
-       `config/secret.yml`. Then, run `rake secret` and copy the output the
+       `config/secret.yml`. Then, run `rake secret` and copy the output to
        `config/secret.yml`.
     2. Copy `config/database.example.yml` to `config/database.yml` and modify it
        to point to your MySQL database. Currently, Clockwork Raven only supports
@@ -91,11 +87,15 @@ create accounts for themselves.
        you can create accounts by running "rake users:add" and change passwords
        with "rake users:change_password". Note that you will need to set up your
        database (explained below) before using these rake tasks.
-4. Set up database. If the databases you configured Clockwork Raven to use in
+4. Set up the database. If the databases you configured Clockwork Raven to use in
    config/database.yml do not exist, run "rake db:create" to create them.
    Then, run "rake db:structure:load" to load the database structure into your
    database.
-5. Run the server. To run the server, run "rails s".
+5. Start up the background workers. Just
+   run `rake raven:resque` to start up 4 background workers. You can start
+   up more background workers by passing an argument to the rake task:
+   `rake raven:resque[16]` will start up 16 background workers.
+6. Run the server. To run the server, run "rails s".
 
 ## Documentation
 
@@ -105,9 +105,7 @@ Documentation is available on the
 ## Contact
 
 Follow [@clockworkraven](https://twitter.com/clockworkraven) for updates and
-notifications.
-
-Submit bug report and feature requests to the
+notifications. Submit bug report and feature requests to the
 [issue tracker](https://github.com/twitter/clockworkraven/issues).
 
 Join the mailing list,
@@ -117,6 +115,8 @@ on
 ask questions and discuss development.
 
 ## Roadmap
+
+We would love any help adding ideas or implementing them!
 
 * JSON/REST API
 * Provide the option to have multiple Mechanical Turk users complete each task
