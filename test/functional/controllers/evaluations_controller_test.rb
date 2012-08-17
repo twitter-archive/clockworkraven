@@ -575,4 +575,48 @@ class EvaluationsControllerTest < ActionController::TestCase
     assert_equal '1-opt3', q.mc_question_options.first.label
     assert_equal '1-opt2', q.mc_question_options.second.label
   end
+  
+  test "original data" do
+    eval = create :evaluation
+
+    expected_task_1_data = {
+      "foo1" => "bar1",
+      "foo2" => "bar2"
+    }
+
+    expected_task_2_data = {
+      "foo1" => "bar3",
+      "foo2" => "bar4"
+    }
+
+    eval.add_data(parse_json_fixture('data1.json'))
+    
+    expected_data = [HashWithIndifferentAccess.new({:foo1 => "bar1", :foo2 => "bar2"}),
+                     HashWithIndifferentAccess.new({:foo1 => "bar3", :foo2 => "bar4"})]
+    get :original_data, :id => eval.id
+    assert_equal expected_data, assigns(:data)    
+
+    # test csv
+
+    expected_csv = <<-END_CSV
+      foo1,foo2
+      bar1,bar2
+      bar3,bar4
+    END_CSV
+    expected_csv = expected_csv.lines.map{|line| line.lstrip}.join
+
+    get :original_data, :format => 'csv', :id => eval.id
+    assert_equal expected_csv, response.body
+
+    # test tsv
+    expected_tsv = <<-END_TSV
+      foo1\tfoo2
+      bar1\tbar2
+      bar3\tbar4
+    END_TSV
+    expected_tsv = expected_tsv.lines.map{|line| line.lstrip}.join
+
+    get :original_data, :format => 'tsv', :id => eval.id
+    assert_equal expected_tsv, response.body
+  end  
 end

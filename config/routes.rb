@@ -17,6 +17,7 @@ ClockworkRaven::Application.routes.draw do
     resources :tasks
 
     member do
+      get 'original_data'
       get 'random_task'
       post 'submit'
       post 'purge'

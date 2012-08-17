@@ -114,7 +114,7 @@
       = link_to 'Close Evaluation', close_evaluation_path(@evaluation),
                 :class => 'btn btn-primary', :method => 'post',
                 :confirm => "Are you sure? All tasks will be closed and no more MTurk users will be able to complete tasks."
-
+    
     - if [:closed, :approved, :purged].include? @evaluation.status_name
       %p
         %b Number of results:
@@ -131,6 +131,17 @@
             = link_to 'TSV', evaluation_task_responses_path(@evaluation, :format => 'tsv')
             = link_to 'CSV', evaluation_task_responses_path(@evaluation, :format => 'csv')
             = link_to 'JSON', evaluation_task_responses_path(@evaluation, :format => 'json')
+       
+    - unless @evaluation.tasks.empty?     
+      .btn-group
+        %a.btn.dropdown-toggle{:href => '#', 'data-toggle' => 'dropdown'}
+          Download Original Data
+          %span.caret
+        %ul.dropdown-menu
+          %li
+            = link_to 'TSV', original_data_evaluation_path(@evaluation, :format => 'tsv')
+            = link_to 'CSV', original_data_evaluation_path(@evaluation, :format => 'csv')
+            = link_to 'JSON', original_data_evaluation_path(@evaluation, :format => 'json')            
 
     - if @evaluation.status_name == :closed
       = link_to 'Approve All Unapproved Responses', approve_all_evaluation_path(@evaluation),

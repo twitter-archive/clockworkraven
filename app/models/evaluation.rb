@@ -330,6 +330,16 @@ class Evaluation < ActiveRecord::Base
     return 0 if median == 0
     (1.0/median) * (60.0*60.0) * self.payment
   end
+  
+  # Array of the names of the columns in the original data file.
+  # For example, ["tweet_id", "username", "score"]
+  def original_data_column_names
+     if self.tasks.empty? 
+       []
+     else 
+       self.tasks.first.data.keys
+     end
+  end
 
   private
 
