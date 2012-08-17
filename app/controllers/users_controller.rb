@@ -14,7 +14,7 @@
 
 class UsersController < ApplicationController
   # Updating an account is only allowed with the password auth system.
-  before_filter :require_password_auth, :except => :show
+  before_filter :require_password_auth, :except => [:show, :reset_key]
 
   private
 
@@ -52,6 +52,19 @@ class UsersController < ApplicationController
         format.html { redirect_to account_path, :notice => 'Account was successfully updated.' }
       else
         format.html { render :action => "edit" }
+      end
+    end
+  end
+
+  # POST /account/reset_key
+  def reset_key
+    current_user.generate_key
+
+    respond_to do |format|
+      if current_user.save
+        format.html { redirect_to account_path, :notice => 'Your API key has been reset.' }
+      else
+        format.html { redirect_to account_path, :error => 'Could not reset API key.' }
       end
     end
   end
