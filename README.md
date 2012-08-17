@@ -140,6 +140,23 @@ Thanks for assistance and contributions:
 * Edwin Chen, [@echen](https://twitter.com/echen)
 * Dave Buchfuhrer [@daveFNbuck](https://twitter.com/daveFNbuck)
 
+## Versioning
+
+The current version is in the VERSION file and accessible in the code as
+ClockworkRaven::VERSION. Releases will be tagged with their release number in
+git.
+
+Clockwork Raven uses [semantic versioning](http://semver.org). Basically,
+this means that versions will be of the form X.Y.Z, where X is the major version
+(incremented when backwards-incompatible changes are introduced), Y is the minor
+version (incremented when backwards-compatible features are introduced), and X
+is the patch number (incremented when backwards-compatible bug fixes are
+introduced). Note however, that these are only hard rules once Clockwork Raven
+reaches 1.x. Until then, we will do our best to adhere to these policies
+(particularly with regards to not introducing backwards-incompatible changes in
+patch releases), but we may make backwards-incompatible changes while only
+incrementing the minor version number.
+
 ## License
 
 Copyright 2012 Twitter, Inc.
