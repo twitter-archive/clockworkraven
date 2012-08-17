@@ -31,6 +31,58 @@ class TaskResponsesController < ApplicationController
       render :json => {:status => "Forbidden"}, :status => 403
     end
   end
+  
+  def responses_csv(sep = ',')
+    CSV.generate(:col_sep => sep) do |csv|
+      # Pull out the fields that were uploaded with the original data,
+      # so that we can output these along with the task responses.
+      orig_fields_keys = if @task_responses.empty? 
+                           []
+                         else 
+                           @task_responses.first.task.data.keys
+                         end
+
+      # As a slightly hacky way of dealing with metadata, Clockwork Raven stores
+      # these metadata as MC questions in the eval. This pulls out the
+      # _true_ MC questions (i.e., questions that aren't metadata), so that we
+      # don't doubly output any fields that were uploaded with the original data.
+      real_mc_questions = @eval.mc_questions.select{|mc_q| !mc_q.metadata }
+                               
+      # headers
+      csv << orig_fields_keys + 
+             (real_mc_questions + @eval.fr_questions).map{|q| q.label} +
+             ["MTurk User", "Work Duration", "Approval"]
+
+      @task_responses.each do |task_response|
+        # build the row
+        row = []
+
+        # Fields from the original data file.
+        orig_fields_keys.each do |k|
+          row.push(task_response.task.data[k])
+        end
+
+        # MC Questions
+        real_mc_questions.each do |mc_q|
+          option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id]
+          mc_q_resp = option_id.nil? ? nil : @data[:mcQuestionOptions][option_id][:label]
+          row.push(mc_q_resp.nil? ? nil : mc_q_resp)
+        end
+
+        # FR Questions
+        @eval.fr_questions.each do |fr_q|
+          fr_q_resp = @data[:responses][task_response.id][:frQuestions][fr_q.id]
+          row.push(fr_q_resp.nil? ? nil : fr_q_resp)
+        end
+
+        row.push(task_response.m_turk_user_id)
+        row.push(task_response.work_duration)
+        row.push(task_response.approved)
+
+        csv << row
+      end
+    end
+  end  
 
   public
 
@@ -161,57 +213,5 @@ class TaskResponsesController < ApplicationController
     @response.reject!
     expire_action(:action => 'index', :evaluation_id => @response.task.evaluation)
     render :json => {:status => "Rejected"}
-  end
-
-  def responses_csv(sep = ',')
-    CSV.generate(:col_sep => sep) do |csv|
-      # Pull out the fields that were uploaded with the original data,
-      # so that we can output these along with the task responses.
-      orig_fields_keys = if @task_responses.empty? 
-                           []
-                         else 
-                           @task_responses.first.task.data.keys
-                         end
-
-      # As a slightly hacky way of dealing with metadata, Clockwork Raven stores
-      # these metadata as MC questions in the eval. This pulls out the
-      # _true_ MC questions (i.e., questions that aren't metadata), so that we
-      # don't doubly output any fields that were uploaded with the original data.
-      real_mc_questions = @eval.mc_questions.select{|mc_q| !mc_q.metadata }
-                               
-      # headers
-      csv << orig_fields_keys + 
-             (real_mc_questions + @eval.fr_questions).map{|q| q.label} +
-             ["MTurk User", "Work Duration", "Approval"]
-
-      @task_responses.each do |task_response|
-        # build the row
-        row = []
-
-        # Fields from the original data file.
-        orig_fields_keys.each do |k|
-          row.push(task_response.task.data[k])
-        end
-
-        # MC Questions
-        real_mc_questions.each do |mc_q|
-          option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id]
-          mc_q_resp = option_id.nil? ? nil : @data[:mcQuestionOptions][option_id][:label]
-          row.push(mc_q_resp.nil? ? nil : mc_q_resp)
-        end
-
-        # FR Questions
-        @eval.fr_questions.each do |fr_q|
-          fr_q_resp = @data[:responses][task_response.id][:frQuestions][fr_q.id]
-          row.push(fr_q_resp.nil? ? nil : fr_q_resp)
-        end
-
-        row.push(task_response.m_turk_user_id)
-        row.push(task_response.work_duration)
-        row.push(task_response.approved)
-
-        csv << row
-      end
-    end
   end
 end
