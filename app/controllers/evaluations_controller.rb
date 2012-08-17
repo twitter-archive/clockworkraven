@@ -44,6 +44,18 @@ class EvaluationsController < ApplicationController
       redirect_to job_path(@evaluation.job)
     end
   end
+  
+  # Creates a CSV (with header) of the original uploaded data file.
+  def original_data_csv(sep = ',')
+    CSV.generate(:col_sep => sep) do |csv|
+      header = @evaluation.original_data_column_names
+      csv << header
+      
+      @evaluation.tasks.each do |task|
+        csv << header.map{ |col| task.data[col] }
+      end
+    end
+  end  
 
   public
 
@@ -195,17 +207,6 @@ class EvaluationsController < ApplicationController
                                                  :disposition => 'attachment',
                                                  :layout => false
       }      
-    end
-  end
-  
-  def original_data_csv(sep = ',')
-    CSV.generate(:col_sep => sep) do |csv|
-      header = @evaluation.original_data_column_names
-      csv << header
-      
-      @evaluation.tasks.each do |task|
-        csv << header.map{ |col| task.data[col] }
-      end
     end
   end
 
