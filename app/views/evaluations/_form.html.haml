@@ -125,9 +125,8 @@
       %span.label-help Amount payed to MTurk workers for each task, in cents
     .controls
       .input-prepend
-        %span.add-on
-          $0.
         = f.number_field :payment
+        %span.add-on &cent;
 
   .control-group
     %label.control-label{:for => 'evaluation_duration'}
