@@ -234,7 +234,7 @@ module MTurkUtils
           question_response = response.fr_question_responses.build
 
           if answer_content.blank?
-            answer_content = "No reponse given"
+            answer_content = "No response given"
           end
 
           question_response.response = answer_content
