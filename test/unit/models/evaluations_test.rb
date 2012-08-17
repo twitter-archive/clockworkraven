@@ -126,6 +126,17 @@ class EvaluationsTest < ActiveSupport::TestCase
     assert_equal expected_task_1_data, eval.tasks.first.data, "Task 1 data incorrect"
     assert_equal expected_task_2_data, eval.tasks.second.data, "Task 2 data incorrect"
   end
+  
+  test "original data column names" do
+    eval = create :evaluation
+
+    assert_equal 0, eval.original_data_column_names.size, "Column names for eval without data incorrect"
+    
+    eval.add_data(parse_json_fixture('data1.json'))
+    expected_column_names = %w(foo1 foo2)
+    
+    assert_equal expected_column_names, eval.original_data_column_names, "Column names for eval incorrect"
+  end  
 
   test "random task" do
     eval = create :evaluation_with_tasks, :task_count => 2
