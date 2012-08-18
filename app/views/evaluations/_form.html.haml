@@ -125,9 +125,8 @@
       %span.label-help Amount payed to MTurk workers for each task, in cents
     .controls
       .input-prepend
-        %span.add-on
-          $0.
         = f.number_field :payment
+        %span.add-on &cent;
 
   .control-group
     %label.control-label{:for => 'evaluation_duration'}
@@ -135,11 +134,11 @@
         Duration
       %br
       %span.label-help
-        Amount of time, in seconds, a worker has to complete this task before
+        Amount of time, in minutes, a worker has to complete this task before
         it can be given to someone else
     .controls
       .input-append
-        = f.number_field :duration
+        = f.number_field :duration_in_minutes
         = render :partial => 'time_buttons'
 
   .control-group
@@ -148,11 +147,11 @@
         Lifetime
       %br
       %span.label-help
-        Amount of time, in seconds, this evaluation will be available on MTurk
+        Amount of time, in minutes, this evaluation will be available on MTurk
         after it is submitted
     .controls
       .input-append
-        = f.number_field :lifetime
+        = f.number_field :lifetime_in_minutes
         = render :partial => 'time_buttons'
 
   .control-group
@@ -162,11 +161,11 @@
       %br
       %span.label-help
         Tasks will be automatically approved after this amount of time, in
-        seconds, unless you explicitly approve or reject the worker's
+        minutes, unless you explicitly approve or reject the worker's
         response
     .controls
       .input-append
-        = f.number_field :auto_approve
+        = f.number_field :auto_approve_in_minutes
         = render :partial => 'time_buttons'
 
   .form-actions

@@ -164,7 +164,7 @@ class CloseProcessorTest < ActiveSupport::TestCase
                                            first.id
     ).first
 
-    # free-reponse questions
+    # free-response questions
     assert_not_nil FRQuestionResponse.where(
       :task_response_id => response_1.id,
       :fr_question_id => fr1.id,
@@ -218,7 +218,7 @@ class CloseProcessorTest < ActiveSupport::TestCase
                                            first.id
     ).first
 
-    # free-reponse questions
+    # free-response questions
     assert_not_nil FRQuestionResponse.where(
       :task_response_id => response_2.id,
       :fr_question_id => fr1.id,
@@ -272,7 +272,7 @@ class CloseProcessorTest < ActiveSupport::TestCase
                                            first.id
     ).first
 
-    # free-reponse questions
+    # free-response questions
     assert_not_nil FRQuestionResponse.where(
       :task_response_id => response_3.id,
       :fr_question_id => fr1.id,
