@@ -141,6 +141,20 @@ class Evaluation < ActiveRecord::Base
 
   validates :mturk_qualification, :inclusion => { :in => %w(none trusted master) }
 
+  # Creates accessors for time fields that converts between seconds and minutes
+  # These fields are accessible through :field_in_minutes
+  def self.minutes_accessor(*args)
+    args.each do |a|
+      class_eval do
+        name = a.to_s + "_in_minutes"
+        define_method(name) { self[a] / 60 }
+        define_method(name + "=") { |min| self[a] = min.to_i * 60 }
+      end
+    end
+  end
+
+  minutes_accessor :duration, :lifetime, :auto_approve
+
   # Given an array of objects, add a Task to this evaluation for each element
   # of the array
   #
@@ -231,24 +245,6 @@ class Evaluation < ActiveRecord::Base
     end
 
     return e
-  end
-
-  # Creates accessors for time fields that convert from seconds to minutes
-  # These fields are accessible through :field_in_minutes
-  def self.minutes_accessor(*args)
-    args.each do |a|
-      class_eval do
-        name = a.to_s + "_in_minutes"
-        define_method(name) { self[a] / 60 }
-        define_method(name + "=") { |min| self[a] = min.to_i * 60}
-      end
-    end
-  end
-
-  minutes_accessor :duration, :lifetime, :auto_approve
-
-  def duration_in_minutes=(minutes)
-    self.duration = minutes.to_i * 60
   end
 
   # Registers this evaluation as a HIT Type on MTurk, then submits all
