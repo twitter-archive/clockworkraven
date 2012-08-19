@@ -85,7 +85,7 @@ create accounts for themselves.
 
        **Password Authentication**
 
-       If you can't use an LDAP server, you can configure Clockwork Raven use
+       If you can't use an LDAP server, you can configure Clockwork Raven to use
        "password authentication," which will allow you to manually create
        accounts. Copy config/auth.example_password.yml to config/auth.yml. Then,
        you can create accounts by running "rake users:add" and change passwords
@@ -125,7 +125,7 @@ We would love any help adding ideas or implementing them!
 
 ## Contributing
 
-To contribute to Clockwork Raven, fork the repo and, make your changes, and
+To contribute to Clockwork Raven, fork the repo, make your changes, and
 submit a pull request. All pull requests should be against `*-wip` branches.
 Nothing gets committed/merged directly to master. To merge your pull request,
 you'll need to include appropriate documentation and tests. Get in touch if you
