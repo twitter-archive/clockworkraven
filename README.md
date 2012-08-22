@@ -13,9 +13,9 @@ Clockwork Raven is designed for individuals, or organizations that share a
 single Mechanical Turk account. It allows users to authenticate with LDAP or
 with accounts created through Clockwork Raven. Users can then upload data,
 design forms to send to Mechanical Turk through a simple, drag-and-drop
-interface, submit these forms to Mechanical Turk and review the results.
+interface, submit these forms to Mechanical Turk, and review the results.
 
-Administrators can separate users into "privileged" and "unprivileged"
+Administrators can separate users into "privileged" and "unprivileged" sets
 manually or based on LDAP groups. Unprivileged uses are not allowed to spend
 money, but can submit evaluations to the Mechanical Turk sandbox to test out
 the system, and can design evaluations and ask a privileged user to submit
@@ -28,14 +28,14 @@ as Trusted in Clockwork Raven.
 
 ### What it is not good for
 
-Clockwork Raven is designed for situations where **everyone who as access to
+Clockwork Raven is designed for situations where **everyone who has access to
 the system is relatively trusted.** Because the form designer allows users to
 use arbitrary HTML, anyone with access to the system could execute an
 [XSS](http://en.wikipedia.org/wiki/Cross-site_scripting) attack and compromise
 the system.
 
 However, Clockwork Raven will not give access to users unless they are part of
-white-listed LDAP groups or have been explicitly grated access. Users cannot
+white-listed LDAP groups or have been explicitly granted access. Users cannot
 create accounts for themselves.
 
 ## Setup
@@ -45,14 +45,14 @@ create accounts for themselves.
     1. Make sure the machine that you're using has Ruby 1.9.3
        installed. The easiest way to install and manage Ruby is with
        [RVM](https://rvm.io/).
-    2. You'll need the RubyGem "bundler" installed, and then just run "bundle
-       install" from the Clockwork Raven directory to install all of the
+    2. You'll need the RubyGem "bundler" installed, and then just run `bundle
+       install` from the Clockwork Raven directory to install all of the
        libraries needed by Clockwork Raven.
     3. Clockwork Raven uses [Resque](https://github.com/defunkt/resque/) to run
        tasks in the background. Resque requires a Redis server -- see
        [Resque's instructions for installing Redis](https://github.com/defunkt/resque/#installing-redis).
        By default Clockwork Raven assumes your Redis server is running on
-       `localhost:6379`. If this isn't the case, edit config/resque.yml.
+       `localhost:6379`. If this isn't the case, edit `config/resque.yml`.
     4. In a production environment (e.g. any environment where Clockwork
        Raven will be accessible to users), it should be run over SSL to protect
        users' credentials when they log in. If you don't use SSL, these
@@ -83,12 +83,12 @@ create accounts for themselves.
 
        If you can't use an LDAP server, you can configure Clockwork Raven to use
        "password authentication," which will allow you to manually create
-       accounts. Copy config/auth.example_password.yml to config/auth.yml. Then,
+       accounts. Copy `config/auth.example_password.yml` to `config/auth.yml`. Then,
        you can create accounts by running "rake users:add" and change passwords
-       with "rake users:change_password". Note that you will need to set up your
+       with `rake users:change_password`. Note that you will need to set up your
        database (explained below) before using these rake tasks.
 4. Set up the database. If the databases you configured Clockwork Raven to use in
-   config/database.yml do not exist, run `rake db:create` to create them.
+   `config/database.yml` do not exist, run `rake db:create` to create them.
    Then, run `rake db:structure:load` to load the database structure into your
    database.
 5. Start up the background workers. Just
