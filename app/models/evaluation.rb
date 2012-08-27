@@ -167,6 +167,20 @@ class Evaluation < ActiveRecord::Base
     end
   end
 
+  # Same as add_data but returns a list of Tasks corresponding to the argument data
+  def add_data_and_return_tasks data
+    data.map do |item|
+      task = self.tasks.build :data => item
+      task.save!
+      task
+    end
+  end
+
+  # Adds a single Task to this evaluation and returns that Task
+  def add_element_and_return_task element
+    add_data_and_return_tasks([element]).first
+  end
+
   # Returns a random task that belongs to this Evaluation
   def random_task
     # special-case this: rand(0) gives a floating point between 0 and 1
