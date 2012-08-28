@@ -120,11 +120,29 @@ class EvaluationsTest < ActiveSupport::TestCase
       "foo2" => "bar4"
     }
 
-    eval.add_data(parse_json_fixture('data1.json'))
+    tasks = eval.add_data(parse_json_fixture('data1.json'))
 
-    assert_equal 2, eval.tasks.size, "didn't add 2 Tasks"
-    assert_equal expected_task_1_data, eval.tasks.first.data, "Task 1 data incorrect"
-    assert_equal expected_task_2_data, eval.tasks.second.data, "Task 2 data incorrect"
+    assert_equal 2, eval.tasks.size, "didn't add 2 Tasks to the Evaluation"
+    assert_equal expected_task_1_data, eval.tasks.first.data, "Evaluation's Task 1 data incorrect"
+    assert_equal expected_task_2_data, eval.tasks.second.data, "Evaluation's Task 2 data incorrect"
+    assert_equal 2, tasks.size, "didn't return 2 Tasks"
+    assert_equal expected_task_1_data, tasks.first.data, "Returned Task 1 data incorrect"
+    assert_equal expected_task_2_data, tasks.second.data, "Returned Task 2 data incorrect"
+  end
+
+  test "add element" do
+    eval = create :evaluation
+
+    expected_task_data = {
+      "foo1" => "bar1",
+      "foo2" => "bar2"
+    }
+
+    task = eval.add_element(expected_task_data)
+
+    assert_equal expected_task_data, task.data
+    assert_equal 1, eval.tasks.size
+    assert_equal expected_task_data, eval.tasks.first.data
   end
   
   test "original data column names" do
