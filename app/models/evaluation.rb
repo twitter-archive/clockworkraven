@@ -156,15 +156,21 @@ class Evaluation < ActiveRecord::Base
   minutes_accessor :duration, :lifetime, :auto_approve
 
   # Given an array of objects, add a Task to this evaluation for each element
-  # of the array
+  # of the array and return the corresponding array of Tasks
   #
   # Each element of the array should be a Hash. That Hash will be stored in the
   # Task's "data" property.
   def add_data data
-    data.each do |item|
+    data.map do |item|
       task = self.tasks.build :data => item
       task.save!
+      task
     end
+  end
+
+  # Adds a single Task to this evaluation and returns that Task
+  def add_element element
+    add_data([element]).first
   end
 
   # Returns a random task that belongs to this Evaluation
