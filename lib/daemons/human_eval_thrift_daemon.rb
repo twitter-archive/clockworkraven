@@ -1,3 +1,17 @@
+# Copyright 2012 Twitter, Inc. and others.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 #!/usr/bin/env ruby
 
 require File.dirname(__FILE__) + "/../../config/application"
@@ -23,20 +37,16 @@ class HumanEvalTaskManagerHandler
     task = submit_task_params.task
     do_submit_to_production = submit_task_params.doSubmitToProduction
 
-    task_type = task.humanEvalTaskType
     field_values_map = task.fieldValuesMap
 
-    begin
-      evaluation = Evaluation.find_by_name(task_type)
-    rescue => e
-      raise HumanEvalException.new("No evaluation exists with the given name")
-    end
+    evaluation = Evaluation.find_by_name(task.humanEvalTaskType)
+    raise HumanEvalException.new("No Evaluation exists with the given name: #{task.humanEvalTaskType}") if evaluation.nil?
 
-    task = evaluation.add_element(field_values_map)
-    MTurkUtils.mturk(evaluation).submit_task(task)
+    new_task_to_submit = evaluation.add_element(field_values_map)
+    MTurkUtils.submit_task(new_task_to_submit)
 
     response = HumanEvalSubmitTaskResponse.new
-    response.taskId = task.id
+    response.taskId = new_task_to_submit.id
     response
   end
 
@@ -47,25 +57,21 @@ class HumanEvalTaskManagerHandler
 
     task_id_results_map = fetch_annotation_params.taskIdList.inject({}) do |result, task_id|
       task_result = HumanEvalTaskResult.new
-      begin
-        task = Task.find(task_id)
-        evaluation = Evaluation.find(task.evaluation_id)
-        assignment = MTurkUtils.mturk(evaluation).getAssignmentsForHIT(evaluation.mturk_hit_type => task.mturk_hit)[:Assignment]
-      rescue => e
+
+      task = Task.find_by_id(task_id)
+      raise HumanEvalException.new("No Task exists with the given Task ID: #{task_id}") if task.nil?
+
+      assignment = MTurkUtils.fetch_assignment_for_task(task)
+      task_result.humanEvalTaskResultMap = assignment[:Answer]
+      status = assignment[:AssignmentStatus]
+      if assignment.nil? or status == 'Submitted'
+        task_result.status = TaskStatus.PENDING
+      elsif status == 'Approved'
+        task_result.status = TaskStatus.COMPLETE
+      elsif status == 'Rejected'
         task_result.status = TaskStatus.INVALID
       end
-      if task_result.status != TaskStatus.INVALID
-        task_result.humanEvalTaskResultMap = assignment[:Answer]
-        status = assignment[:AssignmentStatus]
-        case status
-        when 'Submitted'
-          task_result.status = TaskStatus.PENDING
-        when 'Approved'
-          task_result.status = TaskStatus.COMPLETE
-        when 'Rejected'
-          task_result.status = TaskStatus.INVALID
-        end
-      end
+
       result[task_id] = task_result
       result
     end
@@ -83,5 +89,5 @@ class HumanEvalTaskManagerHandler
 end
 
 handler = HumanEvalTaskManagerHandler.new()
-Rails.logger.info "Starting the Human Eval thrift server at #{Time.now}...\n"
+Rails.logger.info "Starting the Human Eval thrift server daemon at #{Time.now}...\n"
 handler.serve()

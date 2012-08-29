@@ -258,6 +258,13 @@ module MTurkUtils
       response.save!
     end
 
+    # Gets the assignment (contains completion status, answers, other info) for a given Task
+    # More info on the assignment data structure here:
+    # http://docs.amazonwebservices.com/AWSMechTurk/2007-06-21/AWSMechanicalTurkRequester/ApiReference_AssignmentDataStructureArticle.html
+    def fetch_assignment_for_task task
+      mturk(task.evaluation).getAssignmentsForHIT(task.evaluation.mturk_hit_type => task.mturk_hit)[:Assignment]
+    end
+
     # Expires a task, so mturk works can no longer complete it
     def force_expire task
       hit_id = task.mturk_hit
