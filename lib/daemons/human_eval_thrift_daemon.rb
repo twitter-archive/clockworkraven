@@ -35,14 +35,12 @@ class HumanEvalTaskManagerHandler
   def submitTask(submit_task_params)
     return nil if submit_task_params.nil?
     task = submit_task_params.task
-    do_submit_to_production = submit_task_params.doSubmitToProduction
-
     field_values_map = task.fieldValuesMap
 
     evaluation = Evaluation.find_by_name(task.humanEvalTaskType)
     raise HumanEvalException.new("No Evaluation exists with the given name: #{task.humanEvalTaskType}") if evaluation.nil?
 
-    new_task_to_submit = evaluation.add_element(field_values_map)
+    new_task_to_submit = evaluation.add_task(field_values_map)
     MTurkUtils.submit_task(new_task_to_submit)
 
     response = HumanEvalSubmitTaskResponse.new
