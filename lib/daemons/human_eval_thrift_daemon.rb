@@ -60,14 +60,18 @@ class HumanEvalTaskManagerHandler
       raise HumanEvalException.new("No Task exists with the given Task ID: #{task_id}") if task.nil?
 
       assignment = MTurkUtils.fetch_assignment_for_task(task)
-      task_result.humanEvalTaskResultMap = assignment[:Answer]
-      status = assignment[:AssignmentStatus]
-      if assignment.nil? or status == 'Submitted'
+      if assignment.nil?
         task_result.status = TaskStatus.PENDING
-      elsif status == 'Approved'
-        task_result.status = TaskStatus.COMPLETE
-      elsif status == 'Rejected'
-        task_result.status = TaskStatus.INVALID
+      else
+        task_result.humanEvalTaskResultMap = assignment[:Answer]
+        case assignment[:AssignmentStatus]
+        when 'Submitted'
+          task_result.status = TaskStatus.PENDING
+        when 'Approved'
+          task_result.status = TaskStatus.COMPLETE
+        when 'Rejected'
+          task_result.status = TaskStatus.INVALID
+        end
       end
 
       result[task_id] = task_result
