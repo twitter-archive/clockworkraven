@@ -61,9 +61,10 @@ class HumanEvalTaskManagerHandler
 
       assignment = MTurkUtils.fetch_assignment_for_task(task)
       if assignment.nil?
+        task_result.humanEvalTaskResultMap = {}
         task_result.status = TaskStatus.PENDING
       else
-        task_result.humanEvalTaskResultMap = assignment[:Answer]
+        task_result.humanEvalTaskResultMap = MTurkUtils.assignment_results_to_hash(assignment)
         case assignment[:AssignmentStatus]
         when 'Submitted'
           task_result.status = TaskStatus.PENDING
