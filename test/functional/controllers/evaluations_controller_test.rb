@@ -242,7 +242,7 @@ class EvaluationsControllerTest < ActionController::TestCase
     end
   end
 
-  test "update add data" do
+  test "update add tasks" do
     # create an eval with the data from task1.json
     e = create :evaluation
     e.add_tasks parse_json_fixture('data1.json')
