@@ -51,6 +51,34 @@ body > .container {
 
 .thumbnail img {
   border-radius: 3px;
+  filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
+  filter: gray; /* IE6-9 */
+  -webkit-filter: grayscale(1); /* Google Chrome & Safari 6+ */
+  transition: filter 0.5s;
+  -webkit-transition: -webkit-filter 0.5s;
+}
+
+.thumbnail:hover img {
+  filter: none;
+  -webkit-filter: grayscale(0);
+}
+
+a.thumbnail {
+  transition: border-color 0.5s;
+  -webkit-transition: border-color 0.5s;
+}
+
+a {
+  color: black;
+  text-decoration: underline;
+}
+
+a.btn, a.brand {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
 }
 
 .section-header {
@@ -141,3 +169,4 @@ body > .container {
   }
 
 }
+
