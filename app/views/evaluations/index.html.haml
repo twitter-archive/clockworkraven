@@ -16,7 +16,7 @@
 
 = link_to 'Create New Evaluation', new_evaluation_path, :class => 'btn btn-primary'
 
-%table.table
+%table.table{ :id => "evaluations_table", :class => "display" }
   %thead
     %tr
       %th Name
@@ -24,6 +24,7 @@
       %th Status
       %th Creator
       %th Created At
+      %th
       %th
       %th
   %tbody
@@ -38,4 +39,8 @@
         %td= link_to 'Copy', new_evaluation_path(:based_on => evaluation.id), :class => 'btn btn-success'
         %td= link_to 'Remove', evaluation, :method => :delete, :class => 'btn btn-danger',
           :confirm => "Are you sure you want to remove this evaluation from Clockwork Raven? This does not close the evaluation or remove it from Mechanical Turk."
-= will_paginate @evaluations
+
+:javascript
+  $(document).ready( function () {
+      $('#evaluations_table').dataTable( {"sPaginationType": "full_numbers"} ).fnSort( [[4, 'desc']] );
+  } );

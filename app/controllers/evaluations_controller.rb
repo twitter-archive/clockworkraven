@@ -44,24 +44,24 @@ class EvaluationsController < ApplicationController
       redirect_to job_path(@evaluation.job)
     end
   end
-  
+
   # Creates a CSV (with header) of the original uploaded data file.
   def original_data_csv(sep = ',')
     CSV.generate(:col_sep => sep) do |csv|
       header = @evaluation.original_data_column_names
       csv << header
-      
+
       @evaluation.tasks.each do |task|
         csv << header.map{ |col| task.data[col] }
       end
     end
-  end  
+  end
 
   public
 
   # GET /evaluations
   def index
-    @evaluations = Evaluation.page(params[:page]).order('id DESC')
+    @evaluations = Evaluation.order('id DESC')
 
     respond_to do |format|
       format.html # index.html.haml
@@ -189,10 +189,10 @@ class EvaluationsController < ApplicationController
       format.html { redirect_to evaluations_url }
     end
   end
-  
+
   def original_data
     @data = @evaluation.tasks.map{ |task| task.data }
-    
+
     respond_to do |format|
       format.json { render :json => @data }
       format.csv {
@@ -206,7 +206,7 @@ class EvaluationsController < ApplicationController
                                                  :filename => 'original_data.tsv',
                                                  :disposition => 'attachment',
                                                  :layout => false
-      }      
+      }
     end
   end
 
