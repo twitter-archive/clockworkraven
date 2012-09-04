@@ -163,7 +163,8 @@ module MTurkUtils
       if eval.mturk_qualification_type != nil
         props[:QualificationRequirement] = [{
           :QualificationTypeId => eval.mturk_qualification_type,
-          :Comparator => 'Exists'
+          :Comparator => 'Exists',
+          :RequiredToPreview => true          
         }]
       end
 
