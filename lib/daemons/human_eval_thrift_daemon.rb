@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ENV['RAILS_ENV'] = 'devprod'
-
 require File.dirname(__FILE__) + "/../../config/application"
 Rails.application.require_environment!
 
