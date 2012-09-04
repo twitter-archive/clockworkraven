@@ -140,7 +140,7 @@ CREATE TABLE `clockwork_raven_tasks` (
   PRIMARY KEY (`id`),
   KEY `evaluation_id` (`evaluation_id`),
   CONSTRAINT `clockwork_raven_tasks_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `clockwork_raven_evaluations` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

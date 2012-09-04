@@ -11,6 +11,7 @@ enum TaskStatus {
 // Structure to represent human eval task information.
 struct HumanEvalTask {
   // Type of task to be run.
+  // This is the name field of the Evaluation and is used as a unique identifier.
   1: required string humanEvalTaskType;
   // Each human eval task type is associated with an MTurk template. This is a
   // map of fields to their values to be used when filling the task template.

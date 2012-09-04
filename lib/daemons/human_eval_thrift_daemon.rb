@@ -39,6 +39,7 @@ class HumanEvalTaskManagerHandler
     task = submit_task_params.task
     field_values_map = task.fieldValuesMap
 
+    # Evaluations are identified by their names, which are currently unique
     evaluation = Evaluation.find_by_name(task.humanEvalTaskType)
     raise HumanEvalException.new("No Evaluation exists with the given name: #{task.humanEvalTaskType}") if evaluation.nil?
 
@@ -66,13 +67,13 @@ class HumanEvalTaskManagerHandler
         task_result.status = TaskStatus::PENDING
       else
         task_result.humanEvalTaskResultMap = MTurkUtils.assignment_results_to_hash(assignment)
-        case assignment[:AssignmentStatus]
+        task_result.status = case assignment[:AssignmentStatus]
         when 'Submitted'
-          task_result.status = TaskStatus::PENDING
+          TaskStatus::PENDING
         when 'Approved'
-          task_result.status = TaskStatus::COMPLETE
+          TaskStatus::COMPLETE
         when 'Rejected'
-          task_result.status = TaskStatus::INVALID
+          TaskStatus::INVALID
         end
       end
 
