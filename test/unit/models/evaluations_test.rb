@@ -294,7 +294,8 @@ class EvaluationsTest < ActiveSupport::TestCase
       :AutoApprovalDelayInSeconds => eval.auto_approve,
       :QualificationRequirement => [{
         :Comparator => 'Exists',
-        :QualificationTypeId => eval.mturk_qualification_type
+        :QualificationTypeId => eval.mturk_qualification_type,
+        :RequiredToPreview => true
       }]
     }).returns({
       :HITTypeId => 'ABCDEFG'
