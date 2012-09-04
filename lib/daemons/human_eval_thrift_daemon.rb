@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 # Copyright 2012 Twitter, Inc. and others.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/usr/bin/env ruby
+ENV['RAILS_ENV'] = 'devprod'
 
 require File.dirname(__FILE__) + "/../../config/application"
 Rails.application.require_environment!
@@ -53,7 +55,7 @@ class HumanEvalTaskManagerHandler
   def fetchAnnotations(fetch_annotation_params)
     return nil if fetch_annotation_params.nil? or fetch_annotation_params.taskIdList.nil?
 
-    task_id_results_map = fetch_annotation_params.taskIdList.inject({}) do |result, task_id|
+    task_id_results_map = fetch_annotation_params.taskIdList.each_with_object({}) do |task_id, result|
       task_result = HumanEvalTaskResult.new
 
       task = Task.find_by_id(task_id)
@@ -61,22 +63,20 @@ class HumanEvalTaskManagerHandler
 
       assignment = MTurkUtils.fetch_assignment_for_task(task)
       if assignment.nil?
-        task_result.humanEvalTaskResultMap = {}
-        task_result.status = TaskStatus.PENDING
+        task_result.status = TaskStatus::PENDING
       else
         task_result.humanEvalTaskResultMap = MTurkUtils.assignment_results_to_hash(assignment)
         case assignment[:AssignmentStatus]
         when 'Submitted'
-          task_result.status = TaskStatus.PENDING
+          task_result.status = TaskStatus::PENDING
         when 'Approved'
-          task_result.status = TaskStatus.COMPLETE
+          task_result.status = TaskStatus::COMPLETE
         when 'Rejected'
-          task_result.status = TaskStatus.INVALID
+          task_result.status = TaskStatus::INVALID
         end
       end
 
       result[task_id] = task_result
-      result
     end
 
     response = HumanEvalFetchAnnotationResponse.new

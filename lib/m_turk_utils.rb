@@ -268,12 +268,12 @@ module MTurkUtils
     # another method that does what this method does but includes meta-info that fetch_results
     # needs and then this method can filter it.
     def assignment_results_to_hash assignment
-      return {} if assignment.nil? or assignment[:Assignment].nil?
+      return {} if assignment.nil?
 
-      answers = Hash.from_xml(assignments[:Assignment][:Answer])["QuestionFormAnswers"]["Answer"]
+      answers = Hash.from_xml(assignment[:Answer])["QuestionFormAnswers"]["Answer"]
       answers = [answers] if not answers.kind_of? Array
 
-      answers.inject({}) do |curr_answers_hash, answer|
+      answers.each_with_object({}) do |answer, curr_answers_hash|
         question_type, question_id = answer['QuestionIdentifier'].split(':')
         answer_content = answer['FreeText']
 
@@ -288,9 +288,9 @@ module MTurkUtils
           answer_key, answer_value = mc_question_option.mc_question.label, mc_question_option.label
         end
        
-        next if answer_key.nil? or answer_value.nil?
+        next if answer_key.nil?
+        answer_value = "No response given" if answer_value.nil?
         curr_answers_hash[answer_key] = answer_value
-        curr_answers_hash
       end
     end
 
@@ -298,7 +298,7 @@ module MTurkUtils
     # More info on the assignment data structure here:
     # http://docs.amazonwebservices.com/AWSMechTurk/2007-06-21/AWSMechanicalTurkRequester/ApiReference_AssignmentDataStructureArticle.html
     def fetch_assignment_for_task task
-      mturk(task.evaluation).getAssignmentsForHIT(task.evaluation.mturk_hit_type => task.mturk_hit)[:Assignment]
+      mturk(task.evaluation).getAssignmentsForHIT(:HITId => task.mturk_hit)[:Assignment]
     end
 
     # Expires a task, so mturk works can no longer complete it
