@@ -160,7 +160,7 @@ class Evaluation < ActiveRecord::Base
   #
   # Each element of the array should be a Hash. That Hash will be stored in the
   # Task's "data" property.
-  def add_data data
+  def add_tasks data
     data.map do |item|
       task = self.tasks.build :data => item
       task.save!
@@ -169,8 +169,9 @@ class Evaluation < ActiveRecord::Base
   end
 
   # Adds a single Task to this evaluation and returns that Task
-  def add_element element
-    add_data([element]).first
+  # data should be one hash, not an array of hashes as in add_tasks
+  def add_task data
+    add_tasks([data]).first
   end
 
   # Returns a random task that belongs to this Evaluation
