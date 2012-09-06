@@ -59,3 +59,4 @@ gem 'bcrypt-ruby', '~> 3.0.0', :require => 'bcrypt'
 # Use unicorn as the web server
 gem 'unicorn'
 
+gem 'thrift'

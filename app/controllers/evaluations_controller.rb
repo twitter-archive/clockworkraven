@@ -125,7 +125,7 @@ class EvaluationsController < ApplicationController
         success = @evaluation.save
 
         if success and data
-          @evaluation.add_data data
+          @evaluation.add_tasks data
         end
       end
     end
@@ -165,7 +165,7 @@ class EvaluationsController < ApplicationController
         end
 
         if data
-          @evaluation.add_data data
+          @evaluation.add_tasks data
         end
 
         success = @evaluation.save
