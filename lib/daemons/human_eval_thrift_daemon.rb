@@ -42,7 +42,7 @@ class HumanEvalTaskManagerHandler
     raise HumanEvalException.new("No Evaluation exists with the given name: #{task.humanEvalTaskType}") if evaluation.nil?
 
     new_task_to_submit = evaluation.add_task(field_values_map)
-    MTurkUtils.submit_task(new_task_to_submit)
+    MTurkUtils.submit_task(new_task_to_submit) if evaluation.prod? and submit_task_params.doSubmitToProduction
 
     response = HumanEvalSubmitTaskResponse.new
     response.taskId = new_task_to_submit.id
