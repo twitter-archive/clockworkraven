@@ -55,7 +55,7 @@ service HumanEvalTaskManager {
    HumanEvalSubmitTaskResponse submitTask(1: HumanEvalSubmitTaskParams params)
        throws (1: HumanEvalException hec)
 
-   // Fetches result for a list of human eval tasks.
+   // Fetches result for a set of human eval tasks.
    HumanEvalFetchAnnotationResponse fetchAnnotations(1: HumanEvalFetchAnnotationParams params)
        throws (1: HumanEvalException hec)
 }
