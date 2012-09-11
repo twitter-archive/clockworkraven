@@ -117,16 +117,16 @@ end
 
 class HumanEvalFetchAnnotationParams
   include ::Thrift::Struct, ::Thrift::Struct_Union
-  TASKIDLIST = 1
+  TASKIDSET = 1
 
   FIELDS = {
-    TASKIDLIST => {:type => ::Thrift::Types::LIST, :name => 'taskIdList', :element => {:type => ::Thrift::Types::I64}}
+    TASKIDSET => {:type => ::Thrift::Types::SET, :name => 'taskIdSet', :element => {:type => ::Thrift::Types::I64}}
   }
 
   def struct_fields; FIELDS; end
 
   def validate
-    raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Required field taskIdList is unset!') unless @taskIdList
+    raise ::Thrift::ProtocolException.new(::Thrift::ProtocolException::UNKNOWN, 'Required field taskIdSet is unset!') unless @taskIdSet
   end
 
   ::Thrift::Struct.generate_accessors self
