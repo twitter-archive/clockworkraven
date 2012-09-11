@@ -42,7 +42,7 @@ struct HumanEvalSubmitTaskResponse {
 
 // Structure to represent params to fetch annotations.
 struct HumanEvalFetchAnnotationParams {
-  1: required list<i64> taskIdList;
+  1: required set<i64> taskIdSet;
 }
 
 // Structure to represent reponse from fetch annotations.
