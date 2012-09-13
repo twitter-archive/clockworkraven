@@ -16,7 +16,7 @@
 
 = link_to 'Create New Evaluation', new_evaluation_path, :class => 'btn btn-primary'
 
-%table.table{ :id => "evaluations_table", :class => "display" }
+%table.table{ :id => "evaluations_table", :class => "display table-striped" }
   %thead
     %tr
       %th Name
@@ -42,5 +42,11 @@
 
 :javascript
   $(document).ready( function () {
-      $('#evaluations_table').dataTable( {"sPaginationType": "full_numbers"} ).fnSort( [[4, 'desc']] );
+    $.extend( $.fn.dataTableExt.oStdClasses, {
+      "sWrapper": "dataTables_wrapper form-inline"
+    } );
+    $('#evaluations_table').dataTable( {
+      "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+      "bSortClasses" : false
+    } ).fnSort( [[4, 'desc']] );
   } );
