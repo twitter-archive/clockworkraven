@@ -65,21 +65,29 @@ class HumanEvalTaskManagerHandler
       task = Task.find_by_id(task_id)
       raise HumanEvalException.new("No Task exists with the given Task ID: #{task_id}") if task.nil?
 
-      assignment = MTurkUtils.fetch_assignment_for_task(task)
-      if assignment.nil?
-        task_result.status = TaskStatus::PENDING
+      # Check if the Task has no registered MTurk HIT ID. It doesn't make sense to do an MTurk
+      # lookup for a Task that doesn't have one, since it's the key used to do the lookup.
+      # A Task doesn't have an MTurk HIT ID if it was created through the Thrift API and was added
+      # to a sandboxed evaluation.
+      if task.mturk_hit.nil?
+        task_result.status = TaskStatus::INVALID
+        task_result.humanEvalTaskResultMap = {}
       else
-        task_result.humanEvalTaskResultMap = MTurkUtils.assignment_results_to_hash(assignment)
-        task_result.status = case assignment[:AssignmentStatus]
-          when 'Submitted'
-            TaskStatus::PENDING
-          when 'Approved'
-            TaskStatus::COMPLETE
-          when 'Rejected'
-            TaskStatus::INVALID
+        assignment = MTurkUtils.fetch_assignment_for_task(task)
+        if assignment.nil?
+          task_result.status = TaskStatus::PENDING
+        else
+          task_result.humanEvalTaskResultMap = MTurkUtils.assignment_results_to_hash(assignment)
+          task_result.status = case assignment[:AssignmentStatus]
+            when 'Submitted'
+              TaskStatus::PENDING
+            when 'Approved'
+              TaskStatus::COMPLETE
+            when 'Rejected'
+              TaskStatus::INVALID
+          end
         end
       end
-
       result[task_id] = task_result
     end
 
