@@ -19,13 +19,14 @@ Rails.application.require_environment!
 
 require 'thrift'
 require 'human_eval_task_manager'
+require 'set'
 
 class HumanEvalTaskManagerHandler
 
   # Initializes Thrift connection state.
   def initialize
     @processor = HumanEvalTaskManager::Processor.new(self)
-    @transport = Thrift::ServerSocket.new(9090)
+    @transport = Thrift::ServerSocket.new(3030)
     @transport_factory = Thrift::FramedTransportFactory.new()
     @server = Thrift::SimpleServer.new(@processor, @transport, @transport_factory)
   end
@@ -52,9 +53,9 @@ class HumanEvalTaskManagerHandler
   # Gets the status of an existing Task, including completion status and answers, if available.
   # More details in human_eval.thrift.
   def fetchAnnotations(fetch_annotation_params)
-    return nil if fetch_annotation_params.nil? or fetch_annotation_params.taskIdList.nil?
+    return nil if fetch_annotation_params.nil? or fetch_annotation_params.taskIdSet.nil?
 
-    task_id_results_map = fetch_annotation_params.taskIdList.each_with_object({}) do |task_id, result|
+    task_id_results_map = fetch_annotation_params.taskIdSet.to_a.each_with_object({}) do |task_id, result|
       task_result = HumanEvalTaskResult.new
 
       task = Task.find_by_id(task_id)
