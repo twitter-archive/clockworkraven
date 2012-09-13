@@ -65,7 +65,7 @@ class HumanEvalTaskManagerHandler
       # lookup for a Task that doesn't have one, since it's the key used to do the lookup.
       # A Task doesn't have an MTurk HIT ID if it was created through the Thrift API and was added
       # to a sandboxed evaluation.
-      if task.mturk_hit == nil
+      if task.mturk_hit.nil?
         task_result.status = TaskStatus::INVALID
         task_result.humanEvalTaskResultMap = {}
       else
