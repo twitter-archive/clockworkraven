@@ -34,6 +34,8 @@ class HumanEvalTaskManagerHandler
   # Submits a Task to MTurk given Task questions; returns the Clockwork Raven Task ID of the newly
   # created Task. More details in human_eval.thrift.
   def submitTask(submit_task_params)
+    Rails.logger.info "Thrift API: Call to submitTask with param: #{submit_task_params.inspect}"
+
     return nil if submit_task_params.nil?
     task = submit_task_params.task
     field_values_map = task.fieldValuesMap
@@ -53,6 +55,8 @@ class HumanEvalTaskManagerHandler
   # Gets the status of an existing Task, including completion status and answers, if available.
   # More details in human_eval.thrift.
   def fetchAnnotations(fetch_annotation_params)
+    Rails.logger.info "Thrift API: Call to fetchAnnotations with param: #{fetch_annotation_params.inspect}"
+
     return nil if fetch_annotation_params.nil? or fetch_annotation_params.taskIdSet.nil?
 
     task_id_results_map = fetch_annotation_params.taskIdSet.to_a.each_with_object({}) do |task_id, result|
