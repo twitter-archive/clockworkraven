@@ -27,7 +27,7 @@ class HumanEvalTaskManagerHandler
   def initialize
     @processor = HumanEvalTaskManager::Processor.new(self)
     @transport = Thrift::ServerSocket.new(3030)
-    @transport_factory = Thrift::BufferedTransportFactory.new()
+    @transport_factory = Thrift::FramedTransportFactory.new()
     @server = Thrift::SimpleServer.new(@processor, @transport, @transport_factory)
   end
 
