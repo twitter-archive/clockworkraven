@@ -19,13 +19,14 @@ Rails.application.require_environment!
 
 require 'thrift'
 require 'human_eval_task_manager'
+require 'set'
 
 class HumanEvalTaskManagerHandler
 
   # Initializes Thrift connection state.
   def initialize
     @processor = HumanEvalTaskManager::Processor.new(self)
-    @transport = Thrift::ServerSocket.new(9090)
+    @transport = Thrift::ServerSocket.new(3030)
     @transport_factory = Thrift::BufferedTransportFactory.new()
     @server = Thrift::SimpleServer.new(@processor, @transport, @transport_factory)
   end
@@ -44,7 +45,7 @@ class HumanEvalTaskManagerHandler
     raise HumanEvalException.new("No Evaluation exists with the given name: #{task.humanEvalTaskType}") if evaluation.nil?
 
     new_task_to_submit = evaluation.add_task(field_values_map)
-    MTurkUtils.submit_task(new_task_to_submit)
+    MTurkUtils.submit_task(new_task_to_submit) if evaluation.prod? and submit_task_params.doSubmitToProduction
 
     response = HumanEvalSubmitTaskResponse.new
     response.taskId = new_task_to_submit.id
@@ -56,9 +57,9 @@ class HumanEvalTaskManagerHandler
   def fetchAnnotations(fetch_annotation_params)
     Rails.logger.info "Thrift API: Call to fetchAnnotations with param: #{fetch_annotation_params.inspect}"
 
-    return nil if fetch_annotation_params.nil? or fetch_annotation_params.taskIdList.nil?
+    return nil if fetch_annotation_params.nil? or fetch_annotation_params.taskIdSet.nil?
 
-    task_id_results_map = fetch_annotation_params.taskIdList.each_with_object({}) do |task_id, result|
+    task_id_results_map = fetch_annotation_params.taskIdSet.to_a.each_with_object({}) do |task_id, result|
       task_result = HumanEvalTaskResult.new
 
       task = Task.find_by_id(task_id)
