@@ -45,7 +45,7 @@ class HumanEvalTaskManagerHandler
     raise HumanEvalException.new("No Evaluation exists with the given name: #{task.humanEvalTaskType}") if evaluation.nil?
 
     new_task_to_submit = evaluation.add_task(field_values_map)
-    MTurkUtils.submit_task(new_task_to_submit) if evaluation.prod? and submit_task_params.doSubmitToProduction
+    MTurkUtils.submit_task(new_task_to_submit)
 
     response = HumanEvalSubmitTaskResponse.new
     response.taskId = new_task_to_submit.id
@@ -67,8 +67,6 @@ class HumanEvalTaskManagerHandler
 
       # Check if the Task has no registered MTurk HIT ID. It doesn't make sense to do an MTurk
       # lookup for a Task that doesn't have one, since it's the key used to do the lookup.
-      # A Task doesn't have an MTurk HIT ID if it was created through the Thrift API and was added
-      # to a sandboxed evaluation.
       if task.mturk_hit.nil?
         task_result.status = TaskStatus::INVALID
         task_result.humanEvalTaskResultMap = {}
