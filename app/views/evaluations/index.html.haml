@@ -16,7 +16,7 @@
 
 = link_to 'Create New Evaluation', new_evaluation_path, :class => 'btn btn-primary'
 
-%table.table{ :id => "evaluations_table", :class => "display table-striped" }
+%table.table{ :id => "evaluations_table", :class => "display table-striped", "data-source" => evaluations_url(format: "json") }
   %thead
     %tr
       %th Name
@@ -28,17 +28,6 @@
       %th
       %th
   %tbody
-    - @evaluations.each do |evaluation|
-      %tr
-        %td= evaluation.name
-        %td= evaluation.prod? ? 'Production' : 'Sandbox'
-        %td= evaluation.status_name
-        %td= evaluation.user.name
-        %td= evaluation.created_at.in_time_zone("Pacific Time (US & Canada)").strftime(ClockworkRaven::Application::TIME_FORMAT)
-        %td= link_to 'Show', evaluation, :class => 'btn'
-        %td= link_to 'Copy', new_evaluation_path(:based_on => evaluation.id), :class => 'btn btn-success'
-        %td= link_to 'Remove', evaluation, :method => :delete, :class => 'btn btn-danger',
-          :confirm => "Are you sure you want to remove this evaluation from Clockwork Raven? This does not close the evaluation or remove it from Mechanical Turk."
 
 :javascript
   $(document).ready( function () {
@@ -47,6 +36,10 @@
     } );
     $('#evaluations_table').dataTable( {
       "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-      "bSortClasses" : false
+      "bSortClasses" : false,
+      "sPaginationType": "full_numbers",
+      "bProcessing": true,
+      "bServerSide": true,
+      "sAjaxSource": $('#evaluations_table').data('source')
     } ).fnSort( [[4, 'desc']] );
   } );
