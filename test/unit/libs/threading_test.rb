@@ -31,51 +31,17 @@ class ThreadingTest < ActiveSupport::TestCase
     end
   end
 
-  test "thread pool retries" do
-    without_threading do
-      # check that thread pool retries on error
-
-      mock_obj = mock
-      mock_obj.stubs(:call).with(1).times(2)
-      mock_obj.stubs(:call).with(2).once
-      mock_obj.stubs(:call).with(3).once
-      has_errored = false
-
-      Threading.thread_pool [1,2,3] do |arg|
-        mock_obj.call arg
-        if arg == 1 and !has_errored
-          has_errored = true
-          raise
-        end
-      end
-    end
-  end
-
-  test "thread pool propagates persistant error" do
+  test "thread pool propagates error" do
     without_threading do
       # check that if the thread pool runs out of retries, it throws the error
       # and aborts
       mock_obj = mock
-      mock_obj.stubs(:call).with(1).times(3)
+      mock_obj.stubs(:call).with(1)
 
       assert_raise SpecialError do
         Threading.thread_pool [1,2,3] do |arg|
           mock_obj.call arg
           raise SpecialError
-        end
-      end
-    end
-  end
-
-  test "thread pool does not retry Killed error" do
-    without_threading do
-      mock_obj = mock
-      mock_obj.stubs(:call).with(1).once
-
-      assert_raise Resque::Plugins::Status::Killed do
-        Threading.thread_pool [1,2,3] do |arg|
-          mock_obj.call arg
-          raise Resque::Plugins::Status::Killed
         end
       end
     end

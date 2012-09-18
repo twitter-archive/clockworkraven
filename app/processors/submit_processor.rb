@@ -17,9 +17,9 @@ class SubmitProcessor < Job::ThreadPoolProcessor
   NAME = "Submitting Tasks"
   KILL_MESSAGE = <<-END
     Some tasks may have been submitted. To close these tasks, use the "Close
-    Evaluation" button. To re-submit this evaluation with changes,
-    use the "Copy" button on the front page to copy the evaluation
-    and submit the new evaluation.
+    Evaluation" button. To re-submit this evaluation, use the "retry" button.
+    To re-submit this evaluation with changes, use the "Copy" button on the
+    front page to copy this evaluation and submit the new evaluation.
   END
 
   def process task_id
