@@ -12,24 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module JobsHelper
-  # returns javascript code that redirects the user to the given url
-  def js_redirect url
-    "window.location.href='#{url}'"
-  end
-
-  def progress_classes
-    case @job.status_name
-    when :done
-      if @job.completed == @job.total
-        'progress-success'
-      else
-        'active'
-      end
-    when :error, :killed
-      'progress-danger'
-    else
-      'active'
+FactoryGirl.define do
+  sequence(:job_part_data) {|n| "data#{n}"}
+  factory :job_part do
+    ignore do
+      status_name :new
     end
+
+    job
+    data   { FactoryGirl.generate :job_part_data }
+    status { JobPart::STATUS_ID[status_name]     }
   end
 end

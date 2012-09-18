@@ -65,13 +65,13 @@ class ApproveProcessorTest < ActiveSupport::TestCase
     processor.process task3.id
   end
 
-  test "after" do
+  test "before" do
     eval = create :evaluation
 
     processor = ApproveProcessor.new(FactoryGirl.generate(:resque_uuid))
     processor.stubs(:options).returns('evaluation_id' => eval.id)
 
-    processor.after
+    processor.before
 
     # check that processor.before updated the status of the evaluation
     assert_equal :approved, eval.reload.status_name

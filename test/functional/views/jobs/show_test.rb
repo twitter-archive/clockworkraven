@@ -35,18 +35,13 @@ class JobsShowTest < ActionController::TestCase
 
   test "Progress bar" do
     j = create :job
-
-    mock_status j, :pct_complete => 0, :status => 'working'
-
-    get :show, :id => j.id
-    assert_select '#progress_bar[style*="width: 0%"]'
-
-    j = create :job
-
-    mock_status j, :pct_complete => 50, :status => 'working'
+    2.times { create :job_part, :job => j, :status_name => :new }
+    3.times { create :job_part, :job => j, :status_name => :done }
+    5.times { create :job_part, :job => j, :status_name => :error }
 
     get :show, :id => j.id
-    assert_select '#progress_bar[style*="width: 50%"]'
+    assert_select '#progress_bar_success[style*="width: 30.0%"]'
+    assert_select '#progress_bar_error[style*="width: 50.0%"]'
   end
 
   test "Error display" do

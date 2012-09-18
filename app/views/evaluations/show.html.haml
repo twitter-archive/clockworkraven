@@ -30,59 +30,64 @@
   %p
     = @evaluation.note
 
-%p
-  %b Title:
-  = @evaluation.title
+.accordion-heading
+  %a.accordion-toggle{'data-toggle' => 'collapse', :href => '#detailsPane'}
+    Details...
+#detailsPane.accordion-body.collapse
+  .accordion-inner
+    %p
+      %b Title:
+      = @evaluation.title
 
-%p
-  %b Description:
-  = @evaluation.desc
+    %p
+      %b Description:
+      = @evaluation.desc
 
-%p
-  %b Payment:
-  = @evaluation.payment
-  cents
+    %p
+      %b Payment:
+      = @evaluation.payment
+      cents
 
-%p
-  %b Total Cost:
-  = format_cents @evaluation.cost
+    %p
+      %b Total Cost:
+      = format_cents @evaluation.cost
 
-%p
-  %b Number of tasks:
-  = @evaluation.tasks.size
+    %p
+      %b Number of tasks:
+      = @evaluation.tasks.size
 
-%p
-  %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
+    %p
+      %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
 
-%p
-  %b Qualifications:
-  - if @evaluation.mturk_qualification == 'trusted'
-    Trusted workers only
-  - elsif @evaluation.mturk_qualification == 'master'
-    Mechanical Turk Categorization Masters only
-  - else
-    No qualifications required
+    %p
+      %b Qualifications:
+      - if @evaluation.mturk_qualification == 'trusted'
+        Trusted workers only
+      - elsif @evaluation.mturk_qualification == 'master'
+        Mechanical Turk Categorization Masters only
+      - else
+        No qualifications required
 
-%h2 Questions
+    %h2 Questions
 
-%h3 Multiple-Choice
+    %h3 Multiple-Choice
 
-%ol
-  - @evaluation.mc_questions.reject{|q| q.metadata}.each do |q|
-    %li
-      = q.label
-      %ul
-        - q.mc_question_options.each do |o|
-          %li
-            = o.label
-            - if o.value?
-              (value: #{o.value})
+    %ol
+      - @evaluation.mc_questions.reject{|q| q.metadata}.each do |q|
+        %li
+          = q.label
+          %ul
+            - q.mc_question_options.each do |o|
+              %li
+                = o.label
+                - if o.value?
+                  (value: #{o.value})
 
-%h3 Free-Response
+    %h3 Free-Response
 
-%ol
-  - @evaluation.fr_questions.each do |q|
-    %li= q.label
+    %ol
+      - @evaluation.fr_questions.each do |q|
+        %li= q.label
 
 .eval-actions
   .clear
@@ -92,6 +97,15 @@
       This evaluation is being processed.
       = link_to "View Job &raquo;".html_safe, @evaluation.job
   - else
+    - if @evaluation.job and (@evaluation.job.completed != @evaluation.job.total)
+      -# Job didn't complete correctly, offer option to show results
+      %p.alert
+        %string
+          Warning:
+        = @evaluation.job.title.downcase
+        did not complete successfully.
+        = link_to "View Results &raquo;".html_safe, @evaluation.job
+
 
     - if @evaluation.status_name == :new
       = link_to 'Edit Properties', edit_evaluation_path(@evaluation), :class => 'btn'
@@ -114,7 +128,7 @@
       = link_to 'Close Evaluation', close_evaluation_path(@evaluation),
                 :class => 'btn btn-primary', :method => 'post',
                 :confirm => "Are you sure? All tasks will be closed and no more MTurk users will be able to complete tasks."
-    
+
     - if [:closed, :approved, :purged].include? @evaluation.status_name
       %p
         %b Number of results:
@@ -132,7 +146,7 @@
             = link_to 'CSV', evaluation_task_responses_path(@evaluation, :format => 'csv')
             = link_to 'JSON', evaluation_task_responses_path(@evaluation, :format => 'json')
 
-    - unless @evaluation.tasks.empty?     
+    - unless @evaluation.tasks.empty?
       .btn-group
         %a.btn.dropdown-toggle{:href => '#', 'data-toggle' => 'dropdown'}
           Download Original Data

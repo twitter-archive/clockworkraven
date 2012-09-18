@@ -22,7 +22,7 @@ CREATE TABLE `clockwork_raven_evaluations` (
   PRIMARY KEY (`id`),
   KEY `fk_evaluations_jobs` (`job_id`),
   CONSTRAINT `fk_evaluations_jobs` FOREIGN KEY (`job_id`) REFERENCES `clockwork_raven_jobs` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_fr_question_responses` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -36,7 +36,7 @@ CREATE TABLE `clockwork_raven_fr_question_responses` (
   KEY `task_response_id` (`task_response_id`),
   CONSTRAINT `clockwork_raven_fr_question_responses_ibfk_1` FOREIGN KEY (`fr_question_id`) REFERENCES `clockwork_raven_fr_questions` (`id`),
   CONSTRAINT `clockwork_raven_fr_question_responses_ibfk_2` FOREIGN KEY (`task_response_id`) REFERENCES `clockwork_raven_task_responses` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_fr_questions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -49,7 +49,16 @@ CREATE TABLE `clockwork_raven_fr_questions` (
   PRIMARY KEY (`id`),
   KEY `evaluation_id` (`evaluation_id`),
   CONSTRAINT `clockwork_raven_fr_questions_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `clockwork_raven_evaluations` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `clockwork_raven_job_parts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) DEFAULT NULL,
+  `data` text COLLATE utf8_unicode_ci,
+  `status` int(11) DEFAULT '0',
+  `error` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `clockwork_raven_jobs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -61,7 +70,7 @@ CREATE TABLE `clockwork_raven_jobs` (
   `resque_job` varchar(255) DEFAULT NULL,
   `processor` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_m_turk_users` (
   `id` varchar(255) NOT NULL DEFAULT '',
@@ -82,7 +91,7 @@ CREATE TABLE `clockwork_raven_mc_question_options` (
   PRIMARY KEY (`id`),
   KEY `mc_question_id` (`mc_question_id`),
   CONSTRAINT `clockwork_raven_mc_question_options_ibfk_1` FOREIGN KEY (`mc_question_id`) REFERENCES `clockwork_raven_mc_questions` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_mc_question_responses` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -95,7 +104,7 @@ CREATE TABLE `clockwork_raven_mc_question_responses` (
   KEY `task_response_id` (`task_response_id`),
   CONSTRAINT `clockwork_raven_mc_question_responses_ibfk_1` FOREIGN KEY (`mc_question_option_id`) REFERENCES `clockwork_raven_mc_question_options` (`id`),
   CONSTRAINT `clockwork_raven_mc_question_responses_ibfk_2` FOREIGN KEY (`task_response_id`) REFERENCES `clockwork_raven_task_responses` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_mc_questions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -108,7 +117,7 @@ CREATE TABLE `clockwork_raven_mc_questions` (
   PRIMARY KEY (`id`),
   KEY `evaluation_id` (`evaluation_id`),
   CONSTRAINT `clockwork_raven_mc_questions_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `clockwork_raven_evaluations` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_schema_migrations` (
   `version` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -127,7 +136,7 @@ CREATE TABLE `clockwork_raven_task_responses` (
   PRIMARY KEY (`id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `clockwork_raven_task_responses_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `clockwork_raven_tasks` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_tasks` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -140,7 +149,7 @@ CREATE TABLE `clockwork_raven_tasks` (
   PRIMARY KEY (`id`),
   KEY `evaluation_id` (`evaluation_id`),
   CONSTRAINT `clockwork_raven_tasks_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `clockwork_raven_evaluations` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `clockwork_raven_users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -165,3 +174,5 @@ INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120806234641'
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120807222553');
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120810203402');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120911001453');
