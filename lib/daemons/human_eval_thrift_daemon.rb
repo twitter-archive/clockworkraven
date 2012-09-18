@@ -28,7 +28,7 @@ class HumanEvalTaskManagerHandler
     @processor = HumanEvalTaskManager::Processor.new(self)
     @transport = Thrift::ServerSocket.new(3030)
     @transport_factory = Thrift::FramedTransportFactory.new()
-    @server = Thrift::SimpleServer.new(@processor, @transport, @transport_factory)
+    @server = Thrift::ThreadedServer.new(@processor, @transport, @transport_factory)
   end
 
   # Submits a Task to MTurk given Task questions; returns the Clockwork Raven Task ID of the newly
