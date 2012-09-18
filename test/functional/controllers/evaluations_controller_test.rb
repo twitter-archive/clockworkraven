@@ -175,7 +175,7 @@ class EvaluationsControllerTest < ActionController::TestCase
   test "update replace data" do
     # create an eval with the data from data1.json
     e = create :evaluation
-    e.add_data parse_json_fixture('data1.json')
+    e.add_tasks parse_json_fixture('data1.json')
 
     # replace with the data from data2.json
     post :update, :id => e.id, :evaluation => {:data => fixture_file_upload('data2.json'),
@@ -192,7 +192,7 @@ class EvaluationsControllerTest < ActionController::TestCase
   test "update replace data with TSV" do
     # create an eval with the data from data2.json
     e = create :evaluation
-    e.add_data parse_json_fixture('data2.json')
+    e.add_tasks parse_json_fixture('data2.json')
 
     # replace with the data from tsv1.tsv
     post :update, :id => e.id, :evaluation => {:data => fixture_file_upload('tsv1.tsv'),
@@ -242,10 +242,10 @@ class EvaluationsControllerTest < ActionController::TestCase
     end
   end
 
-  test "update add data" do
+  test "update add tasks" do
     # create an eval with the data from task1.json
     e = create :evaluation
-    e.add_data parse_json_fixture('data1.json')
+    e.add_tasks parse_json_fixture('data1.json')
 
     # add the data from task2.json
     post :update, :id => e.id, :evaluation => {:data => fixture_file_upload('data2.json')}
@@ -589,7 +589,7 @@ class EvaluationsControllerTest < ActionController::TestCase
       "foo2" => "bar4"
     }
 
-    eval.add_data(parse_json_fixture('data1.json'))
+    eval.add_tasks(parse_json_fixture('data1.json'))
     
     expected_data = [HashWithIndifferentAccess.new({:foo1 => "bar1", :foo2 => "bar2"}),
                      HashWithIndifferentAccess.new({:foo1 => "bar3", :foo2 => "bar4"})]

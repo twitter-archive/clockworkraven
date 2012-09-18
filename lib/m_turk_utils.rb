@@ -163,7 +163,8 @@ module MTurkUtils
       if eval.mturk_qualification_type != nil
         props[:QualificationRequirement] = [{
           :QualificationTypeId => eval.mturk_qualification_type,
-          :Comparator => 'Exists'
+          :Comparator => 'Exists',
+          :RequiredToPreview => true          
         }]
       end
 
@@ -256,6 +257,49 @@ module MTurkUtils
       end
 
       response.save!
+    end
+
+    # Given an assignment returned from getAssignmentsForHIT, parses the answers from the
+    # assignment (represented as an XML string) into a readable string-to-string hash where the
+    # key is the question label and the value is the answer.
+    #
+    # TODO: Refactor assignment-related utility methods into a module that wraps the assignment
+    # type. This method seems too specific to assignments to be in this module.
+    # TODO: Refactor fetch_results to use this method/eliminate duplicate code. Maybe create
+    # another method that does what this method does but includes meta-info that fetch_results
+    # needs and then this method can filter it.
+    def assignment_results_to_hash assignment
+      return {} if assignment.nil?
+
+      answers = Hash.from_xml(assignment[:Answer])["QuestionFormAnswers"]["Answer"]
+      answers = [answers] if not answers.kind_of? Array
+
+      answers.each_with_object({}) do |answer, curr_answers_hash|
+        question_type, question_id = answer['QuestionIdentifier'].split(':')
+        answer_content = answer['FreeText']
+
+        if question_type == 'fr'
+          fr_question = FRQuestion.find_by_id(question_id.to_i)
+          next if fr_question.nil?
+          answer_content = 'No response given' if answer_content.blank?
+          answer_key, answer_value = fr_question.label, answer_content
+        elsif question_type == 'mc'
+          mc_question_option = MCQuestionOption.find_by_id(answer_content.to_i)
+          next if mc_question_option.nil? or mc_question_option.mc_question.nil?
+          answer_key, answer_value = mc_question_option.mc_question.label, mc_question_option.label
+        end
+       
+        next if answer_key.nil?
+        answer_value = "No response given" if answer_value.nil?
+        curr_answers_hash[answer_key] = answer_value
+      end
+    end
+
+    # Gets the assignment (contains completion status, answers, other info) for a given Task
+    # More info on the assignment data structure here:
+    # http://docs.amazonwebservices.com/AWSMechTurk/2007-06-21/AWSMechanicalTurkRequester/ApiReference_AssignmentDataStructureArticle.html
+    def fetch_assignment_for_task task
+      mturk(task.evaluation).getAssignmentsForHIT(:HITId => task.mturk_hit)[:Assignment]
     end
 
     # Expires a task, so mturk works can no longer complete it

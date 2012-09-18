@@ -18,7 +18,7 @@ require 'set'
 module InputParser
   class << self
     # Given an uploaded file, returns the parsed version suitable for
-    # Evaluation#add_data
+    # Evaluation#add_tasks
     #
     # Throws InputParser::ParseError if the file is malformed
     def parse(file)
