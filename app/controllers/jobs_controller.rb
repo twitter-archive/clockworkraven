@@ -31,7 +31,9 @@ class JobsController < ApplicationController
       format.html # show.html.haml
       format.json {
         render :json    => @job,
-               :methods => [:status_name, :percentage, :total, :completed, :error, :ended?]
+               :methods => [:status_name, :success_percentage,
+                            :error_percentage,:total, :completed,
+                            :error_count, :error, :ended?]
       }
     end
   end
@@ -46,8 +48,20 @@ class JobsController < ApplicationController
       format.html { redirect_to job_path(@job) }
       format.json {
         render :json    => @job,
-               :methods => [:status_name, :percentage, :total, :completed, :error, :ended?]
+               :methods => [:status_name, :success_percentage,
+                            :error_percentage,:total, :completed,
+                            :error_count, :error, :ended?]
       }
+    end
+  end
+
+  # POST /jobs/1/retry
+  def retry
+    @job = Job.find params[:id]
+    @job.retry :evaluation_id => @job.evaluation.id
+
+    respond_to do |format|
+      format.html { redirect_to job_path(@job) }
     end
   end
 end

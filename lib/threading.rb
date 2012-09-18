@@ -26,7 +26,7 @@ module Threading
   #
   # If the processor throws an exception on any item, the queue is cleared,
   # and the exception is propagated.
-  def Threading.thread_pool items, size=16, retry_count=3, &processor
+  def Threading.thread_pool items, size=16, &processor
     queue = Queue.new
     items.each {|o| queue.push o}
     threads = []
@@ -37,25 +37,7 @@ module Threading
         begin
           until queue.empty?
             item = queue.pop
-            result = nil
-            retries = retry_count
-
-            begin
-              result = processor.call(item)
-            rescue Resque::Plugins::Status::Killed => e
-              # don't retry if we get forcibly killed
-              raise e
-            rescue => e
-              # for any other error, retry if we have retries left.
-              Rails.logger.warn("Got an error in thread pool. Retries: #{retries}.\n#{e.inspect}")
-              if retries > 1
-                retries -= 1
-                retry
-              else
-                raise e
-              end
-            end
-
+            result = processor.call(item)
             results.push result
           end
         rescue => e

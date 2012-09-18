@@ -53,6 +53,9 @@ gem 'resque-status'
 # UUIDs for tasks
 gem 'uuidtools'
 
+# bulk inserts
+gem 'activerecord-import'
+
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0', :require => 'bcrypt'
 

@@ -17,14 +17,14 @@ class ApproveProcessor < Job::ThreadPoolProcessor
   NAME = "Approving Tasks"
   KILL_MESSAGE = <<-END
     Some tasks may have been approved. To finish approving tasks, use the
-    "Approve All Unapproved Responses" button again.
+    "retry" option.
   END
 
   def process task_id
     MTurkUtils.approve Task.find(task_id)
   end
 
-  def after
+  def before
     e = Evaluation.find(options['evaluation_id'])
     e.status = Evaluation::STATUS_ID[:approved]
     e.save!

@@ -22,6 +22,9 @@ GEM
       activesupport (= 3.2.1)
       arel (~> 3.0.0)
       tzinfo (~> 0.3.29)
+    activerecord-import (0.2.10)
+      activerecord (~> 3.0)
+      activerecord (~> 3.0)
     activeresource (3.2.1)
       activemodel (= 3.2.1)
       activesupport (= 3.2.1)
@@ -183,6 +186,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-import
   bcrypt-ruby (~> 3.0.0)
   bootstrap-will_paginate
   coffee-rails (~> 3.2.1)
