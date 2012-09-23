@@ -161,11 +161,11 @@
       %br
       %span.label-help
         Tasks will be automatically approved after this amount of time, in
-        minutes, unless you explicitly approve or reject the worker's
+        seconds, unless you explicitly approve or reject the worker's
         response
     .controls
       .input-append
-        = f.number_field :auto_approve_in_minutes
+        = f.number_field :auto_approve
         = render :partial => 'time_buttons'
 
   .form-actions
