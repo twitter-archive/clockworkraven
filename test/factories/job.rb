@@ -24,5 +24,15 @@ FactoryGirl.define do
     factory :unsubmitted_job do
       resque_job nil
     end
+
+    factory :job_with_parts do
+      ignore do
+        part_count 5
+      end
+
+      after_create do |job, evaluator|
+        FactoryGirl.create_list :job_part, evaluator.part_count, :job => job
+      end
+    end
   end
 end
