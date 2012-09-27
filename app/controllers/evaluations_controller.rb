@@ -65,6 +65,9 @@ class EvaluationsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.html.haml
+
+      # JSON format returns table views to support server-side processing, as described in
+      # http://railscasts.com/episodes/340-datatables?view=asciicast
       format.json do
         table = EvaluationsDatatable.new(view_context).as_json
         table[:aaData].each do |row|

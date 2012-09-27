@@ -39,7 +39,12 @@ private
   end
 
   def fetch_evaluations
-    evaluations = Evaluation.order("#{sort_column} #{sort_direction}")
+
+    # Protect against SQL injection by validating column and direction before sorting
+    if Evaluation.column_names.include?(sort_column) && %w(asc desc).include?(sort_direction)
+      evaluations = Evaluation.order("#{sort_column} #{sort_direction}")
+    end
+
     evaluations = evaluations.page(page).per_page(per_page)
     if params[:sSearch].present?
 
@@ -77,7 +82,7 @@ private
   end
 
   def sort_column
-    columns = %w[name mode status creator created_at]
+    columns = %w[name prod status creator created_at]
     columns[params[:iSortCol_0].to_i]
   end
 
