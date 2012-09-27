@@ -24,9 +24,9 @@
       %th Status
       %th Creator
       %th Created At
-      %th
-      %th
-      %th
+      %th.empty
+      %th.empty
+      %th.empty
   %tbody
 
 :javascript
@@ -35,6 +35,9 @@
       "sWrapper": "dataTables_wrapper form-inline"
     } );
     $('#evaluations_table').dataTable( {
+      "aoColumnDefs" : [
+        { "bSortable" : false, "aTargets" : ["empty"] }
+      ],
       "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
       "bSortClasses" : false,
       "sPaginationType": "full_numbers",
