@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'action_view/helpers/url_helper'
+
 class EvaluationsController < ApplicationController
   before_filter :find_evaluation, :except => [:index, :new, :create]
   before_filter :require_priv, :only => [:destroy, :submit, :purge, :close, :approve_all]
@@ -44,27 +46,39 @@ class EvaluationsController < ApplicationController
       redirect_to job_path(@evaluation.job)
     end
   end
-  
+
   # Creates a CSV (with header) of the original uploaded data file.
   def original_data_csv(sep = ',')
     CSV.generate(:col_sep => sep) do |csv|
       header = @evaluation.original_data_column_names
       csv << header
-      
+
       @evaluation.tasks.each do |task|
         csv << header.map{ |col| task.data[col] }
       end
     end
-  end  
+  end
 
   public
 
   # GET /evaluations
   def index
-    @evaluations = Evaluation.page(params[:page]).order('id DESC')
-
     respond_to do |format|
       format.html # index.html.haml
+
+      # JSON format returns table views to support server-side processing, as described in
+      # http://railscasts.com/episodes/340-datatables?view=asciicast
+      format.json do
+        table = EvaluationsDatatable.new(view_context).as_json
+        table[:aaData].each do |row|
+          evaluation = row.pop
+          row << view_context.link_to('Show', evaluation, :class => 'btn')
+          row << view_context.link_to('Copy', new_evaluation_path(:based_on => evaluation.id), :class => 'btn btn-success')
+          row << view_context.link_to('Remove', evaluation, :method => :delete, :class => 'btn btn-danger',
+            :confirm => "Are you sure you want to remove this evaluation from Clockwork Raven? This does not close the evaluation or remove it from Mechanical Turk.")
+        end
+        render json: table
+      end
     end
   end
 
@@ -189,10 +203,10 @@ class EvaluationsController < ApplicationController
       format.html { redirect_to evaluations_url }
     end
   end
-  
+
   def original_data
     @data = @evaluation.tasks.map{ |task| task.data }
-    
+
     respond_to do |format|
       format.json { render :json => @data }
       format.csv {
@@ -206,7 +220,7 @@ class EvaluationsController < ApplicationController
                                                  :filename => 'original_data.tsv',
                                                  :disposition => 'attachment',
                                                  :layout => false
-      }      
+      }
     end
   end
 
