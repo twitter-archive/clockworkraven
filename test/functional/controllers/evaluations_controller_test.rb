@@ -36,31 +36,6 @@ class EvaluationsControllerTest < ActionController::TestCase
 
     # check that the controller responded correctly
     assert_response :success
-    assert_equal 2, assigns(:evaluations).length
-    assert_equal eval2, assigns(:evaluations).first
-    assert_equal eval1, assigns(:evaluations).second
-  end
-
-  test "index pagination" do
-    # remove existing evaluations left over from other tests
-    Evaluation.all.each{|eval| eval.destroy}
-
-    # make 12 evaluations
-    evals = (0..11).map{ create :evaluation }
-
-    # page 1 should be eval[11] through eval[2]
-    get :index
-    assert_response :success
-    assert_equal evals[2..11].reverse, assigns(:evaluations)
-
-    get :index, :page => 1
-    assert_response :success
-    assert_equal evals[2..11].reverse, assigns(:evaluations)
-
-    # page 2 should be eval[1] and eval[0]
-    get :index, :page => 2
-    assert_response :success
-    assert_equal evals[0..1].reverse, assigns(:evaluations)
   end
 
   test "show" do
@@ -575,7 +550,7 @@ class EvaluationsControllerTest < ActionController::TestCase
     assert_equal '1-opt3', q.mc_question_options.first.label
     assert_equal '1-opt2', q.mc_question_options.second.label
   end
-  
+
   test "original data" do
     eval = create :evaluation
 
@@ -590,11 +565,11 @@ class EvaluationsControllerTest < ActionController::TestCase
     }
 
     eval.add_tasks(parse_json_fixture('data1.json'))
-    
+
     expected_data = [HashWithIndifferentAccess.new({:foo1 => "bar1", :foo2 => "bar2"}),
                      HashWithIndifferentAccess.new({:foo1 => "bar3", :foo2 => "bar4"})]
     get :original_data, :id => eval.id
-    assert_equal expected_data, assigns(:data)    
+    assert_equal expected_data, assigns(:data)
 
     # test csv
 
@@ -618,5 +593,5 @@ class EvaluationsControllerTest < ActionController::TestCase
 
     get :original_data, :format => 'tsv', :id => eval.id
     assert_equal expected_tsv, response.body
-  end  
+  end
 end
