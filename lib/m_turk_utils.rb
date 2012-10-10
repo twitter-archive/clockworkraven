@@ -164,7 +164,7 @@ module MTurkUtils
         props[:QualificationRequirement] = [{
           :QualificationTypeId => eval.mturk_qualification_type,
           :Comparator => 'Exists',
-          :RequiredToPreview => true          
+          :RequiredToPreview => true
         }]
       end
 
@@ -204,6 +204,7 @@ module MTurkUtils
       time = assignments[:Assignment][:SubmitTime] - assignments[:Assignment][:AcceptTime]
 
       response = task.build_task_response
+      response.source = 'mturk'
       response.m_turk_user = MTurkUser.find_or_create_by_id_and_prod worker_id, task.evaluation.prod
       response.work_duration = time
 
@@ -231,7 +232,6 @@ module MTurkUtils
             Rails.logger.warn("[fetch_results] Could not find FRQuestion #{question_id}")
             next
           end
-
           question_response = response.fr_question_responses.build
 
           if answer_content.blank?
@@ -288,7 +288,7 @@ module MTurkUtils
           next if mc_question_option.nil? or mc_question_option.mc_question.nil?
           answer_key, answer_value = mc_question_option.mc_question.label, mc_question_option.label
         end
-       
+
         next if answer_key.nil?
         answer_value = "No response given" if answer_value.nil?
         curr_answers_hash[answer_key] = answer_value

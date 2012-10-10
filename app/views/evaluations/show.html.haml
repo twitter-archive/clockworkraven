@@ -92,6 +92,16 @@
 .eval-actions
   .clear
 
+  - if @evaluation.status_name == :submitted
+    %p
+      %b Number of tasks completed:
+      = @evaluation.available_results_count
+
+  - if [:closed, :approved, :purged].include?(@evaluation.status_name) or @evaluation.task_responses.size > 0
+    %p
+      %b Number of results in Clockwork Raven:
+      = @evaluation.task_responses.size
+
   - if @evaluation.job and !@evaluation.job.ended?
     %p
       This evaluation is being processed.
@@ -119,20 +129,18 @@
                 :confirm => confirm
 
     - if @evaluation.status_name == :submitted
-      %p
-        %b Number of tasks completed:
-        = @evaluation.available_results_count
 
       = link_to 'View on MTurk', @evaluation.mturk_url, :class => 'btn', :target => '_blank'
+
+      - rand_task = @evaluation.random_uncompleted_task
+      - if rand_task
+        = link_to "Complete Tasks", complete_evaluation_task_url(@evaluation, rand_task), :class => 'btn'
 
       = link_to 'Close Evaluation', close_evaluation_path(@evaluation),
                 :class => 'btn btn-primary', :method => 'post',
                 :confirm => "Are you sure? All tasks will be closed and no more MTurk users will be able to complete tasks."
 
-    - if [:closed, :approved, :purged].include? @evaluation.status_name
-      %p
-        %b Number of results:
-        = @evaluation.task_responses.size
+    - if [:closed, :approved, :purged].include?(@evaluation.status_name) or @evaluation.task_responses.size > 0
 
       = link_to 'View Responses', evaluation_task_responses_path(@evaluation), :class => 'btn'
 

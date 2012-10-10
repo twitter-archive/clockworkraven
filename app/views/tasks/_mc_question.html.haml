@@ -1,0 +1,7 @@
+%fieldset
+  %legend= mc_q.label
+  %label.error.alert.alert-error{:for => name} Please select a response.
+  - mc_q.mc_question_options.each do |option|
+    %label.option-label{:for => option.id}
+      %input{:type => 'radio', :name => name, :value => option.id, :class => 'required', :id => option.id}
+      %span.option-label-text= option.label

@@ -144,17 +144,17 @@ class EvaluationsTest < ActiveSupport::TestCase
     assert_equal 1, eval.tasks.size
     assert_equal expected_task_data, eval.tasks.first.data
   end
-  
+
   test "original data column names" do
     eval = create :evaluation
 
     assert_equal 0, eval.original_data_column_names.size, "Column names for eval without data incorrect"
-    
+
     eval.add_tasks(parse_json_fixture('data1.json'))
     expected_column_names = %w(foo1 foo2)
-    
+
     assert_equal expected_column_names, eval.original_data_column_names, "Column names for eval incorrect"
-  end  
+  end
 
   test "random task" do
     eval = create :evaluation_with_tasks, :task_count => 2
@@ -449,5 +449,27 @@ class EvaluationsTest < ActiveSupport::TestCase
     assert_equal 0, eval4.median_time
     assert_equal 0, eval4.mean_pay_rate
     assert_equal 0, eval4.median_pay_rate
+  end
+
+  test "random uncompleted task" do
+    e = create :evaluation
+    t1 = create :task, :evaluation => e
+    create :task_response, :task => t1
+    t2 = create :task, :evaluation => e
+    assert_equal t2, e.random_uncompleted_task
+  end
+
+  test "random uncompleted task, no tasks" do
+    e = create :evaluation
+    assert_nil e.random_uncompleted_task
+  end
+
+  test "random uncompleted task, no such task" do
+    e = create :evaluation
+    t1 = create :task, :evaluation => e
+    create :task_response, :task => t1
+    t2 = create :task, :evaluation => e
+    create :task_response, :task => t2
+    assert_nil e.random_uncompleted_task
   end
 end

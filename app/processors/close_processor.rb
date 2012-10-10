@@ -24,19 +24,22 @@ class CloseProcessor < Job::ThreadPoolProcessor
 
   def process task_id
     task = Task.find task_id
-    # destroy any old responses left over from previous runs
-    if task.task_response
-      task.task_response.destroy
-    end
+    MTurkUtils.force_expire task
 
     # close & import
-    MTurkUtils.force_expire task
-    MTurkUtils.fetch_results task
+    if task.task_response and (task.task_response.source == 'internal')
+      # internal > mturk, don't import
+    else
+      if task.task_response
+        task.task_response.destroy
+      end
+      MTurkUtils.fetch_results task
 
-    # add metadata. synchronize with a mutex so we don't create duplicate
-    # questions.
-    @metadata_lock.synchronize do
-      task.add_metadata_as_questions
+      # add metadata. synchronize with a mutex so we don't create duplicate
+      # questions.
+      @metadata_lock.synchronize do
+        task.add_metadata_as_questions
+      end
     end
   end
 

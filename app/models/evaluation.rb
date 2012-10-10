@@ -182,6 +182,16 @@ class Evaluation < ActiveRecord::Base
     self.tasks.find(:first, :offset => rand(self.tasks.size))
   end
 
+  def random_uncompleted_task
+    tasks = self.tasks.joins('LEFT OUTER JOIN clockwork_raven_task_responses ON clockwork_raven_task_responses.task_id = clockwork_raven_tasks.id').
+                       where('clockwork_raven_task_responses.id IS NULL')
+
+    # special-case this: rand(0) gives a floating point between 0 and 1
+    return nil if tasks.empty?
+
+    tasks.find(:first, :offset => rand(tasks.size))
+  end
+
   # Returns the name of the current status as a symbol: :new, :submitted,
   # :closed, :approved, or :purged.
   def status_name
@@ -351,13 +361,13 @@ class Evaluation < ActiveRecord::Base
     return 0 if median == 0
     (1.0/median) * (60.0*60.0) * self.payment
   end
-  
+
   # Array of the names of the columns in the original data file.
   # For example, ["tweet_id", "username", "score"]
   def original_data_column_names
-     if self.tasks.empty? 
+     if self.tasks.empty?
        []
-     else 
+     else
        self.tasks.first.data.keys
      end
   end

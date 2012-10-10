@@ -12,7 +12,7 @@
 -# See the License for the specific language governing permissions and
 -# limitations under the License.
 
-%form{:name => 'mturk_form', :id => 'mturk_form', :method => 'post', :action => 'https://www.mturk.com/mturk/externalSubmit'}
+%form{:method => 'post', :action => (@task.evaluation.prod? ? 'https://www.mturk.com/mturk/externalSubmit' : 'http://workersandbox.mturk.com/mturk/externalSubmit')}
   -# This hidden field is for MTurk -- it gets populated by the
   -# turkSetAssignmentID() javascript call below
   %input{:type => 'hidden', :value => '', :name => 'assignmentId', :id => 'assignmentId'}
@@ -21,27 +21,17 @@
     .section
       - case section[:type]
       - when :_mc
-        -# Render radio buttons for MC questions
         - mc_q = @task.evaluation.mc_questions.find_by_order(section[:order])
-        - id = 'mc:' + mc_q.id.to_s
-        %fieldset
-          %legend= mc_q.label
-          %label.error.alert.alert-error{:for => id} Please select a response.
-          - mc_q.mc_question_options.each do |option|
-            %label.option-label{:for => option.id}
-              %input{:type => 'radio', :name => id, :value => option.id, :class => 'required', :id => option.id}
-              %span.option-label-text= option.label
+        - name = 'mc:' + mc_q.id.to_s
+        = render :partial => 'mc_question', :locals => {:mc_q => mc_q, :name => name}
       - when :_fr
-        -# Render textareas for FR Questions
         - fr_q = @task.evaluation.fr_questions.find_by_order(section[:order])
-        - id = 'fr:' + fr_q.id.to_s
-        %legend{:for => id}= fr_q.label
-        %label.error.alert.alert-error{:for => id} Please enter a response.
-        %textarea{:cols => 40, :rows => 5, :name => id, :class => (fr_q.required? ? 'required' : '')}
+        - name = 'fr:' + fr_q.id.to_s
+        = render :partial => 'fr_question', :locals => {:fr_q => fr_q, :name => name}
       - when :_text
-        %div= interpolate(section[:content], @task.data)
+        = render :partial => 'text', :locals => {:content => section[:content], :data => @task.data}
       - when :_header
-        %h1= interpolate(section[:content], @task.data)
+        = render :partial => 'header', :locals => {:content => section[:content], :data => @task.data}
       - else
         = render :partial => "components/#{section[:type]}", :locals => {:data => resolve_data(section[:data], @task.data)}
 

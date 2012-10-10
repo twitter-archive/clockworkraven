@@ -14,7 +14,12 @@
 
 ClockworkRaven::Application.routes.draw do
   resources :evaluations do
-    resources :tasks
+    resources :tasks do
+      member do
+        get 'complete'
+        post 'complete' => 'tasks#submit', :as => 'submit'
+      end
+    end
 
     member do
       get 'original_data'
