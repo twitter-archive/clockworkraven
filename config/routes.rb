@@ -47,7 +47,6 @@ ClockworkRaven::Application.routes.draw do
   resources :jobs do
     member do
       post 'kill'
-      post 'retry'
     end
   end
 

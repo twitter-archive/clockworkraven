@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'thread'
+
 # Represents a job that is executing in Resque.
 #
 # The background thread can periodically update the job's completion attribute
@@ -27,31 +29,12 @@
 #               previous screen while the job executes
 class Job < ActiveRecord::Base
   has_one :evaluation
-  has_many :job_parts
 
   # Processes <param> using the ThreadPoolProcessor <worker_class>
   def run processor_class, items, options = {}
-    # create a JobPart for each item
-    parts = items.map do |item|
-      [self.id, YAML.dump(item)]
-    end
-
-    JobPart.import ['job_id', 'data'], parts
-
-    options[:job_id] = self.id
+    options[:items] = items
     self.processor = processor_class
     self.resque_job = processor_class.create(options)
-    self.save!
-  end
-
-  # Re-runs failed job parts
-  def retry options = {}
-    self.job_parts.
-         where(:status => JobPart::STATUS_ID[:error]).
-         update_all(:status => JobPart::STATUS_ID[:new])
-
-    options[:job_id] = self.id
-    self.resque_job = self.processor.create(options)
     self.save!
   end
 
@@ -87,70 +70,41 @@ class Job < ActiveRecord::Base
     end
   end
 
-  # Returns the percentage of this Job's JobParts that have completed
-  # successfully (between 1 and 100)
-  def success_percentage
-    return 0 if total == 0
-    (completed*100.0) / total
-  end
+  # Returns the percentage completion of this job (between 0 and 100),
+  # based on this job's "completed" and "total" properties
+  def percentage
+    return 100 if status_name == :done
+    return 0 if status_name == :new
 
-  # Returns the percentage of this Job's JobParts that have failed (between 1
-  # and 100)
-  def error_percentage
-    return 0 if total == 0
-    (error_count*100.0) / total
+    status_hash.pct_complete
   end
 
   # Returns the number of total steps in this job
   def total
-    job_parts.size
+    return status_hash.total if status_hash and status_hash.total
+    return evaluation.tasks.count if evaluation
+    return 1
   end
 
   # Returns the number of steps this job has compeleted
   def completed
-    job_parts.where(:status => JobPart::STATUS_ID[:done]).count
+    return total if status_name == :done
+    return 0 if status_name == :new
+    return status_hash.num || 0
   end
-
-  # Returns the number of steps that have thrown errors
-  def error_count
-    job_parts.where(:status => JobPart::STATUS_ID[:error]).count
-  end
-
-  # Return true iff the job has ended but parts failed
-  def parts_failed?
-    ended? and (completed != total)
-  end
-
 
   # If this job's status is :error or :killed, returns a friendly error message
   # with suggestions for what action the user should take.
   #
-  # If any parts of this job have failed, returns the errors from those
-  # parts.
-  #
-  # Else, returns nil.
+  # If this job's status is not :error or :killed, returns nil.
   def error
-    error_parts = []
-
     case status_name
     when :error
-      error_parts.push status_hash.message
-      error_parts.push processor::KILL_MESSAGE.strip_heredoc
+      status_hash.message + "\n\n" + processor::KILL_MESSAGE.strip_heredoc
     when :killed
-      error_parts.push 'Killed.'
-      error_parts.push processor::KILL_MESSAGE.strip_heredoc
-    end
-
-    if error_count > 0
-      error_parts += job_parts.where(:status => JobPart::STATUS_ID[:error]).map{ |part|
-        "Error for part ID #{part.id}: #{part.error}"
-      }
-    end
-
-    if error_parts.empty?
-      nil
+      "Killed.\n\n" + processor::KILL_MESSAGE.strip_heredoc
     else
-      error_parts.join "\n\n"
+      nil
     end
   end
 
@@ -189,10 +143,7 @@ class Job < ActiveRecord::Base
     # Override this constant to provide a friendly message to isplay to the user
     # if this job terminate in an error or is killed. Provide suggestion for
     # what the user should do.
-    KILL_MESSAGE = "Job may have been partially completed."
-
-    # Number of retries per job
-    RETRY_COUNT = 3
+    KILL_MESSAGE = "Job may have been partially completed"
 
     # override this to process and item.
     def process item
@@ -206,50 +157,32 @@ class Job < ActiveRecord::Base
     def after
     end
 
+    # use this to increment the completion counter as your job executes.
+    def increment_completion incr=1
+      @progress_lock.synchronize {
+        @current += incr
+        at(@current, @total, "At #{@current} of #{@total}")
+      }
+    end
+
     # don't override this
     def perform
       @options = options
-      job = Job.find(options['job_id'])
-      @job_parts = job.job_parts.where(:status => 0)
+      @items = options['items']
+      @total = @items.length
+      @current = 0
       @progress_lock = Mutex.new
 
       before
 
-      Threading.thread_pool @job_parts do |job_part|
-        safe_process job_part
+      increment_completion 0
+
+      Threading.thread_pool @items do |item|
+        process item
+        increment_completion
       end
 
       after
-    end
-
-    private
-
-    # calls #process, with retries and auto-reconnect
-    def safe_process job_part_id
-      job_part = JobPart.find(job_part_id)
-      data = job_part.data
-      retries = RETRY_COUNT
-      begin
-        process data
-        job_part.status = JobPart::STATUS_ID[:done]
-        job_part.save!
-      rescue Resque::Plugins::Status::Killed => e
-        # don't retry if we get forcibly killed
-        raise e
-      rescue => e
-        # TODO: reconnect if table not found
-
-        # for any other error, retry if we have retries left.
-        Rails.logger.warn("Got an error in thread pool. Retries: #{retries}.\n#{e.inspect}")
-        if retries > 1
-          retries -= 1
-          retry
-        else
-          job_part.status = JobPart::STATUS_ID[:error]
-          job_part.error = "#{e}\n#{e.backtrace.join("\n")}"
-          job_part.save!
-        end
-      end
     end
   end
 end

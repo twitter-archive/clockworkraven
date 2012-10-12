@@ -23,7 +23,7 @@ class PurgeProcessor < Job::ThreadPoolProcessor
     MTurkUtils.dispose Task.find(task_id)
   end
 
-  def before
+  def after
     e = Evaluation.find(options['evaluation_id'])
     e.status = Evaluation::STATUS_ID[:purged]
     e.save!

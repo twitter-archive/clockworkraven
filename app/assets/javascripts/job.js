@@ -51,6 +51,7 @@ Jobs = {
                 url: Jobs.KILL_URL,
                 success: function() {
                     Jobs.killButton().text('Killed.').attr('disabled', 'disabled');
+                    Jobs.progressBar().addClass('progress-danger');
                     Jobs.progressBar().removeClass('active');
                 },
                 error: function() {
@@ -71,10 +72,6 @@ Jobs = {
 
     killButton: function() {
         return $('.btn-inverse');
-    },
-
-    retryButton: function() {
-        return $('.btn-primary');
     },
 
     continueButton: function() {
@@ -99,15 +96,12 @@ Jobs = {
 
     _handleData: function(data) {
         // update progress bar and text
-        $('#progress_bar_success').css('width', data.success_percentage + '%');
-        $('#progress_bar_error').css('width', data.error_percentage + '%');
-
+        $('#progress_bar').css('width', data.percentage + '%');
         $('.completed').text(data.completed);
         $('.total').text(data.total);
-        $('.error-count').text(data.error_count);
 
         // show error if there is one
-        if(data.error) {
+        if(data.status_name == 'error' || (data.status_name == 'killed')) {
             $('.alert').slideDown();
         }
         else {
@@ -125,28 +119,21 @@ Jobs = {
         // if the job has completed, un-disable the continue button
         if(data.status_name == 'done') {
             Jobs.continueButton().removeAttr('disabled');
-
-            if (data.completed == data.total) {
-                // all parts successful, give us a green
-                Jobs.progressBar().addClass('progress-success');
-            }
+            Jobs.progressBar().addClass('progress-success');
         }
         else {
             Jobs.continueButton().attr('disabled', 'disabled');
         }
 
+        // red progress bar for killed or failed jobs
+        if((data.status_name == 'error') || (data.status_name == 'killed')) {
+            Jobs.progressBar().addClass('progress-danger');
+        }
+
         // if the job has ended, style the progress bar, disable kill,
         // and stop updating this page.
         if(data['ended?'] == true) {
-            if (data.completed != data.total) {
-                Jobs.killButton().hide();
-                Jobs.retryButton().show();
-            }
-            else {
-                Jobs.killButton().show();
-                Jobs.retryButton().hide();
-                Jobs.killButton().attr('disabled', 'disabled');
-            }
+            Jobs.killButton().attr('disabled', 'disabled');
             Jobs.progressBar().removeClass('active');
             Jobs.stopUpdating();
         }
