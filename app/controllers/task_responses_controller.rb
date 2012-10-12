@@ -31,14 +31,14 @@ class TaskResponsesController < ApplicationController
       render :json => {:status => "Forbidden"}, :status => 403
     end
   end
-  
+
   def responses_csv(sep = ',')
     CSV.generate(:col_sep => sep) do |csv|
       # Pull out the fields that were uploaded with the original data,
       # so that we can output these along with the task responses.
-      orig_fields_keys = if @task_responses.empty? 
+      orig_fields_keys = if @task_responses.empty?
                            []
-                         else 
+                         else
                            @task_responses.first.task.data.keys
                          end
 
@@ -47,9 +47,9 @@ class TaskResponsesController < ApplicationController
       # _true_ MC questions (i.e., questions that aren't metadata), so that we
       # don't doubly output any fields that were uploaded with the original data.
       real_mc_questions = @eval.mc_questions.select{|mc_q| !mc_q.metadata }
-                               
+
       # headers
-      csv << orig_fields_keys + 
+      csv << orig_fields_keys +
              (real_mc_questions + @eval.fr_questions).map{|q| q.label} +
              ["MTurk User", "Work Duration", "Approval"]
 
@@ -82,7 +82,7 @@ class TaskResponsesController < ApplicationController
         csv << row
       end
     end
-  end  
+  end
 
   public
 
@@ -187,18 +187,23 @@ class TaskResponsesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => @data }
+      format.json {
+        send_data @data,
+                  :type => 'text/json',
+                  :filename => 'responses.json',
+                  :disposition => 'attachment'
+      }
       format.csv {
-        render :text => responses_csv(','),  :type => 'text/csv',
-                                             :filename => 'responses.csv',
-                                             :disposition => 'attachment',
-                                             :layout => false
+        send_data responses_csv(','),
+                  :type => 'text/csv',
+                  :filename => 'responses.csv',
+                  :disposition => 'attachment'
       }
       format.tsv {
-        render :text => responses_csv("\t"), :type => 'text/tab-separated-values',
-                                             :filename => 'responses.tsv',
-                                             :disposition => 'attachment',
-                                             :layout => false
+        send_data responses_csv("\t"),
+                  :type => 'text/tab-separated-values',
+                  :filename => 'responses.tsv',
+                  :disposition => 'attachment'
       }
     end
   end
