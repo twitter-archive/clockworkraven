@@ -211,19 +211,19 @@ class EvaluationsController < ApplicationController
       format.json {
         send_data @data,
                   :type => 'application/json',
-                  :filename => 'responses.json',
+                  :filename => 'original_data.json',
                   :disposition => 'attachment'
       }
       format.csv {
         send_data original_data_csv(','),
                   :type => 'text/csv',
-                  :filename => 'responses.csv',
+                  :filename => 'original_data.csv',
                   :disposition => 'attachment'
       }
       format.tsv {
         send_data original_data_csv("\t"),
                   :type => 'text/tab-separated-values',
-                  :filename => 'responses.tsv',
+                  :filename => 'original_data.tsv',
                   :disposition => 'attachment'
       }
     end

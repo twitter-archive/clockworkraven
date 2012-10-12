@@ -190,19 +190,19 @@ class TaskResponsesController < ApplicationController
       format.json {
         send_data @data,
                   :type => 'application/json',
-                  :filename => 'responses.json',
+                  :filename => 'task_responses.json',
                   :disposition => 'attachment'
       }
       format.csv {
         send_data responses_csv(','),
                   :type => 'text/csv',
-                  :filename => 'responses.csv',
+                  :filename => 'task_responses.csv',
                   :disposition => 'attachment'
       }
       format.tsv {
         send_data responses_csv("\t"),
                   :type => 'text/tab-separated-values',
-                  :filename => 'responses.tsv',
+                  :filename => 'task_responses.tsv',
                   :disposition => 'attachment'
       }
     end
