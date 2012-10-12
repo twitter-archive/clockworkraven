@@ -208,18 +208,23 @@ class EvaluationsController < ApplicationController
     @data = @evaluation.tasks.map{ |task| task.data }
 
     respond_to do |format|
-      format.json { render :json => @data }
+      format.json {
+        send_data @data,
+                  :type => 'application/json',
+                  :filename => 'original_data.json',
+                  :disposition => 'attachment'
+      }
       format.csv {
-        render :text => original_data_csv(','),  :type => 'text/csv',
-                                                 :filename => 'original_data.csv',
-                                                 :disposition => 'attachment',
-                                                 :layout => false
+        send_data original_data_csv(','),
+                  :type => 'text/csv',
+                  :filename => 'original_data.csv',
+                  :disposition => 'attachment'
       }
       format.tsv {
-        render :text => original_data_csv("\t"), :type => 'text/tab-separated-values',
-                                                 :filename => 'original_data.tsv',
-                                                 :disposition => 'attachment',
-                                                 :layout => false
+        send_data original_data_csv("\t"),
+                  :type => 'text/tab-separated-values',
+                  :filename => 'original_data.tsv',
+                  :disposition => 'attachment'
       }
     end
   end
