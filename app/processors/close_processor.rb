@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'thread'
-
 # Closes Tasks and imports results
 class CloseProcessor < Job::ThreadPoolProcessor
   NAME = "Closing Tasks"
   KILL_MESSAGE = <<-END
     Some tasks may have been closed, some may still be open. To finish closing
-    tasks, use the "retry" button.
+    tasks, use the "Close Evaluation" button again.
   END
 
   def process task_id
@@ -29,21 +27,23 @@ class CloseProcessor < Job::ThreadPoolProcessor
       task.task_response.destroy
     end
 
-    # close & import
     MTurkUtils.force_expire task
     MTurkUtils.fetch_results task
-
-    # add metadata. synchronize with a mutex so we don't create duplicate
-    # questions.
-    @metadata_lock.synchronize do
-      task.add_metadata_as_questions
-    end
   end
 
   # we do a bunch of processing in #after, so double the effective number
   # of tasks so we can increment the counter in #after
   def before
-    @metadata_lock = Mutex.new
+    @total *= 2
+  end
+
+  # add metadata as questions
+  def after
+    @items.each do |task_id|
+      Task.find(task_id).add_metadata_as_questions
+      increment_completion
+    end
+
     e = Evaluation.find(options['evaluation_id'])
     e.status = Evaluation::STATUS_ID[:closed]
     e.save!

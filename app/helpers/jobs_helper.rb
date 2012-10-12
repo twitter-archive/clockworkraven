@@ -21,11 +21,7 @@ module JobsHelper
   def progress_classes
     case @job.status_name
     when :done
-      if @job.completed == @job.total
-        'progress-success'
-      else
-        'active'
-      end
+      'progress-success'
     when :error, :killed
       'progress-danger'
     else

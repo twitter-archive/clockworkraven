@@ -104,24 +104,24 @@ class CloseProcessorTest < ActiveSupport::TestCase
       }
     })
 
-    processor = CloseProcessor.new(FactoryGirl.generate(:resque_uuid))
-
-    # run #before and make sure the eval is set to "closed"
-    processor.stubs(:options).returns('evaluation_id' => eval.id)
-    processor.before
-
-    # check that there are the corrct number of TaskResponses and status was updated
-    eval.reload
-    assert_equal :closed, eval.status_name
-
     # actually call the code to close tasks and import results
+    processor = CloseProcessor.new(FactoryGirl.generate(:resque_uuid))
     processor.process t1.id
     processor.process t2.id
     processor.process t3.id
 
-    # check that each task responses is correct
+    # run #after and make sure completion is getting incremented
+    processor.instance_variable_set :@items, [t1.id, t2.id, t3.id]
+    processor.expects(:increment_completion).times(3)
+    processor.stubs(:options).returns('evaluation_id' => eval.id)
+    processor.after
+
+    # check that there are the corrct number of TaskResponses and status was updated
     eval.reload
     assert_equal 3, eval.task_responses.size
+    assert_equal :closed, eval.status_name
+
+    # check that each task responses is correct
 
     # task 1
     response_1 = eval.tasks.find_by_mturk_hit('HIT_1').task_response
@@ -331,11 +331,9 @@ class CloseProcessorTest < ActiveSupport::TestCase
       }
     })
 
-    processor = CloseProcessor.new(FactoryGirl.generate(:resque_uuid))
-    processor.stubs(:options).returns('evaluation_id' => eval.id)
-    processor.before
 
     # actually call the code to close tasks and import results
+    processor = CloseProcessor.new(FactoryGirl.generate(:resque_uuid))
     processor.process t1.id
     processor.process t2.id
 

@@ -83,12 +83,11 @@ class JobsControllerTest < ActionController::TestCase
                        :complete_url => 'http://foo.com/bar',
                        :back_url     => 'http://foo.com/baz'
 
-    4.times { create :job_part, :job => job, :status_name => :new }
-    5.times { create :job_part, :job => job, :status_name => :done }
-    1.times { create :job_part, :job => job, :status_name => :error }
-
     # mock out the stuff we normally read from Resque
     mock_status job, :status       => 'working',
+                     :pct_complete => 75,
+                     :total        => 4,
+                     :num          => 3,
                      :killable?    => true
 
     response = get :show, :id => job.id, :format => 'json'
@@ -99,10 +98,9 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal 'http://foo.com/bar', response['complete_url']
     assert_equal 'http://foo.com/baz', response['back_url']
     assert_equal 'running',            response['status_name']
-    assert_equal 50,                   response['success_percentage']
-    assert_equal 10,                   response['error_percentage']
-    assert_equal 10,                   response['total']
-    assert_equal 5,                    response['completed']
+    assert_equal 75,                   response['percentage']
+    assert_equal 4,                    response['total']
+    assert_equal 3,                    response['completed']
     assert_equal false,                response['ended?']
   end
 
