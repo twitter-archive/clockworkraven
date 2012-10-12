@@ -189,7 +189,7 @@ class TaskResponsesController < ApplicationController
       format.html # index.html.erb
       format.json {
         send_data @data,
-                  :type => 'text/json',
+                  :type => 'application/json',
                   :filename => 'responses.json',
                   :disposition => 'attachment'
       }
