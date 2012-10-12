@@ -14,37 +14,28 @@
 
 %h1= @job.title || "Job Progress"
 
-.progress.progress-striped{:class => ('active' unless @job.ended?)}
-  .bar.bar-success#progress_bar_success{:style => "width: #{@job.success_percentage}%"}
-  .bar.bar-danger#progress_bar_error{:style => "width: #{@job.error_percentage}%"}
+.progress.progress-striped{:class => progress_classes}
+  .bar#progress_bar{:style => "width: #{@job.percentage.to_i}%"}
 
 .progress-text{:style => ('display: none' if @job.status_name == :new)}
   %span.completed= @job.completed
   \/
   %span.total= @job.total
-  = surround '(', ')' do
-    %span.error-count= @job.error_count
-    failed
 
 .queued{:style => ('display: none' unless @job.status_name == :new)}
   Queued
+
+.alert.alert-error{:style => hide_if(![:error, :killed].include?(@job.status_name))}
+  %h4.alert-heading An error occurred
+
+  %pre.alert-content= @job.error
 
 .buttons
   %button.btn.btn-danger{:type => 'button', :onclick => js_redirect(@job.back_url)}
     &laquo; Back
 
-  = link_to retry_job_url(@job), :method => :post, :style => ('display: none' unless @job.parts_failed?), :class => 'btn btn-primary' do
-    %i.icon-repeat.icon-white
-    Retry
-
-  %button.btn.btn-inverse{:type => 'button', :onclick => 'Jobs.killJob()', :disabled => ('disabled' if @job.ended?), :style => ('display: none' if @job.parts_failed?)}
+  %button.btn.btn-inverse{:type => 'button', :onclick => 'Jobs.killJob()', :disabled => ('disabled' if @job.ended?)}
     %i.icon-remove.icon-white
     Cancel
-
   %button.btn.btn-success{:type => 'button', :onclick => js_redirect(@job.complete_url), :disabled => ('disabled' unless @job.status_name == :done)}
     Continue &raquo;
-
-.alert.alert-error{:style => ('display: none;' unless @job.error)}
-  %h4.alert-heading An error occurred
-
-  %pre.alert-content= @job.error

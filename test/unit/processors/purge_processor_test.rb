@@ -31,13 +31,13 @@ class PurgeProcessorTest < ActiveSupport::TestCase
     eval.tasks.each { |t| processor.process t }
   end
 
-  test "before" do
+  test "after" do
     eval = create :evaluation
 
     processor = PurgeProcessor.new(FactoryGirl.generate(:resque_uuid))
     processor.stubs(:options).returns('evaluation_id' => eval.id)
 
-    processor.before
+    processor.after
 
     # check that processor.before updated the status of the evaluation
     assert_equal :purged, eval.reload.status_name

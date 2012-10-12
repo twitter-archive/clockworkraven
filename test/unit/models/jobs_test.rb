@@ -21,7 +21,7 @@ class JobsTest < ActiveSupport::TestCase
   test "run without options" do
     job = create :job
     Job::ThreadPoolProcessor.expects(:create).
-                             with(:job_id => job.id).
+                             with(:items => [1,2,3]).
                              returns('newuuid')
 
     job.run Job::ThreadPoolProcessor, [1,2,3]
@@ -29,14 +29,12 @@ class JobsTest < ActiveSupport::TestCase
 
     assert_equal Job::ThreadPoolProcessor, job.processor
     assert_equal 'newuuid', job.resque_job
-    assert_equal 3, job.job_parts.count
-    assert_equal [1,2,3], job.job_parts.map(&:data).sort
   end
 
   test "run with options" do
     job = create :job
     Job::ThreadPoolProcessor.expects(:create).
-                             with(:job_id => job.id, :foo => 'bar', :baz => 'bax').
+                             with(:items => [1,2,3], :foo => 'bar', :baz => 'bax').
                              returns('newuuid2')
 
     job.run Job::ThreadPoolProcessor, [1,2,3], :foo => 'bar', :baz => 'bax'
@@ -44,32 +42,6 @@ class JobsTest < ActiveSupport::TestCase
 
     assert_equal Job::ThreadPoolProcessor, job.processor
     assert_equal 'newuuid2', job.resque_job
-    assert_equal 3, job.job_parts.count
-    assert_equal [1,2,3], job.job_parts.map(&:data).sort
-  end
-
-  test "retry" do
-    job = create :job_with_parts, :part_count => 3
-    part1, part2, part3 = job.job_parts.all
-    part1.status = JobPart::STATUS_ID[:error]
-    part1.save!
-    part2.status = JobPart::STATUS_ID[:done]
-    part2.save!
-    part3.status = JobPart::STATUS_ID[:error]
-    part3.save!
-
-    Job::ThreadPoolProcessor.expects(:create).
-                             with(:job_id => job.id, :a => 10, :b => 20).
-                             returns('newuuid3')
-
-    job.retry :a => 10, :b => 20
-    [job, part1, part2, part3].each &:reload
-
-    assert_equal Job::ThreadPoolProcessor, job.processor
-    assert_equal 'newuuid3', job.resque_job
-    assert_equal JobPart::STATUS_ID[:new], part1.status
-    assert_equal JobPart::STATUS_ID[:done], part2.status
-    assert_equal JobPart::STATUS_ID[:new], part3.status
   end
 
   test "status_hash, resque_job present" do
@@ -111,61 +83,82 @@ class JobsTest < ActiveSupport::TestCase
     assert_equal :done, job.status_name
   end
 
-  test "success_percentage" do
+  test "percentage" do
     job = create :job
-    3.times { create :job_part, :job => job, :status_name => :new }
-    2.times { create :job_part, :job => job, :status_name => :done }
-
-    assert_equal 40, job.success_percentage
-
-    job2 = create :job
-    assert_equal 0, job2.success_percentage
+    mock_status job, :pct_complete => 42, :status => 'working'
+    assert_equal 42, job.percentage
   end
 
-  test "eror_percentage" do
+  test "percentage, resque_job absent" do
+    job = create :unsubmitted_job
+    assert_equal 0, job.percentage
+  end
+
+  test "percentage, cant find resque_job" do
     job = create :job
-    4.times { create :job_part, :job => job, :status_name => :new }
-    2.times { create :job_part, :job => job, :status_name => :done }
-    4.times { create :job_part, :job => job, :status_name => :error }
-
-    assert_equal 40, job.error_percentage
-
-    job2 = create :job
-    assert_equal 0, job2.error_percentage
+    mock_status job, nil
+    assert_equal 100, job.percentage
   end
 
   test "total, total set" do
-    job = create :job_with_parts, :part_count => 12
+    job = create :job
+    mock_status job, :total => 12
     assert_equal 12, job.total
   end
 
-  test "completed" do
+  test "total, total not set" do
     job = create :job
-    2.times { create :job_part, :job => job, :status_name => :done }
-    3.times { create :job_part, :job => job, :status_name => :new }
-    assert_equal 2, job.completed
+    mock_status job, {}
+    evaluation = create :evaluation_with_tasks, :task_count => 17, :job => job
+
+    assert_equal 17, job.total
   end
 
-  test "error_count" do
+  test "total, orphan job" do
     job = create :job
-    2.times { create :job_part, :job => job, :status_name => :done }
-    3.times { create :job_part, :job => job, :status_name => :error }
-    assert_equal 3, job.error_count
+    mock_status job, {}
+    assert_equal 1, job.total
   end
 
-  test "error" do
+  test "completed, num set" do
     job = create :job
-    mock_status job, :status => 'failed', :message => 'blah'
+    mock_status job, :num => 10, :status => 'working'
+    assert_equal 10, job.completed
+  end
 
-    part1 = create :job_part, :job => job, :error => 'err a', :status_name => :error
-    part2 = create :job_part, :job => job, :error => 'err b', :status_name => :error
+  test "completed, num not set" do
+    job = create :job
+    mock_status job, :total => 20, :num => nil, :status => 'completed'
+    assert_equal 20, job.completed
+  end
 
-    expected = "blah\n\n" +
-               "#{Job::ThreadPoolProcessor::KILL_MESSAGE}\n\n" +
-               "Error for part ID #{part1.id}: err a\n\n" +
-               "Error for part ID #{part2.id}: err b"
+  test "completed, cant find resque_job" do
+    job = create :job
+    mock_status job, nil
+    assert_equal 1, job.completed
+  end
 
-    assert_equal expected, job.error
+  test "completed, resque job not set" do
+    job = create :unsubmitted_job
+    assert_equal 0, job.completed
+  end
+
+  test "error, job with error" do
+    job = create :job, :processor => Job::ThreadPoolProcessor
+    mock_status job, :message => 'An error!', :status => 'failed'
+    assert_equal "An error!\n\nJob may have been partially completed", job.error
+  end
+
+  test "error, killed job" do
+    job = create :job, :processor => Job::ThreadPoolProcessor
+    mock_status job, :message => 'An error!', :status => 'killed'
+    assert_equal "Killed.\n\nJob may have been partially completed", job.error
+  end
+
+  test "error, running job" do
+    job = create :job
+    mock_status job, :status => 'working'
+    assert_nil job.error
   end
 
   test "kill!" do
@@ -202,17 +195,17 @@ class JobsTest < ActiveSupport::TestCase
   test "ThreadPoolProcessor" do
     without_threading do
       uuid = generate :resque_uuid
-      job = create :job_with_parts
-
-      processor = Job::ThreadPoolProcessor.new uuid, 'job_id' => job
+      processor = Job::ThreadPoolProcessor.new uuid, 'items' => ['first', 'second']
 
       tpp_sequence = sequence 'tpp sequence'
 
-      processor.expects(:before).in_sequence(tpp_sequence)
-      job.job_parts.each do |part|
-        processor.expects(:process).with(part.data).in_sequence(tpp_sequence)
-      end
-      processor.expects(:after).in_sequence(tpp_sequence)
+      processor.expects(:before)                         .in_sequence(tpp_sequence)
+      processor.expects(:at)     .with(0, 2, "At 0 of 2").in_sequence(tpp_sequence)
+      processor.expects(:process).with('first')          .in_sequence(tpp_sequence)
+      processor.expects(:at)     .with(1, 2, "At 1 of 2").in_sequence(tpp_sequence)
+      processor.expects(:process).with('second')         .in_sequence(tpp_sequence)
+      processor.expects(:at)     .with(2, 2, "At 2 of 2").in_sequence(tpp_sequence)
+      processor.expects(:after)                          .in_sequence(tpp_sequence)
 
       processor.perform
     end
