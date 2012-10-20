@@ -174,11 +174,10 @@ class EvaluationsController < ApplicationController
     if success
       success = false
       @evaluation.transaction do
-        if params[:evaluation][:replace_data] == '1'
-          @evaluation.tasks.destroy_all
-        end
-
         if data
+          # We are uploading a new dataset, so remove any existing tasks
+          # before adding tasks from the new file.
+          @evaluation.tasks.destroy_all
           @evaluation.add_tasks data
         end
 
