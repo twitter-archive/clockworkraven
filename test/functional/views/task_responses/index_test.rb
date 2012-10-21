@@ -128,28 +128,45 @@ class TaskResponsesIndexTest < ActionController::TestCase
     get_page
 
     # check header content and order
-    assert_select "thead th:nth-child(2):content('#{@mc1.label}')"
-    assert_select "thead th:nth-child(3):content('#{@mc2.label}')"
-    assert_select "thead th:nth-child(4):content('#{@fr1.label}')"
-    assert_select "thead th:nth-child(5):content('#{@fr2.label}')"
+    assert_select "thead th:nth-child(2):content('item1')"
+    assert_select "thead th:nth-child(3):content('item2')"
+    assert_select "thead th:nth-child(4):content('tweet')"
+    assert_select "thead th:nth-child(5):content('metadata1')"
+    assert_select "thead th:nth-child(6):content('metadata2')"
+    assert_select "thead th:nth-child(7):content('#{@mc1.label}')"
+    assert_select "thead th:nth-child(8):content('#{@mc2.label}')"
+    assert_select "thead th:nth-child(9):content('#{@fr1.label}')"
+    assert_select "thead th:nth-child(10):content('#{@fr2.label}')"
 
     # check first response
-    assert_select "tbody tr:first-child td:nth-child(2):content('#{@mc1_opt1.label}')"
-    assert_select "tbody tr:first-child td:nth-child(3):content('#{@mc2_opt2.label}')"
-    assert_select "tbody tr:first-child td:nth-child(4):content('response 1')"
-    assert_select "tbody tr:first-child td:nth-child(5):content('response 2')"
-    assert_select "tbody tr:first-child td:nth-child(6):content('#{@r1.m_turk_user_id}')"
-    assert_select "tbody tr:first-child td:nth-child(7):content('10')"
-    assert_select "tbody tr:first-child td:nth-child(8) .approval-status:content('Undecided')"
+    task1_data = @e.task_responses.first.task.data
+    assert_select "tbody tr:first-child td:nth-child(2):content('#{task1_data['item1']}')"
+    assert_select "tbody tr:first-child td:nth-child(3):content('#{task1_data['item2']}')"
+    assert_select "tbody tr:first-child td:nth-child(4):content('#{task1_data['tweet']}')"
+    assert_select "tbody tr:first-child td:nth-child(5):content('#{task1_data['metadata1']}')"
+    assert_select "tbody tr:first-child td:nth-child(6):content('#{task1_data['metadata2']}')"
+    assert_select "tbody tr:first-child td:nth-child(7):content('#{@mc1_opt1.label}')"
+    assert_select "tbody tr:first-child td:nth-child(8):content('#{@mc2_opt2.label}')"
+    assert_select "tbody tr:first-child td:nth-child(9):content('response 1')"
+    assert_select "tbody tr:first-child td:nth-child(10):content('response 2')"
+    assert_select "tbody tr:first-child td:nth-child(11):content('#{@r1.m_turk_user_id}')"
+    assert_select "tbody tr:first-child td:nth-child(12):content('10')"
+    assert_select "tbody tr:first-child td:nth-child(13) .approval-status:content('Undecided')"
 
     # check second response
-    assert_select "tbody tr:nth-child(2) td:nth-child(2):content('#{@mc1_opt2.label}')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(3):content('#{@mc2_opt3.label}')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(4):content('response 3')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(5):content('response 4')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(6):content('#{@r2.m_turk_user_id}')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(7):content('20')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(8) .approval-status:content('Rejected')"
+    task2_data = @e.task_responses.second.task.data
+    assert_select "tbody tr:nth-child(2) td:nth-child(2):content('#{task2_data['item1']}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(3):content('#{task2_data['item2']}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(4):content('#{task2_data['tweet']}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(5):content('#{task2_data['metadata1']}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(6):content('#{task2_data['metadata2']}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(7):content('#{@mc1_opt2.label}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(8):content('#{@mc2_opt3.label}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(9):content('response 3')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(10):content('response 4')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(11):content('#{@r2.m_turk_user_id}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(12):content('20')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(13) .approval-status:content('Rejected')"
   end
 
 
