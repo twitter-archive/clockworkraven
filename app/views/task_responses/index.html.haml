@@ -104,6 +104,8 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
   %thead
     %tr
       %th Actions
+      - @eval.original_data_column_names.each do |col|
+        %th= col
       - @eval.mc_questions.each do |mc_q|
         %th= mc_q.label
       - @eval.fr_questions.each do |fr_q|
@@ -168,6 +170,8 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
             = link_to('View Task', evaluation_task_path(@eval, task_response.task), :target => '_blank')
 
         -# Row content
+        - @eval.original_data_column_names.each do |col|
+          %td= task_response.task.data[col]
         - @eval.mc_questions.each do |mc_q|
           -# We need the answers to be in the same order as the headers, so we
           -# have to look up the response by the question, becuase the questions
