@@ -51,8 +51,9 @@
   %b Number of tasks:
   = @evaluation.tasks.size
 
-%p
-  %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
+- unless @evaluation.tasks.empty?
+  %p
+    %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
 
 %p
   %b Qualifications:
@@ -66,7 +67,7 @@
 %h2 Questions
 
 - if @evaluation.mc_questions.empty? && @evaluation.fr_questions.empty?
-  %p This evaluation has no multiple-choice or free response questions.
+  %p This evaluation has no questions.
 
 - unless @evaluation.mc_questions.empty?
   %h3 Multiple-Choice
