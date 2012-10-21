@@ -230,8 +230,9 @@ class EvaluationsController < ApplicationController
 
   # GET /evaluations/1/random_task
   def random_task
-    task = @evaluation.random_task
-    redirect_to evaluation_task_url(@evaluation, task)
+    @task = @evaluation.random_task
+
+    render 'tasks/show', :layout => 'mturk'
   end
 
   # POST /evaluations/1/submit

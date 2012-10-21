@@ -276,15 +276,15 @@ class EvaluationsControllerTest < ActionController::TestCase
   end
 
   test "random task" do
-    # we already test Evaluation#random_task, so just check that is uses that
-    # and that it redirects to something valid
+    # we already test Evaluation#random_task, so just check that this uses that
+    # and that it renders the task
 
     e = create :evaluation_with_tasks
     e.expects(:random_task).returns(e.tasks.first)
     Evaluation.stubs(:find).with(e.id.to_s).returns(e)
 
     get :random_task, :id => e.id
-    assert_redirected_to evaluation_task_path(e, e.tasks.first)
+    assert_template 'tasks/show'
   end
 
   # This asserts that a method that normally spawns off a job to interact
