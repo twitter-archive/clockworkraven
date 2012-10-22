@@ -14,7 +14,7 @@ CREATE TABLE `clockwork_raven_evaluations` (
   `mturk_qualification` varchar(255) NOT NULL DEFAULT 'trusted',
   `title` varchar(255) NOT NULL DEFAULT '',
   `note` varchar(255) DEFAULT NULL,
-  `prod` int(11) NOT NULL DEFAULT '0',
+  `prod` int(11) NOT NULL DEFAULT '1',
   `template` text,
   `metadata` text,
   `user_id` int(11) NOT NULL,
@@ -50,6 +50,15 @@ CREATE TABLE `clockwork_raven_fr_questions` (
   KEY `evaluation_id` (`evaluation_id`),
   CONSTRAINT `clockwork_raven_fr_questions_ibfk_1` FOREIGN KEY (`evaluation_id`) REFERENCES `clockwork_raven_evaluations` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `clockwork_raven_job_parts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) DEFAULT NULL,
+  `data` text COLLATE utf8_unicode_ci,
+  `status` int(11) DEFAULT '0',
+  `error` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `clockwork_raven_jobs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -165,3 +174,5 @@ INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120806234641'
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120807222553');
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120810203402');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121020214517');

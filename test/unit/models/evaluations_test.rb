@@ -144,17 +144,17 @@ class EvaluationsTest < ActiveSupport::TestCase
     assert_equal 1, eval.tasks.size
     assert_equal expected_task_data, eval.tasks.first.data
   end
-  
+
   test "original data column names" do
     eval = create :evaluation
 
     assert_equal 0, eval.original_data_column_names.size, "Column names for eval without data incorrect"
-    
+
     eval.add_tasks(parse_json_fixture('data1.json'))
     expected_column_names = %w(foo1 foo2)
-    
+
     assert_equal expected_column_names, eval.original_data_column_names, "Column names for eval incorrect"
-  end  
+  end
 
   test "random task" do
     eval = create :evaluation_with_tasks, :task_count => 2
@@ -236,14 +236,9 @@ class EvaluationsTest < ActiveSupport::TestCase
     copy = Evaluation.based_on eval
     # make sure properties that should be copied are copied
     [:desc, :keywords, :payment, :duration, :lifetime, :auto_approve,
-     :mturk_qualification, :title, :metadata, :template].each do |field|
+     :mturk_qualification, :title, :metadata, :template, :note, :prod].each do |field|
 
       assert_equal eval[field], copy[field], "Field #{field} was not copied"
-    end
-
-    # make sure properties that shouldn't be copies aren't copied
-    [:name, :note, :prod].each do |field|
-      assert_not_equal eval[field], copy[field], "Field #{field} was copied"
     end
 
     # fill in name and user id so we can save and use associations
