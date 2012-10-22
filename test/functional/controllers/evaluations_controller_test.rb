@@ -217,21 +217,19 @@ class EvaluationsControllerTest < ActionController::TestCase
     end
   end
 
-  test "update add tasks" do
+  test "update replace tasks" do
     # create an eval with the data from task1.json
     e = create :evaluation
     e.add_tasks parse_json_fixture('data1.json')
 
-    # add the data from task2.json
+    # replace with data from task2.json
     post :update, :id => e.id, :evaluation => {:data => fixture_file_upload('data2.json')}
     assert_redirected_to evaluation_path(e.id)
 
-    # assert data added correctly
-    assert_equal 4, e.tasks.size
-    assert_equal e.tasks.first.data, {'foo1' => 'bar1', 'foo2' => 'bar2'}
-    assert_equal e.tasks.second.data, {'foo1' => 'bar3', 'foo2' => 'bar4'}
-    assert_equal e.tasks.third.data, {'foo1' => 'bar5', 'foo2' => 'bar6'}
-    assert_equal e.tasks.fourth.data, {'foo1' => 'bar7', 'foo2' => 'bar8'}
+    # assert data fram task2.json replaced data from task1.json
+    assert_equal 2, e.tasks.size
+    assert_equal e.tasks.first.data, {'foo1' => 'bar5', 'foo2' => 'bar6'}
+    assert_equal e.tasks.second.data, {'foo1' => 'bar7', 'foo2' => 'bar8'}
   end
 
   test "destroy" do
@@ -278,15 +276,15 @@ class EvaluationsControllerTest < ActionController::TestCase
   end
 
   test "random task" do
-    # we already test Evaluation#random_task, so just check that is uses that
-    # and that it redirects to something valid
+    # we already test Evaluation#random_task, so just check that this uses that
+    # and that it renders the task
 
     e = create :evaluation_with_tasks
     e.expects(:random_task).returns(e.tasks.first)
     Evaluation.stubs(:find).with(e.id.to_s).returns(e)
 
     get :random_task, :id => e.id
-    assert_redirected_to evaluation_task_path(e, e.tasks.first)
+    assert_template 'tasks/show'
   end
 
   # This asserts that a method that normally spawns off a job to interact

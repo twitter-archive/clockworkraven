@@ -218,7 +218,7 @@ class Evaluation < ActiveRecord::Base
   # fields to copy when basing an evaluation on another evaluation
   BASED_ON_FIELDS = [:desc, :keywords, :payment, :duration,
                      :lifetime, :auto_approve, :mturk_qualification, :title,
-                     :template, :metadata]
+                     :template, :metadata, :note, :prod]
 
   # Copies specific parts of this evaluation. instructions, desc, keywords,
   # payment, duration, lifetime, auto_approve, mturk_qualification, template,
@@ -232,6 +232,7 @@ class Evaluation < ActiveRecord::Base
     e = Evaluation.new
 
     # copy fields
+    e.name = "Copy of #{base.name}"
     BASED_ON_FIELDS.each do |field|
       e[field] = base[field]
     end
@@ -351,13 +352,13 @@ class Evaluation < ActiveRecord::Base
     return 0 if median == 0
     (1.0/median) * (60.0*60.0) * self.payment
   end
-  
+
   # Array of the names of the columns in the original data file.
   # For example, ["tweet_id", "username", "score"]
   def original_data_column_names
-     if self.tasks.empty? 
+     if self.tasks.empty?
        []
-     else 
+     else
        self.tasks.first.data.keys
      end
   end

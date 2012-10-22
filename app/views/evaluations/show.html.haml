@@ -51,8 +51,9 @@
   %b Number of tasks:
   = @evaluation.tasks.size
 
-%p
-  %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
+- unless @evaluation.tasks.empty?
+  %p
+    %a{:href => random_task_evaluation_url(@evaluation)} Preview random task
 
 %p
   %b Qualifications:
@@ -65,29 +66,34 @@
 
 %h2 Questions
 
-%h3 Multiple-Choice
+- if @evaluation.mc_questions.empty? && @evaluation.fr_questions.empty?
+  %p This evaluation has no questions.
 
-%ol
-  - @evaluation.mc_questions.reject{|q| q.metadata}.each do |q|
-    %li
-      = q.label
-      %ul
-        - q.mc_question_options.each do |o|
-          %li
-            = o.label
-            - if o.value?
-              (value: #{o.value})
+- unless @evaluation.mc_questions.empty?
+  %h3 Multiple-Choice
 
-%h3 Free-Response
+  %ol
+    - @evaluation.mc_questions.reject{|q| q.metadata}.each do |q|
+      %li
+        = q.label
+        %ul
+          - q.mc_question_options.each do |o|
+            %li
+              = o.label
+              - if o.value?
+                (value: #{o.value})
 
-%ol
-  - @evaluation.fr_questions.each do |q|
-    %li= q.label
+- unless @evaluation.fr_questions.empty?
+  %h3 Free-Response
+
+  %ol
+    - @evaluation.fr_questions.each do |q|
+      %li= q.label
 
 .eval-actions
   .clear
 
-  - if @evaluation.job and !@evaluation.job.ended?
+  - if @evaluation.job && !@evaluation.job.ended?
     %p
       This evaluation is being processed.
       = link_to "View Job &raquo;".html_safe, @evaluation.job
@@ -114,7 +120,7 @@
       = link_to 'Close Evaluation', close_evaluation_path(@evaluation),
                 :class => 'btn btn-primary', :method => 'post',
                 :confirm => "Are you sure? All tasks will be closed and no more MTurk users will be able to complete tasks."
-    
+
     - if [:closed, :approved, :purged].include? @evaluation.status_name
       %p
         %b Number of results:
@@ -132,7 +138,7 @@
             = link_to 'CSV', evaluation_task_responses_path(@evaluation, :format => 'csv')
             = link_to 'JSON', evaluation_task_responses_path(@evaluation, :format => 'json')
 
-    - unless @evaluation.tasks.empty?     
+    - unless @evaluation.tasks.empty?
       .btn-group
         %a.btn.dropdown-toggle{:href => '#', 'data-toggle' => 'dropdown'}
           Download Original Data
