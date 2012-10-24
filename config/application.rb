@@ -28,6 +28,7 @@ module ClockworkRaven
 
   class Application < Rails::Application
     TIME_FORMAT = "%a, %b %d, %Y %H:%M:%S %Z"
+    DEFAULT_THREAD_POOL_SIZE = 4
 
     WillPaginate.per_page = 10
 
