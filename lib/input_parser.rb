@@ -64,7 +64,8 @@ module InputParser
       CSV.parse(content, :col_sep => sep,
                          :converters => [:numeric],
                          :headers => true,
-                         :skip_blanks => true).
+                         :skip_blanks => true,
+                         :quote_char => "\x00").
           map{ |row| row.to_hash }
     end
 
