@@ -40,9 +40,14 @@
     :favorites:
       :desc: Favorite Tweets (whitespace-separated ids)
 :user_link:
-  :desc: Link to User
+  :desc: Link to User (given username)
   :vars:
     :username:
       :desc: Username (without "@" prefix)
       :required: true
-
+:username_link:
+  :desc: Link to User (given user id)
+  :vars:
+    :user_id:
+      :desc: User id
+      :required: true
