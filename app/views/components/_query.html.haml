@@ -12,35 +12,5 @@
 -# See the License for the specific language governing permissions and
 -# limitations under the License.
 
-- require_header :twitter_timelines do
-  %script{:type => 'text/javascript', :src => '//widgets.twimg.com/j/2/widget.js', :charset => 'utf-8'}
-
-%script{:type => 'text/javascript'}
-  :plain
-    new TWTR.Widget({
-      version: 2,
-      type: 'search',
-      search: "#{u data['query']}",
-      interval: 30000,
-      subject: "#{data['query']}",
-      width: "500",
-      height: "200",
-      rpp: 10,
-      theme: {
-        shell: {
-          background: '#8ec1da',
-          color: '#ffffff'
-        },
-        tweets: {
-          background: '#ffffff',
-          color: '#444444',
-          links: '#1985b5'
-        }
-      },
-      features: {
-        scrollbar: true,
-        loop: false,
-        live: false,
-        behavior: 'all'
-      }
-    }).render().start();
+%b Search Query:
+%a{:target => '_blank', :href => "https://twitter.com/search?q=#{url_encode(data['query'])}"}= data['query']
