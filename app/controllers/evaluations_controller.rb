@@ -77,7 +77,7 @@ class EvaluationsController < ApplicationController
           row << view_context.link_to('Remove', evaluation, :method => :delete, :class => 'btn btn-danger',
             :confirm => "Are you sure you want to remove this evaluation from Clockwork Raven? This does not close the evaluation or remove it from Mechanical Turk.")
         end
-        render json: table
+        render :json => "table"
       end
     end
   end
