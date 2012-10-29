@@ -431,7 +431,7 @@ class EvaluationsControllerTest < ActionController::TestCase
               :favorites     => { :value => '_nil',      :literal => ''            }
             },
             # make sure data from other components doesn't interfere
-            :user_link => { :username => { :value => 'wrong' } }
+            :user_link_given_username => { :username => { :value => 'wrong' } }
           }
         },
         '6' => {
