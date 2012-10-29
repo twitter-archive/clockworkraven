@@ -84,15 +84,6 @@
     .controls
       = f.file_field :data
 
-  - unless @evaluation.new_record?
-    .control-group
-      %label.control-label{:for => 'evaluation_replace_data'}
-        Replace data?
-        %br
-        %span.label-help If checked, existing data will be deleted
-      .controls
-        = f.check_box :replace_data
-
   .accordion-heading
     %a.accordion-toggle{'data-toggle' => 'collapse', :href => '#advancedSettingsPane'} Advanced settings...
   #advancedSettingsPane.accordion-body.collapse
