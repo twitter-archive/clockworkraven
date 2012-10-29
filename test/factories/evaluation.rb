@@ -54,7 +54,7 @@ FactoryGirl.define do
         }
       },
       {
-        :type => 'user_link',
+        :type => 'user_link_given_username',
         :data => {
           :username => { :value => '_literal', :literal => 'benweissmann' }
         }
