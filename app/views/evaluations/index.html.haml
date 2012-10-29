@@ -16,7 +16,7 @@
 
 = link_to 'Create New Evaluation', new_evaluation_path, :class => 'btn btn-primary'
 
-%table.table.table-striped.data-table{"data-source" => evaluations_url(format: "json") }
+%table.table.table-striped.data-table#evaluations_table{"data-source" => evaluations_url(format: "json") }
   %thead
     %tr
       %th Name
@@ -28,3 +28,18 @@
       %th.empty
       %th.empty
   %tbody
+
+:javascript
+  $(document).ready( function () {
+    $('#evaluations_table').dataTable( {
+      "aoColumnDefs" : [
+        { "bSortable" : false, "aTargets" : ["empty"] }
+      ],
+      "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+      "bSortClasses" : false,
+      "sPaginationType": "bootstrap",
+      "bProcessing": true,
+      "bServerSide": true,
+      "sAjaxSource": $('.data-table').data('source')
+    } ).fnSort( [[4, 'desc']] );
+  } );
