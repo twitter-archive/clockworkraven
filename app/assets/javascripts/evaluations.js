@@ -107,17 +107,3 @@ $.extend( $.fn.dataTableExt.oPagination, {
     }
   }
 } );
-
-$(document).ready( function () {
-  $('.data-table').dataTable( {
-    "aoColumnDefs" : [
-      { "bSortable" : false, "aTargets" : ["empty"] }
-    ],
-    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-    "bSortClasses" : false,
-    "sPaginationType": "bootstrap",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": $('.data-table').data('source')
-  } ).fnSort( [[4, 'desc']] );
-} );
