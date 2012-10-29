@@ -182,7 +182,7 @@ class EvaluationsControllerTest < ActionController::TestCase
 
   end
 
-  BAD_FILES = ['bad1.tsv', 'bad2.json', 'bad3.json', 'bad4.json', 'bad5.json', 'bad6.json']
+  BAD_FILES = ['bad2.json', 'bad3.json', 'bad4.json', 'bad5.json', 'bad6.json']
 
   test "update with bad data" do
     BAD_FILES.each do |file|
