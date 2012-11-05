@@ -26,7 +26,7 @@ module Threading
   #
   # If the processor throws an exception on any item, the queue is cleared,
   # and the exception is propagated.
-  def Threading.thread_pool items, size=16, retry_count=3, &processor
+  def Threading.thread_pool items, size=4, retry_count=3, &processor
     queue = Queue.new
     items.each {|o| queue.push o}
     threads = []

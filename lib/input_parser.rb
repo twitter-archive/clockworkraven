@@ -12,8 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'csv'
 require 'set'
+
+class String
+  # Taken from http://stackoverflow.com/a/4585362/231588
+  def to_my_utf8
+    if RUBY_VERSION < "1.9"
+      require 'iconv'
+      ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', self + ' ')[0..-2]
+    else
+      self.force_encoding 'UTF-8'
+    end
+  end
+end
 
 module InputParser
   class << self
@@ -23,7 +34,7 @@ module InputParser
     # Throws InputParser::ParseError if the file is malformed
     def parse(file)
       type = File.extname(file.original_filename)
-      content = file.read.force_encoding 'UTF-8'
+      content = file.read.to_my_utf8
 
       begin
         case type

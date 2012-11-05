@@ -7,6 +7,7 @@ gem 'rails', '3.2.1'
 
 #  gem 'sqlite3'
 
+gem 'fastercsv'
 gem 'json'
 
 # Gems used only for assets and not required
@@ -24,7 +25,7 @@ end
 
 group :development, :test, :devprod do
   gem 'pry'
-  # gem 'factory_girl_rails', '< 3.0.0'
+  gem 'factory_girl_rails', '< 3.0.0'
   gem 'mocha', :require => nil
   gem 'ruby-prof'
 end

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'csv'
-
 class TaskResponsesController < ApplicationController
   before_filter :find_response, :except => [:index, :responses_csv]
   before_filter :require_priv, :except => [:index, :responses_csv]
@@ -33,7 +31,7 @@ class TaskResponsesController < ApplicationController
   end
 
   def responses_csv(sep = ',')
-    CSV.generate(:col_sep => sep) do |csv|
+    CSV.generate({:col_sep => sep}) do |csv|
       # Pull out the fields that were uploaded with the original data,
       # so that we can output these along with the task responses.
       orig_fields_keys = if @task_responses.empty?
