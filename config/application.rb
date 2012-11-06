@@ -27,7 +27,7 @@ module ClockworkRaven
   VERSION = '0.2.0'
 
   class Application < Rails::Application
-    TIME_FORMAT = "%a, %b %d, %Y %H:%M:%S %Z"
+    TIME_FORMAT = "%a, %b %d, %Y %l:%M %p"
 
     WillPaginate.per_page = 10
 

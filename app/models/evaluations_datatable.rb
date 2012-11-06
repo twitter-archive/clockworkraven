@@ -1,5 +1,5 @@
 class EvaluationsDatatable
-  delegate :params, :h, :link_to, to: :@view
+  delegate :params, :h, :link_to, :to => :@view
 
   def initialize(view)
     @view = view
@@ -7,10 +7,10 @@ class EvaluationsDatatable
 
   def as_json(options = {})
     {
-      sEcho: params[:sEcho].to_i,
-      iTotalRecords: Evaluation.count,
-      iTotalDisplayRecords: evaluations.total_entries,
-      aaData: data
+      :sEcho => params[:sEcho].to_i,
+      :iTotalRecords => Evaluation.count,
+      :iTotalDisplayRecords => evaluations.total_entries,
+      :aaData => data
     }
   end
 
@@ -62,9 +62,9 @@ private
         # Match status searches
         status = query_ids(Evaluation::STATUS_ID, term)
 
-        matched_ids = User.select('id').where("name like :search", search: search_term).map { |match| match.id }
+        matched_ids = User.select('id').where("name like :search", :search => search_term).map { |match| match.id }
         evaluations = evaluations.where("name like :search or user_id in (:uids) or prod in (:prod) or status in (:status)",
-          search: search_term, :uids => matched_ids, :prod => prod, :status => status)
+          :search => search_term, :uids => matched_ids, :prod => prod, :status => status)
       end
 
       # check for production search
