@@ -31,7 +31,7 @@ class TaskResponsesController < ApplicationController
   end
 
   def responses_csv(sep = ',')
-    CSV.generate({:col_sep => sep}) do |csv|
+    CSV.generate(:col_sep => sep, :quote_char => "\x00") do |csv|
       # Pull out the fields that were uploaded with the original data,
       # so that we can output these along with the task responses.
       orig_fields_keys = if @task_responses.empty?
@@ -69,7 +69,7 @@ class TaskResponsesController < ApplicationController
 
         # FR Questions
         @eval.fr_questions.each do |fr_q|
-          fr_q_resp = @data[:responses][task_response.id][:frQuestions][fr_q.id]
+          fr_q_resp = @data[:responses][task_response.id][:frQuestions][fr_q.id].gsub(/\s+/, " ").strip
           row.push(fr_q_resp.nil? ? nil : fr_q_resp)
         end
 
