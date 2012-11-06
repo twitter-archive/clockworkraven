@@ -63,22 +63,10 @@ class EvaluationsController < ApplicationController
 
   # GET /evaluations
   def index
+    @evaluations = Evaluation.order('id DESC')
+
     respond_to do |format|
       format.html # index.html.haml
-
-      # JSON format returns table views to support server-side processing, as described in
-      # http://railscasts.com/episodes/340-datatables?view=asciicast
-      format.json do
-        table = EvaluationsDatatable.new(view_context).as_json
-        table[:aaData].each do |row|
-          evaluation = row.pop
-          row << view_context.link_to('Show', evaluation, :class => 'btn')
-          row << view_context.link_to('Copy', new_evaluation_path(:based_on => evaluation.id), :class => 'btn btn-success')
-          row << view_context.link_to('Remove', evaluation, :method => :delete, :class => 'btn btn-danger',
-            :confirm => "Are you sure you want to remove this evaluation from Clockwork Raven? This does not close the evaluation or remove it from Mechanical Turk.")
-        end
-        render json: table
-      end
     end
   end
 
@@ -304,7 +292,7 @@ class EvaluationsController < ApplicationController
 
           # for components, we need to use the part of the data element that's
           # for that components
-          unless section[:type].to_s[0] == '_'
+          unless section[:type].to_s[0].chr == '_'
             section[:data] = section[:data][section[:type]]
           end
 
@@ -320,7 +308,7 @@ class EvaluationsController < ApplicationController
     end
 
     # sort
-    template.sort_by! {|section| section[:order].to_i}
+    template = template.sort_by {|section| section[:order].to_i}
 
     # update questions
     success = @evaluation.update_attributes({
