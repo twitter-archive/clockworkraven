@@ -28,6 +28,42 @@ class TasksHelperTest < ActionView::TestCase
     assert_equal expected_output, interpolate(template_string, data)
   end
 
+  test "markdown" do
+    input = <<-END_IN.strip_heredoc
+      <b>foo</b>
+
+      <p>blah</p>
+
+      # Things
+
+      I want some *things* and some _other things_ and some **important things**
+
+      * foo
+      * bar
+
+      <script type="text/javascript">alert('hi');</script>
+    END_IN
+
+    expected_output = <<-END_OUT.strip_heredoc
+      <p><b>foo</b></p>
+
+      <p>blah</p>
+
+      <h1>Things</h1>
+
+      <p>I want some <em>things</em> and some <em>other things</em> and some <strong>important things</strong></p>
+
+      <ul>
+      <li>foo</li>
+      <li>bar</li>
+      </ul>
+
+      <script type="text/javascript">alert('hi');</script>
+    END_OUT
+
+    assert_dom_equiv expected_output, markdown(input)
+  end
+
   test "resolve data" do
     fields = {
       'foo' => 'data1',

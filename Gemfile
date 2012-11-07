@@ -54,6 +54,9 @@ gem 'resque-status'
 # UUIDs for tasks
 gem 'uuidtools'
 
+# Markdown
+gem 'rdiscount'
+
 # To use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '~> 3.0.0', :require => 'bcrypt'
 
