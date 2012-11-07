@@ -133,6 +133,7 @@ CREATE TABLE `clockwork_raven_task_responses` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `mturk_assignment` varchar(255) DEFAULT NULL,
   `approved` tinyint(1) DEFAULT NULL,
+  `source` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `clockwork_raven_task_responses_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `clockwork_raven_tasks` (`id`)
@@ -174,5 +175,9 @@ INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120806234641'
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120807222553');
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120810203402');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120911001453');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121010052749');
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121020214517');
