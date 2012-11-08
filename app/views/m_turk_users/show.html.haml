@@ -49,11 +49,6 @@
       = @m_turk_user.task_responses.count.to_f / @m_turk_user.evaluation_count
   .control-group
     .control-label
-      \# of Responses
-    .controls
-      = @m_turk_user.task_responses.count
-  .control-group
-    .control-label
       Mean Time (s)
     .controls
       = @m_turk_user.stats.mean_time
