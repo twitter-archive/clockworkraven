@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'stats'
+
 # Represents a user who has responsed to one of our tasks
 #
 # Attributes:
@@ -20,6 +22,8 @@
 # banned:  Boolean flag indicating if we've banned this user
 # prod:    Boolean flag indicating if this is a user from the production
 #          mturk server or the sandbox server
+# name:    Friendly name for this user.
+# note:    Arbitrary notes about this user.
 class MTurkUser < ActiveRecord::Base
   has_many :task_responses
 
@@ -42,5 +46,26 @@ class MTurkUser < ActiveRecord::Base
   # Allows a previously banned user to work on tasks
   def unban!
     MTurkUtils.unban_user self
+  end
+
+  # Returns the number evaluations this user has participated in
+  def evaluations
+    Evaluation.joins(:tasks => {:task_response => :m_turk_user}).
+               where("clockwork_raven_m_turk_users.id='#{self.id}'")
+  end
+
+  def evaluation_count
+    evaluations.select('DISTINCT clockwork_raven_evaluations.id').
+                count
+  end
+
+  # Returns a CRStats for this user's responses
+  def stats
+    @stats ||= CRStats.new(self.task_responses.map{|r| [r.work_duration, r.task.evaluation.payment]})
+  end
+
+  # Returns the name if available, or the ID if no name has been assigned
+  def friendly_name
+    name || id
   end
 end

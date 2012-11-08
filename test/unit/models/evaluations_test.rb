@@ -412,7 +412,7 @@ class EvaluationsTest < ActiveSupport::TestCase
     assert_equal 9, eval1.mean_time
     assert_equal 8.5, eval1.median_time
     assert_equal 14000, eval1.mean_pay_rate
-    assert_in_delta 14823, eval1.median_pay_rate, 1
+    assert_in_delta 14800, eval1.median_pay_rate, 1
 
     # payment $0.15, times: 0, 10, 35
     # mean: 15, median: 10

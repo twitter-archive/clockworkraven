@@ -184,7 +184,7 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
         - @eval.fr_questions.each do |fr_q|
           - fr_q_resp = @data[:responses][task_response.id][:frQuestions][fr_q.id]
           %td= fr_q_resp.nil? ? nil: fr_q_resp
-        %td.mturk-user= task_response.m_turk_user_id
+        %td.mturk-user= link_to task_response.m_turk_user.friendly_name, task_response.m_turk_user
         %td= task_response.work_duration
         %td.approval
           .approval-status= task_response_status_name(task_response)

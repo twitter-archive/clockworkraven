@@ -77,6 +77,8 @@ CREATE TABLE `clockwork_raven_m_turk_users` (
   `trusted` tinyint(1) NOT NULL DEFAULT '0',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `prod` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `notes` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -133,6 +135,7 @@ CREATE TABLE `clockwork_raven_task_responses` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `mturk_assignment` varchar(255) DEFAULT NULL,
   `approved` tinyint(1) DEFAULT NULL,
+  `source` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `clockwork_raven_task_responses_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `clockwork_raven_tasks` (`id`)
@@ -175,4 +178,10 @@ INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120807222553'
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120810203402');
 
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120911001453');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121010052749');
+
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121020214517');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121107205842');

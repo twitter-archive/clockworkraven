@@ -39,6 +39,8 @@
               %a{'href' => '/jobs'} Background Jobs
             %li#accounts_link{:class => active_in(:accounts)}
               %a{'href' => account_path} My Account
+            %li#judges_link{:class => active_in(:workers)}
+              %a{'href' => m_turk_users_path} Workers
           - if current_user
             %ul.nav.pull-right#current_user
               %li

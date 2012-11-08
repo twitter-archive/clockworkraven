@@ -38,6 +38,8 @@ module ApplicationHelper
       return :login
     when 'account'
       return :accounts
+    when 'm_turk_users'
+      return :workers
     else
       return :other
     end

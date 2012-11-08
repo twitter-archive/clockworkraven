@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'stats'
+
 # Represents a HIT, comprised of a number of individual tasks and questions
 # asked for each task.
 #
@@ -316,41 +318,34 @@ class Evaluation < ActiveRecord::Base
     return (self.payment + commission) * tasks.size
   end
 
+  private
+
+  def worker_stats
+    @worker_stats ||= CRStats.new(self.task_responses.map{|r| [r.work_duration, self.payment]})
+  end
+
+  public
+
   # Mean average amount of time it took workers to complete tasks, in seconds.
   def mean_time
-    return 0 if self.task_responses.size == 0
-    (self.task_responses.map{|r| r.work_duration}.inject(:+) / self.task_responses.size.to_f)
+    worker_stats.mean_time
   end
 
   # Median amount of time it took workers to complete tasks, in seconds
   def median_time
-    return 0 if self.task_responses.size == 0
-
-    durations = self.task_responses.map(&:work_duration).sort
-    middle = durations.length / 2
-    if (durations.size % 2) == 0
-      # even, take mean of middle 2
-      return (durations[middle] + durations[middle-1]) / 2.0
-    else
-      # odd, return middle
-      return durations[middle]
-    end
+    worker_stats.median_time
   end
 
   # Effective pay rate, in cents per hour, based on mean time
   # tasks per second * seconds per hour * pay per task = pay per hour
   def mean_pay_rate
-    mean = self.mean_time
-    return 0 if mean_time == 0
-    (1.0/mean) * (60.0*60.0) * self.payment
+    worker_stats.mean_pay_rate
   end
 
   # Effective pay rate, in cents per hour, based on median time
   # tasks per second * seconds per hour * pay per task = pay per hour
   def median_pay_rate
-    median = self.median_time
-    return 0 if median == 0
-    (1.0/median) * (60.0*60.0) * self.payment
+    worker_stats.median_pay_rate
   end
 
   # Array of the names of the columns in the original data file.
