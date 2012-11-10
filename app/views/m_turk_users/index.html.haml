@@ -19,7 +19,7 @@
     %tr
       %th ID
       %th Name
-      %th # of Evalutions Worked On
+      %th # of Evaluations Worked On
       %th # of Responses
       %th Average Responses per Evaluation
       %th Mean Time (s)
@@ -35,9 +35,9 @@
         %td= user.evaluation_count
         %td= user.task_responses.count
         %td= user.task_responses.count.to_f / user.evaluation_count
-        %td= user.stats.mean_time
-        %td= user.stats.median_time
-        %td= format_cents(user.stats.mean_pay_rate)
+        %td= user.stats.mean_time.round(2)
+        %td= user.stats.median_time.round(2)
+        %td= format_cents(user.stats.overall_pay_rate)
         %td= format_cents(user.stats.median_pay_rate)
         %td
           = link_to m_turk_user_path(user), :class => 'btn' do

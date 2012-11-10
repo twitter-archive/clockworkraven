@@ -411,8 +411,8 @@ class EvaluationsTest < ActiveSupport::TestCase
     end
     assert_equal 9, eval1.mean_time
     assert_equal 8.5, eval1.median_time
-    assert_equal 14000, eval1.mean_pay_rate
-    assert_in_delta 14800, eval1.median_pay_rate, 1
+    assert_in_delta 14000, eval1.mean_pay_rate, 1
+    assert_equal 14875, eval1.median_pay_rate
 
     # payment $0.15, times: 0, 10, 35
     # mean: 15, median: 10
@@ -424,7 +424,7 @@ class EvaluationsTest < ActiveSupport::TestCase
     end
     assert_equal 15, eval2.mean_time
     assert_equal 10, eval2.median_time
-    assert_equal 3600, eval2.mean_pay_rate
+    assert_in_delta 3600, eval2.mean_pay_rate, 1
     assert_equal 5400, eval2.median_pay_rate
 
     # test 0 responses
@@ -442,7 +442,5 @@ class EvaluationsTest < ActiveSupport::TestCase
     end
     assert_equal 0, eval4.mean_time
     assert_equal 0, eval4.median_time
-    assert_equal 0, eval4.mean_pay_rate
-    assert_equal 0, eval4.median_pay_rate
   end
 end

@@ -1,6 +1,7 @@
 # Tools for generating worker stats based on response times an payments
 class CRStats
   # tasks: tuples of [[time to complete task, amount paid for task], ...]
+  # Times are in seconds, payments are in cents.
   def initialize tasks
     @tasks = tasks
     @times = tasks.map(&:first)
@@ -23,18 +24,22 @@ class CRStats
     median @times
   end
 
-  # Effective pay rate, in cents per hour, based on mean time
+  # Effective pay rate, in cents per hour, over all tasks
   # This is calculated as:
   # sum(pay rate for task * time spent on task) / sum(time spent on task)
   # e.g. the average pay rate for each task weighted by the time spent on the
-  # task -- which is mathematically equivalent to the pay rate based on the mean
-  # payment and the mean task time.
-  def mean_pay_rate
-    pay_rate(mean(@times), mean(@payments))
+  # task -- which is mathematically equivalent to the pay rate based on the sum
+  # of payments and the sum of task times,
+  def overall_pay_rate
+    pay_rate(sum(@times), sum(@payments))
   end
 
-  # Effective pay rate, in cents per hour, based on median time
-  # (This is calculated as the median of the pay rates)
+  # Mean of the tasks' pay rates
+  def mean_pay_rate
+    mean(pay_rates)
+  end
+
+  # Median of the tasks' pay rates
   def median_pay_rate
     median(pay_rates)
   end
@@ -43,10 +48,12 @@ class CRStats
 
   def pay_rates
     @tasks.map do |task|
-      pay_rate *task
+      pay_rate(*task)
     end
   end
 
+  # Returns the pay rate, in cents per hour, given the time in seconds
+  # and the payment in cents.
   def pay_rate time, payment
     if time == 0
       # assume time is actually 1
@@ -57,12 +64,12 @@ class CRStats
   end
 
   def sum ary
-    ary.inject &:+
+    ary.inject 0, &:+
   end
 
   def mean ary
     return 0 if ary.length == 0
-    sum(ary) / ary.length
+    sum(ary).to_f / ary.length
   end
 
   def median ary

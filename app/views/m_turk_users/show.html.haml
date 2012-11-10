@@ -34,7 +34,7 @@
       = f.text_field :name, :class => 'text_field'
   .control-group
     .control-label
-      \# of Evalutions Worked On
+      \# of Evaluations Worked On
     .controls
       = @m_turk_user.evaluation_count
   .control-group
@@ -51,17 +51,17 @@
     .control-label
       Mean Time (s)
     .controls
-      = @m_turk_user.stats.mean_time
+      = @m_turk_user.stats.mean_time.round(2)
   .control-group
     .control-label
       Median Time (s)
     .controls
-      = @m_turk_user.stats.median_time
+      = @m_turk_user.stats.median_time.round(2)
   .control-group
     .control-label
       Mean Pay Rate ($/hr)
     .controls
-      = format_cents(@m_turk_user.stats.mean_pay_rate)
+      = format_cents(@m_turk_user.stats.overall_pay_rate)
   .control-group
     .control-label
       Median Pay Rate ($/hr)

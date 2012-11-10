@@ -339,7 +339,7 @@ class Evaluation < ActiveRecord::Base
   # Effective pay rate, in cents per hour, based on mean time
   # tasks per second * seconds per hour * pay per task = pay per hour
   def mean_pay_rate
-    worker_stats.mean_pay_rate
+    worker_stats.overall_pay_rate
   end
 
   # Effective pay rate, in cents per hour, based on median time
