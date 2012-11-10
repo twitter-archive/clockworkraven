@@ -2,41 +2,21 @@
 
 ## Human-Powered Data Analysis
 
-Clockwork Raven is a web application that allows users to easily submit data
-to Mechanical Turk for manual review, and then analyze that data. Clockwork Raven is
-actively used at Twitter to gather tens of thousands of judgments from Mechanical Turk
-users weekly.
+Clockwork Raven is a web application that allows users to easily interact with Mechanical Turk. It is actively used at Twitter to gather thousands of judgments every day.
+
+If you've ever wanted a friendlier interface to Mechanical Turk, then Clockwork Raven is for you.
 
 ### What it is good for
 
 Clockwork Raven is designed for individuals, or organizations that share a
-single Mechanical Turk account. It allows users to authenticate with LDAP or
-with accounts created through Clockwork Raven. Users can then upload data,
-design forms to send to Mechanical Turk through a simple, drag-and-drop
-interface, submit these forms to Mechanical Turk, and review the results.
+single Mechanical Turk account. Users can upload data, design evaluations to 
+send to Mechanical Turk through a simple, drag-and-drop interface, and review 
+results all in a single place. It also provides a Thrift API for users who wish
+to programmatically run human computation tasks or gather real-time judgments.
 
-Administrators can separate users into "privileged" and "unprivileged" sets
-manually or based on LDAP groups. Unprivileged uses are not allowed to spend
-money, but can submit evaluations to the Mechanical Turk sandbox to test out
-the system, and can design evaluations and ask a privileged user to submit
-the evaluation on his or her behalf.
-
-To help control the quality of responses, Clockwork Raven allows you to restrict
-the tasks you send to Mechanical Turk to only those users who Mechanical Turk
-has deemed "Categorization Masters", or to only those users who you have marked
-as Trusted in Clockwork Raven.
-
-### What it is not good for
-
-Clockwork Raven is designed for situations where **everyone who has access to
-the system is relatively trusted.** Because the form designer allows users to
-use arbitrary HTML, anyone with access to the system could execute an
-[XSS](http://en.wikipedia.org/wiki/Cross-site_scripting) attack and compromise
-the system.
-
-However, Clockwork Raven will not give access to users unless they are part of
-white-listed LDAP groups or have been explicitly granted access. Users cannot
-create accounts for themselves.
+To control the quality of responses, Clockwork Raven allows you to restrict
+tasks to Mechanical Turk's "Categorization Masters", or to only those users whom 
+you have marked as Trusted in Clockwork Raven.
 
 ## Setup
 
@@ -96,6 +76,19 @@ create accounts for themselves.
    up more background workers by passing an argument to the rake task:
    `rake raven:resque[16]` will start up 16 background workers.
 6. Run the server. To run the server, run `rails server`.
+
+## Security
+
+Administrators can separate users into "privileged" and "unprivileged" sets
+manually or based on LDAP groups. Unprivileged uses are not allowed to spend
+money, but can submit evaluations to the Mechanical Turk sandbox to test out
+the system.
+
+Clockwork Raven is designed for situations where **everyone who has access to
+the system is relatively trusted.** Because the form designer allows users to
+use arbitrary HTML, anyone with access to the system could execute an
+[XSS](http://en.wikipedia.org/wiki/Cross-site_scripting) attack and compromise
+the system.
 
 ## Documentation
 
