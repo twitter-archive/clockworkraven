@@ -17,30 +17,31 @@
 #
 # Attributes
 #
-# name:               The name displayed in Clockwork Raven
-# title:              The name displayed on Mechanical Turk
-# creator:            The name of the user who created this Evaluation
-# email:              The email of the user who created this Evaluation
-# desc:               Description shown on MTurk
-# payment:            Payment given to workers for tasks, in cents
-# keywords:           Comma-separated list of keywords, shown on MTurk
-# duration:           Time, in seconds, workers have to complete this task
-# lifetime:           Amount of time, in seconds, to leave this task on MTurk
-# auto_approve:       Amount of time, in seconds, between when a worker submits
-#                     a response and that response is automatically approved
-# mturk_hit_type:     The ID of the MTurk HIT Type assigned to this Evaluation
-#                     by the API
-# status:             The status of this evaluation in its lifecycle (see
-#                     Evaluation::STATUS_ID)
-# mturk_qualfication: The name of the qualification required of workers. Should
-#                     be one of "none", "trusted", or "master".
-# note:               Internal note displayed on Clockwork Raven
-# prod:               Boolean flag. If true, this evaluation is being run on
-#                     the production MTurk system, rather than the sandbox.
-# template:           Serialized representation of the template used to
-#                     format this evaluation's tasks. See below for format.
-# metadata:           Which fields of this evaluation's tasks' data are
-#                     metadata. See below for more.
+# name:                The name displayed in Clockwork Raven
+# title:               The name displayed on Mechanical Turk
+# creator:             The name of the user who created this Evaluation
+# email:               The email of the user who created this Evaluation
+# desc:                Description shown on MTurk
+# payment:             Payment given to workers for tasks, in cents
+# num_judges_per_task: The number of judges to work on each individual task
+# keywords:            Comma-separated list of keywords, shown on MTurk
+# duration:            Time, in seconds, workers have to complete this task
+# lifetime:            Amount of time, in seconds, to leave this task on MTurk
+# auto_approve:        Amount of time, in seconds, between when a worker submits
+#                      a response and that response is automatically approved
+# mturk_hit_type:      The ID of the MTurk HIT Type assigned to this Evaluation
+#                      by the API
+# status:              The status of this evaluation in its lifecycle (see
+#                      Evaluation::STATUS_ID)
+# mturk_qualfication:  The name of the qualification required of workers. Should
+#                      be one of "none", "trusted", or "master".
+# note:                Internal note displayed on Clockwork Raven
+# prod:                Boolean flag. If true, this evaluation is being run on
+#                      the production MTurk system, rather than the sandbox.
+# template:            Serialized representation of the template used to
+#                      format this evaluation's tasks. See below for format.
+# metadata:            Which fields of this evaluation's tasks' data are
+#                      metadata. See below for more.
 class Evaluation < ActiveRecord::Base
   belongs_to :user
   belongs_to :job
@@ -216,7 +217,7 @@ class Evaluation < ActiveRecord::Base
   end
 
   # fields to copy when basing an evaluation on another evaluation
-  BASED_ON_FIELDS = [:desc, :keywords, :payment, :duration,
+  BASED_ON_FIELDS = [:desc, :keywords, :payment, :num_judges_per_task, :duration,
                      :lifetime, :auto_approve, :mturk_qualification, :title,
                      :template, :metadata, :note, :prod]
 
@@ -313,7 +314,7 @@ class Evaluation < ActiveRecord::Base
   # Returns: total cost, in cents
   def cost
     commission = [self.payment/10.0, MTURK_COMMISSION_MINIMUM].max
-    return (self.payment + commission) * tasks.size
+    return (self.payment + commission) * tasks.size * num_judges_per_task
   end
 
   # Mean average amount of time it took workers to complete tasks, in seconds.

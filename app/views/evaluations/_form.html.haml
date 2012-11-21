@@ -53,7 +53,7 @@
       %span.form-required
         Description
       %br
-      %span.label-help Shown to MTurk users searching for a task
+      %span.label-help Shown to MTurk users
     .controls
       = f.text_area :desc, :rows => 5
 
@@ -75,6 +75,16 @@
       .input-prepend
         = f.number_field :payment
         %span.add-on &cent;
+
+  .control-group
+    %label.control-label{:for => 'evaluation_num_judges_per_task'}
+      %span.form-required
+        Judges per task
+      %br
+      %span.label-help Number of judges that will work on each task
+    .controls
+      .input-prepend
+        = f.number_field :num_judges_per_task
 
   .control-group
     %label.control-label{:for => 'evaluation_data'}

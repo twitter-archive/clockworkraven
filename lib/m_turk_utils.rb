@@ -135,7 +135,7 @@ module MTurkUtils
         :HITTypeId => eval.mturk_hit_type,
         :Question => build_question_xml(task.render),
         :LifetimeInSeconds => eval.lifetime,
-        :MaxAssignments => 1,
+        :MaxAssignments => eval.num_judges_per_task,
         :UniqueRequestToken => task.uuid
       }
 
@@ -164,7 +164,7 @@ module MTurkUtils
         props[:QualificationRequirement] = [{
           :QualificationTypeId => eval.mturk_qualification_type,
           :Comparator => 'Exists',
-          :RequiredToPreview => true          
+          :RequiredToPreview => true
         }]
       end
 
@@ -184,14 +184,31 @@ module MTurkUtils
     def fetch_results task
       hit_id = task.mturk_hit
       return unless hit_id
-      assignments = mturk_run{mturk(task.evaluation).getAssignmentsForHIT :HITId => hit_id}
-      # return if we don't have a response from a MTurk user
-      if assignments.nil? or assignments[:Assignment].nil?
+
+      assignments_metadata = mturk_run{mturk(task.evaluation).getAssignmentsForHIT :HITId => hit_id}
+
+      # return if we don't have any responses
+      if assignments_metadata.nil? or assignments_metadata[:Assignment].nil?
         Rails.logger.warn("[fetch_results] No responses for task #{task.id}")
         return
       end
 
-      answers = Hash.from_xml(assignments[:Assignment][:Answer])["QuestionFormAnswers"]["Answer"]
+      assignments = assignments_metadata[:Assignment]
+      unless assignments.kind_of? Array
+        # If there's only one assignment, we get a single hash rather than a bunch
+        # of hashes wrapped in an array. We wrap this hash in an array for
+        # consistency.
+        assignments = [assignments]
+      end
+
+      assignments.each do |assignment|
+        process_assignment(task, assignment)
+      end
+    end
+
+    # Used for importing responses to individual assignments of the given Task. TODO: make private.
+    def process_assignment task, assignment
+      answers = Hash.from_xml(assignment[:Answer])["QuestionFormAnswers"]["Answer"]
 
       unless answers.kind_of? Array
         # If there's only one question, we get a single hash rather than a bunch
@@ -200,8 +217,8 @@ module MTurkUtils
         answers = [answers]
       end
 
-      worker_id = assignments[:Assignment][:WorkerId]
-      time = assignments[:Assignment][:SubmitTime] - assignments[:Assignment][:AcceptTime]
+      worker_id = assignment[:WorkerId]
+      time = assignment[:SubmitTime] - assignment[:AcceptTime]
 
       response = task.build_task_response
       response.m_turk_user = MTurkUser.find_or_create_by_id_and_prod worker_id, task.evaluation.prod
@@ -288,7 +305,7 @@ module MTurkUtils
           next if mc_question_option.nil? or mc_question_option.mc_question.nil?
           answer_key, answer_value = mc_question_option.mc_question.label, mc_question_option.label
         end
-       
+
         next if answer_key.nil?
         answer_value = "No response given" if answer_value.nil?
         curr_answers_hash[answer_key] = answer_value
