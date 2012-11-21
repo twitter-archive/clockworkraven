@@ -22,11 +22,6 @@ module TasksHelper
     string.html_safe
   end
 
-  # Renders text as markdown
-  def markdown string
-    RDiscount.new(string).to_html.html_safe
-  end
-
   # resolves data items, which can be literals, fields, or nils, to the
   # appropriate string. Fields are looked up in the fields hash
   def resolve_data data, fields
