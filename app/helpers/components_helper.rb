@@ -18,11 +18,7 @@ require 'open-uri'
 module ComponentsHelper
   # returns the username (without @symbol) of the given user
   def twitter_username(user_id)
-    begin
-      user_json(user_id)["screen_name"]
-    rescue
-      ""
-    end
+    user_json(user_id)["screen_name"]
   end
 
   private

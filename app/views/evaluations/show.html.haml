@@ -44,12 +44,16 @@
   cents
 
 %p
-  %b Total Cost:
-  = format_cents @evaluation.cost
+  %b Number of unique tasks:
+  = @evaluation.tasks.size
 
 %p
-  %b Number of tasks:
-  = @evaluation.tasks.size
+  %b Number of judges per task:
+  = @evaluation.num_judges_per_task
+
+%p
+  %b Total Cost:
+  = format_cents @evaluation.cost
 
 - unless @evaluation.tasks.empty?
   %p

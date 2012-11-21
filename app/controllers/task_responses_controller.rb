@@ -49,7 +49,7 @@ class TaskResponsesController < ApplicationController
       # headers
       csv << orig_fields_keys +
              (real_mc_questions + @eval.fr_questions).map{|q| q.label} +
-             ["MTurk User", "Work Duration", "Approval"]
+             ["HIT ID", "MTurk User"]
 
       @task_responses.each do |task_response|
         # build the row
@@ -73,9 +73,8 @@ class TaskResponsesController < ApplicationController
           row.push(fr_q_resp.nil? ? nil : fr_q_resp)
         end
 
+        row.push(task_response.task.mturk_hit)
         row.push(task_response.m_turk_user_id)
-        row.push(task_response.work_duration)
-        row.push(task_response.approved)
 
         csv << row
       end
@@ -88,7 +87,7 @@ class TaskResponsesController < ApplicationController
   # GET /evaluations/1/task_responses.json
   def index
     @eval = Evaluation.includes({
-      :task_responses => {:mc_question_responses => [:mc_question_option], :fr_question_responses => [], :task => [], :m_turk_user => []},
+      :task_responses => {:mc_question_responses => [:mc_question_option], :fr_question_responses => [], :task => []},
       :fr_questions => [:fr_question_responses],
       :mc_questions => {:mc_question_options => [:mc_question_responses => [:mc_question_option]]}
     }).find(params[:evaluation_id])

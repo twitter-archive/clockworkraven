@@ -19,6 +19,7 @@ CREATE TABLE `clockwork_raven_evaluations` (
   `metadata` text,
   `user_id` int(11) NOT NULL,
   `job_id` int(10) unsigned DEFAULT NULL,
+  `num_judges_per_task` int(11) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `fk_evaluations_jobs` (`job_id`),
   CONSTRAINT `fk_evaluations_jobs` FOREIGN KEY (`job_id`) REFERENCES `clockwork_raven_jobs` (`id`)
@@ -176,3 +177,5 @@ INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120807222553'
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120810203402');
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121020214517');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121121095458');
