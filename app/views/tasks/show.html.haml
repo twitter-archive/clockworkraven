@@ -39,7 +39,7 @@
         %label.error.alert.alert-error{:for => id} Please enter a response.
         %textarea{:cols => 40, :rows => 5, :name => id, :class => (fr_q.required? ? 'required' : '')}
       - when :_text
-        %div= markdown(interpolate(section[:content], @task.data))
+        %div= interpolate(section[:content], @task.data)
       - when :_header
         %h1= interpolate(section[:content], @task.data)
       - else
