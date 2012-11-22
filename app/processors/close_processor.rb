@@ -23,8 +23,8 @@ class CloseProcessor < Job::ThreadPoolProcessor
   def process task_id
     task = Task.find task_id
     # destroy any old responses left over from previous runs
-    if task.task_response
-      task.task_response.destroy
+    if task.task_responses
+      task.task_responses.each{ |tr| tr.destroy }
     end
 
     MTurkUtils.force_expire task

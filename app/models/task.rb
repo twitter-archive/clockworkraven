@@ -23,32 +23,15 @@ class Task < ActiveRecord::Base
   belongs_to :evaluation
   serialize :data, JSON
   serialize :metadata, JSON
-  has_one :task_response, :dependent => :destroy
+  has_many :task_responses, :dependent => :destroy
   before_validation :add_uuid
 
   validates :uuid, :presence => true
 
   # Adds this task's metadata as multiple-choice questions
+  # TODO: I'm deprecating this.
   def add_metadata_as_questions
-    if(self.evaluation.metadata and self.task_response)
-      self.evaluation.metadata.each do |key|
-        value = self.data[key] || 'none'
-
-        # create a question if we don't already have one
-        q = MCQuestion.find_or_create_by_label_and_evaluation_id(key, self.evaluation.id)
-        q.metadata = true
-        q.save!
-
-        # create an option if we don't already have one
-        opt = MCQuestionOption.find_or_create_by_label_and_mc_question_id(value, q.id)
-
-        # create a response that's linked to this task's TaskResponse and
-        # the appropriate MCQuestionOption
-        question_response = self.task_response.mc_question_responses.build
-        question_response.mc_question_option = opt
-        question_response.save!
-      end
-    end
+    warn "[DEPRECATION] add_metadata_as_questions is deprecated."
   end
 
   # Returns an HTML page that presents the task, suitable to be sent to
