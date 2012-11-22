@@ -220,7 +220,8 @@ module MTurkUtils
       worker_id = assignment[:WorkerId]
       time = assignment[:SubmitTime] - assignment[:AcceptTime]
 
-      response = task.build_task_response
+      response = TaskResponse.new
+      response.task = task
       response.m_turk_user = MTurkUser.find_or_create_by_id_and_prod worker_id, task.evaluation.prod
       response.work_duration = time
 
@@ -273,6 +274,7 @@ module MTurkUtils
         end
       end
 
+      puts response.inspect
       response.save!
     end
 
@@ -338,9 +340,13 @@ module MTurkUtils
       return unless task.mturk_hit
       approve_remaining_assignments task
 
-      if task.task_response and task.task_response.approved.nil?
-        task.task_response.approved = true
-        task.task_response.save!
+      return unless task.task_responses
+
+      task.task_responses.each do |task_response|
+        if task_response.approved.nil?
+          task_response.approved = true
+          task_response.save!
+        end
       end
     end
 
@@ -350,9 +356,13 @@ module MTurkUtils
       return unless task.mturk_hit
       reject_remaining_assignments task
 
-      if task.task_response and task.task_response.approved.nil?
-        task.task_response.approved = false
-        task.task_response.save!
+      return unless task.task_responses
+
+      task.task_responses.each do |task_response|
+        if task_response.approved.nil?
+          task_response.approved = false
+          task_response.save!
+        end
       end
     end
 
