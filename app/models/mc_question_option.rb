@@ -21,7 +21,7 @@ class MCQuestionOption < ActiveRecord::Base
   before_save :clean_value
 
   belongs_to :mc_question
-  has_many :mc_question_responses, :dependent => :destroy
+  has_and_belongs_to_many :mc_question_responses
 
   validates :label, :presence => true
 

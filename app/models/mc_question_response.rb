@@ -16,7 +16,14 @@
 # Associated with the MCQuestionOption the judge chose, as well as the
 # TaskResponse, which represents the judges complete response to a task.
 class MCQuestionResponse < ActiveRecord::Base
-  belongs_to :mc_question_option
+  has_and_belongs_to_many :mc_question_options
   belongs_to :task_response
-  has_one :mc_question, :through => :mc_question_option
+
+  def mc_question
+    if self.mc_question_options.blank?
+      nil
+    else
+      self.mc_question_options.first.mc_question
+    end
+  end
 end

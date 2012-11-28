@@ -14,7 +14,7 @@
 
 FactoryGirl.define do
   factory :mc_question_response do
-    mc_question_option
+    mc_question_options { [create(:mc_question_option)] }
     task_response
   end
 end

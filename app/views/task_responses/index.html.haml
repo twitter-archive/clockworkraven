@@ -176,7 +176,8 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
           -# We need the answers to be in the same order as the headers, so we
           -# have to look up the response by the question, becuase the questions
           -# have a stable order.
-          - option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id]
+          -# TODO: modify this logic to be aware of checkbox MC questions
+          - option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id].first
           -# check for nil in case the worker didn't submit a response to the
           -# question
           - mc_q_resp = option_id.nil? ? nil : @data[:mcQuestionOptions][option_id][:label]

@@ -45,7 +45,7 @@ class Task < ActiveRecord::Base
         # create a response that's linked to this task's TaskResponse and
         # the appropriate MCQuestionOption
         question_response = self.task_response.mc_question_responses.build
-        question_response.mc_question_option = opt
+        question_response.mc_question_options = [opt]
         question_response.save!
       end
     end

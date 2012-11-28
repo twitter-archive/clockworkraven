@@ -137,31 +137,29 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # multiple-choice questions - assert there is a response that belongs to
     # this TaskResponse and the correct option. Check both actual questions
     # and metadata
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_1.id,
-      :mc_question_option_id => mc1_1.id
+    assert_not_nil mc1_1.mc_question_responses.where(
+      :task_response_id => response_1.id
     ).first
 
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_1.id,
-      :mc_question_option_id => mc2_1.id
+    assert_not_nil mc2_1.mc_question_responses.where(
+      :task_response_id => response_1.id
     ).first
 
     # metadata
-    assert_not_nil MCQuestionResponse.where(
+    assert_not_nil MCQuestion.find_by_label('metadata1').
+                              mc_question_options.
+                              where(:label => 'resp1a').
+                              first.mc_question_responses.where(
+
       :task_response_id => response_1.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata1').
-                                           mc_question_options.
-                                           where(:label => 'resp1a').
-                                           first.id
     ).first
 
-    assert_not_nil MCQuestionResponse.where(
+    assert_not_nil MCQuestion.find_by_label('metadata2').
+                              mc_question_options.
+                              where(:label => 'resp2a').
+                              first.mc_question_responses.where(
+
       :task_response_id => response_1.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata2').
-                                           mc_question_options.
-                                           where(:label => 'resp2a').
-                                           first.id
     ).first
 
     # free-response questions
@@ -191,31 +189,31 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # multiple-choice questions - assert there is a response that belongs to
     # this TaskResponse and the correct option. Check both actual questions
     # and metadata
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_2.id,
-      :mc_question_option_id => mc1_1.id
+    assert_not_nil mc1_1.mc_question_responses.where(
+      :task_response_id => response_2.id
     ).first
 
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_2.id,
-      :mc_question_option_id => mc2_2.id
+    assert_not_nil mc2_2.mc_question_responses.where(
+      :task_response_id => response_2.id
     ).first
 
     # metadata
-    assert_not_nil MCQuestionResponse.where(
+    assert_not_nil MCQuestion.find_by_label('metadata1').
+                              mc_question_options.
+                              where(:label => 'resp1a').
+                              first.
+                              mc_question_responses.
+                              where(
       :task_response_id => response_2.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata1').
-                                           mc_question_options.
-                                           where(:label => 'resp1a').
-                                           first.id
     ).first
 
-    assert_not_nil MCQuestionResponse.where(
+    assert_not_nil MCQuestion.find_by_label('metadata2').
+                              mc_question_options.
+                              where(:label => 'resp2b').
+                              first.
+                              mc_question_responses.
+                              where(
       :task_response_id => response_2.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata2').
-                                           mc_question_options.
-                                           where(:label => 'resp2b').
-                                           first.id
     ).first
 
     # free-response questions
@@ -245,32 +243,33 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # multiple-choice questions - assert there is a response that belongs to
     # this TaskResponse and the correct option. Check both actual questions
     # and metadata
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_3.id,
-      :mc_question_option_id => mc1_2.id
+    assert_not_nil mc1_2.mc_question_responses.where(
+      :task_response_id => response_3.id
     ).first
 
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_3.id,
-      :mc_question_option_id => mc2_1.id
+    assert_not_nil mc2_1.mc_question_responses.where(
+      :task_response_id => response_3.id
     ).first
 
     # metadata
-    assert_not_nil MCQuestionResponse.where(
+    assert_not_nil MCQuestion.find_by_label('metadata1').
+                              mc_question_options.
+                              where(:label => 'resp1b').
+                              first.
+                              mc_question_responses.
+                              where(
       :task_response_id => response_3.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata1').
-                                           mc_question_options.
-                                           where(:label => 'resp1b').
-                                           first.id
     ).first
 
-    assert_not_nil MCQuestionResponse.where(
+    assert_not_nil MCQuestion.find_by_label('metadata2').
+                              mc_question_options.
+                              where(:label => 'resp2a').
+                              first.
+                              mc_question_responses.
+                              where(
       :task_response_id => response_3.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata2').
-                                           mc_question_options.
-                                           where(:label => 'resp2a').
-                                           first.id
     ).first
+
 
     # free-response questions
     assert_not_nil FRQuestionResponse.where(
@@ -353,9 +352,8 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # multiple-choice questions - assert there is a response that belongs to
     # this TaskResponse and the correct option. Check both actual questions
     # and metadata
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_1.id,
-      :mc_question_option_id => mc1_1.id
+    assert_not_nil mc1_1.mc_question_responses.where(
+      :task_response_id => response_1.id
     ).first
 
     # task 2
@@ -368,9 +366,8 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # multiple-choice questions - assert there is a response that belongs to
     # this TaskResponse and the correct option. Check both actual questions
     # and metadata
-    assert_not_nil MCQuestionResponse.where(
-      :task_response_id => response_2.id,
-      :mc_question_option_id => mc1_2.id
+    assert_not_nil mc1_2.mc_question_responses.where(
+      :task_response_id => response_2.id
     ).first
   end
 

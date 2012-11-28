@@ -62,7 +62,8 @@ class TaskResponsesController < ApplicationController
 
         # MC Questions
         real_mc_questions.each do |mc_q|
-          option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id]
+          # TODO: make this aware of checkbox MCs
+          option_id = @data[:responses][task_response.id][:mcQuestions][mc_q.id][0]
           mc_q_resp = option_id.nil? ? nil : @data[:mcQuestionOptions][option_id][:label]
           row.push(mc_q_resp.nil? ? nil : mc_q_resp)
         end
@@ -88,9 +89,9 @@ class TaskResponsesController < ApplicationController
   # GET /evaluations/1/task_responses.json
   def index
     @eval = Evaluation.includes({
-      :task_responses => {:mc_question_responses => [:mc_question_option], :fr_question_responses => [], :task => [], :m_turk_user => []},
+      :task_responses => {:mc_question_responses => [:mc_question_options], :fr_question_responses => [], :task => [], :m_turk_user => []},
       :fr_questions => [:fr_question_responses],
-      :mc_questions => {:mc_question_options => [:mc_question_responses => [:mc_question_option]]}
+      :mc_questions => {:mc_question_options => [:mc_question_responses => [:mc_question_options]]}
     }).find(params[:evaluation_id])
 
     @task_responses = @eval.task_responses
@@ -165,7 +166,7 @@ class TaskResponsesController < ApplicationController
       mc_question_responses = {}
 
       resp.mc_question_responses.each do |mc_resp|
-        mc_question_responses[mc_resp.mc_question_option.mc_question_id] = mc_resp.mc_question_option_id
+        mc_question_responses[mc_resp.mc_question_options.first.mc_question_id] = mc_resp.mc_question_options.map(&:id)
       end
 
       responses[resp.id] = {

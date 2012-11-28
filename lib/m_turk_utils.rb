@@ -164,7 +164,7 @@ module MTurkUtils
         props[:QualificationRequirement] = [{
           :QualificationTypeId => eval.mturk_qualification_type,
           :Comparator => 'Exists',
-          :RequiredToPreview => true          
+          :RequiredToPreview => true
         }]
       end
 
@@ -252,7 +252,7 @@ module MTurkUtils
           next if option.nil?
 
           question_response = response.mc_question_responses.build
-          question_response.mc_question_option = option
+          question_response.mc_question_options = [option]
         end
       end
 
@@ -288,7 +288,7 @@ module MTurkUtils
           next if mc_question_option.nil? or mc_question_option.mc_question.nil?
           answer_key, answer_value = mc_question_option.mc_question.label, mc_question_option.label
         end
-       
+
         next if answer_key.nil?
         answer_value = "No response given" if answer_value.nil?
         curr_answers_hash[answer_key] = answer_value

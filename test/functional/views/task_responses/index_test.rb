@@ -192,35 +192,35 @@ class TaskResponsesIndexTest < ActionController::TestCase
     @mc2_opt3.save!
 
     @r1 = create :task_response, :task => @e.tasks.first, :approved => nil, :work_duration => 10
-    create :mc_question_response, :task_response      => @r1,
-                                  :mc_question_option => @mc1_opt1
+    create :mc_question_response, :task_response       => @r1,
+                                  :mc_question_options => [@mc1_opt1]
 
-    create :mc_question_response, :task_response      => @r1,
-                                  :mc_question_option => @mc2_opt2
+    create :mc_question_response, :task_response       => @r1,
+                                  :mc_question_options => [@mc2_opt2]
 
-    create :fr_question_response, :task_response      => @r1,
-                                  :fr_question        => @fr1,
-                                  :response           => "response 1"
+    create :fr_question_response, :task_response       => @r1,
+                                  :fr_question         => @fr1,
+                                  :response            => "response 1"
 
-    create :fr_question_response, :task_response      => @r1,
-                                  :fr_question        => @fr2,
-                                  :response           => "response 2"
+    create :fr_question_response, :task_response       => @r1,
+                                  :fr_question         => @fr2,
+                                  :response            => "response 2"
 
     @r2 = create :task_response, :task => @e.tasks.second, :approved => false, :work_duration => 20
 
-    create :mc_question_response, :task_response      => @r2,
-                                  :mc_question_option => @mc1_opt2
+    create :mc_question_response, :task_response       => @r2,
+                                  :mc_question_options => [@mc1_opt2]
 
-    create :mc_question_response, :task_response      => @r2,
-                                  :mc_question_option => @mc2_opt3
+    create :mc_question_response, :task_response       => @r2,
+                                  :mc_question_options => [@mc2_opt3]
 
-    create :fr_question_response, :task_response      => @r2,
-                                  :fr_question        => @fr1,
-                                  :response           => "response 3"
+    create :fr_question_response, :task_response       => @r2,
+                                  :fr_question         => @fr1,
+                                  :response            => "response 3"
 
-    create :fr_question_response, :task_response      => @r2,
-                                  :fr_question        => @fr2,
-                                  :response           => "response 4"
+    create :fr_question_response, :task_response       => @r2,
+                                  :fr_question         => @fr2,
+                                  :response            => "response 4"
   end
 
   def get_page

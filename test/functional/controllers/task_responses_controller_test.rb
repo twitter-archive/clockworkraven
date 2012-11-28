@@ -47,10 +47,10 @@ class TaskResponsesControllerTest < ActionController::TestCase
 
     r1_mc1 = create :mc_question_response,
                     :task_response => r1,
-                    :mc_question_option => mc1_opt1
+                    :mc_question_options => [mc1_opt1]
     r1_mc2 = create :mc_question_response,
                     :task_response => r1,
-                    :mc_question_option => mc2_opt2
+                    :mc_question_options => [mc2_opt2]
     r1_fr1 = create :fr_question_response,
                     :task_response => r1,
                     :fr_question => fr1,
@@ -67,10 +67,10 @@ class TaskResponsesControllerTest < ActionController::TestCase
 
     r2_mc1 = create :mc_question_response,
                     :task_response => r2,
-                    :mc_question_option => mc1_opt2
+                    :mc_question_options => [mc1_opt2]
     r2_mc2 = create :mc_question_response,
                     :task_response => r2,
-                    :mc_question_option => mc2_opt3
+                    :mc_question_options => [mc2_opt3]
     r2_fr1 = create :fr_question_response,
                     :task_response => r2,
                     :fr_question => fr1,
@@ -87,10 +87,10 @@ class TaskResponsesControllerTest < ActionController::TestCase
 
     r3_mc1 = create :mc_question_response,
                     :task_response => r3,
-                    :mc_question_option => mc1_opt3
+                    :mc_question_options => [mc1_opt3]
     r3_mc2 = create :mc_question_response,
                     :task_response => r3,
-                    :mc_question_option => mc2_opt1
+                    :mc_question_options => [mc2_opt1]
     r3_fr1 = create :fr_question_response,
                     :task_response => r3,
                     :fr_question => fr1,
@@ -158,17 +158,17 @@ class TaskResponsesControllerTest < ActionController::TestCase
       },
       :responses => {
         r1.id => {
-          :mcQuestions => {mc1.id => mc1_opt1.id,  mc2.id => mc2_opt2.id},
+          :mcQuestions => {mc1.id => [mc1_opt1.id],  mc2.id => [mc2_opt2.id]},
           :frQuestions => {fr1.id => 'response 1', fr2.id => 'response 2'},
           :approved    => true
         },
         r2.id => {
-          :mcQuestions => {mc1.id => mc1_opt2.id,  mc2.id => mc2_opt3.id},
+          :mcQuestions => {mc1.id => [mc1_opt2.id],  mc2.id => [mc2_opt3.id]},
           :frQuestions => {fr1.id => 'response 3', fr2.id => 'response 4'},
           :approved    => false
         },
         r3.id => {
-          :mcQuestions => {mc1.id => mc1_opt3.id,  mc2.id => mc2_opt1.id},
+          :mcQuestions => {mc1.id => [mc1_opt3.id],  mc2.id => [mc2_opt1.id]},
           :frQuestions => {fr1.id => 'response 5', fr2.id => 'response 6'},
           :approved    => true
         }

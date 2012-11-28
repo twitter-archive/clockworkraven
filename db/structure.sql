@@ -77,6 +77,8 @@ CREATE TABLE `clockwork_raven_m_turk_users` (
   `trusted` tinyint(1) NOT NULL DEFAULT '0',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
   `prod` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `notes` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -92,6 +94,12 @@ CREATE TABLE `clockwork_raven_mc_question_options` (
   KEY `mc_question_id` (`mc_question_id`),
   CONSTRAINT `clockwork_raven_mc_question_options_ibfk_1` FOREIGN KEY (`mc_question_id`) REFERENCES `clockwork_raven_mc_questions` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `clockwork_raven_mc_question_options_mc_question_responses` (
+  `mc_question_option_id` int(11) NOT NULL,
+  `mc_question_response_id` int(11) NOT NULL,
+  UNIQUE KEY `mc_q_opt_resp_idx` (`mc_question_option_id`,`mc_question_response_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `clockwork_raven_mc_question_responses` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -181,3 +189,7 @@ INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20120911001453'
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121010052749');
 
 INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121020214517');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121107205842');
+
+INSERT INTO clockwork_raven_schema_migrations (version) VALUES ('20121120222505');
