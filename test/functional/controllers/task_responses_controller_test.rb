@@ -241,14 +241,14 @@ class TaskResponsesControllerTest < ActionController::TestCase
     resp.expects(:approve!)
     TaskResponse.expects(:find).with(resp.id.to_s).returns(resp)
 
-    post :approve, :id => resp.id
+    post :approve, :id => resp.id, :evaluation_id => resp.task.evaluation_id
     assert_response :success
     assert_equal({'status' => 'Approved'}, json_response)
   end
 
   test "approve requires privileged user" do
     assert_require_priv :approve!, 'Approved' do |resp|
-      post :approve, :id => resp
+      post :approve, :id => resp, :evaluation_id => resp.task.evaluation_id
     end
   end
 
@@ -257,14 +257,14 @@ class TaskResponsesControllerTest < ActionController::TestCase
     resp.expects(:reject!)
     TaskResponse.expects(:find).with(resp.id.to_s).returns(resp)
 
-    post :reject, :id => resp.id
+    post :reject, :id => resp.id, :evaluation_id => resp.task.evaluation_id
     assert_response :success
     assert_equal({'status' => 'Rejected'}, json_response)
   end
 
   test "reject requires privileged user" do
     assert_require_priv :reject!, 'Rejected' do |resp|
-      post :reject, :id => resp
+      post :reject, :id => resp, :evaluation_id => resp.task.evaluation_id
     end
   end
 end
