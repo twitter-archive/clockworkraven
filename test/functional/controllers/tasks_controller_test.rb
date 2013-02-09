@@ -22,7 +22,7 @@ class TasksControllerTest < ActionController::TestCase
   test "show" do
     task = create :task
 
-    get :show, :id => task.id
+    get :show, :id => task.id, :evaluation_id => task.evaluation_id
 
     assert_equal task, assigns(:task)
   end
@@ -32,7 +32,7 @@ class TasksControllerTest < ActionController::TestCase
     eval = create :evaluation_with_questions
     task = create :task, :evaluation => eval
 
-    get :show, :id => task.id
+    get :show, :id => task.id, :evaluation_id => task.evaluation_id
 
     assert_equal response.body, @controller.show_string(task)
   end

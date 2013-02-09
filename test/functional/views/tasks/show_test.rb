@@ -85,6 +85,6 @@ class TasksShowTest < ActionController::TestCase
   def get_page
     @e = create :evaluation_with_tasks_and_questions
     @task = @e.tasks.first
-    get :show, :id => @task.id
+    get :show, :id => @task.id, :evaluation_id => @task.evaluation_id
   end
 end
