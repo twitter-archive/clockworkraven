@@ -149,8 +149,9 @@ class TaskResponsesIndexTest < ActionController::TestCase
     assert_select "tbody tr:first-child td:nth-child(8):content('#{@mc2_opt2.label}')"
     assert_select "tbody tr:first-child td:nth-child(9):content('response 1')"
     assert_select "tbody tr:first-child td:nth-child(10):content('response 2')"
-    assert_select "tbody tr:first-child td:nth-child(11):content('#{@e.task_responses.first.task.mturk_hit}')"
-    assert_select "tbody tr:first-child td:nth-child(12):content('#{@r1.m_turk_user_id}')"
+    assert_select "tbody tr:first-child td:nth-child(11):content('#{@r1.m_turk_user_id}')"
+    assert_select "tbody tr:first-child td:nth-child(12):content('#{@e.task_responses.first.work_duration}')"
+    
 
     # check second response
     task2_data = @e.task_responses.second.task.data
@@ -163,8 +164,8 @@ class TaskResponsesIndexTest < ActionController::TestCase
     assert_select "tbody tr:nth-child(2) td:nth-child(8):content('#{@mc2_opt3.label}')"
     assert_select "tbody tr:nth-child(2) td:nth-child(9):content('response 3')"
     assert_select "tbody tr:nth-child(2) td:nth-child(10):content('response 4')"
-    assert_select "tbody tr:first-child td:nth-child(11):content('#{@e.task_responses.second.task.mturk_hit}')"
-    assert_select "tbody tr:nth-child(2) td:nth-child(12):content('#{@r2.m_turk_user_id}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(11):content('#{@r2.m_turk_user_id}')"
+    assert_select "tbody tr:nth-child(2) td:nth-child(12):content('#{@e.task_responses.second.work_duration}')"
   end
 
 
