@@ -16,7 +16,7 @@ class LoginsController < ApplicationController
   # GET /login
   def login
     if current_user
-      redirect_to '/'
+      redirect_to root_path
     end
   end
 
@@ -34,7 +34,7 @@ class LoginsController < ApplicationController
 
       # Clear return_to so it doesn't get re-used if the user logs out and logs
       # in again.
-      target = (session[:return_to] || '/')
+      target = (session[:return_to] || root_path)
       session.delete :return_to
       redirect_to target
     end

@@ -112,6 +112,6 @@ class JobsControllerTest < ActionController::TestCase
 
     post :kill, :id => job.id
 
-    assert_redirected_to "/jobs/#{job.id}"
+    assert_redirected_to job_path(job)
   end
 end

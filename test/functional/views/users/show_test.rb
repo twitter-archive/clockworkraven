@@ -33,12 +33,12 @@ class UsersShowTest < ActionController::TestCase
   test "edit link shown iff password auth enabled" do
     with_consts :AUTH_CONFIG => {:type => :password} do
       get :show
-      assert_select "a[href='/account/edit']"
+      assert_select "a[href='#{edit_account_path}']"
     end
 
     with_consts :AUTH_CONFIG => {:type => :ldap} do
       get :show
-      assert_select_none "a[href='/account/edit']"
+      assert_select_none "a[href='#{edit_account_path}']"
     end
   end
 end

@@ -123,19 +123,19 @@ class LoginsControllerTest < ActionController::TestCase
   test "login when logged in" do
     login
     get :login
-    assert_redirected_to '/'
+    assert_redirected_to root_path
   end
 
   test "persist_login, correct auth, no return_to" do
     # test that multiple users can log in
     post :persist_login, :username => 'testuser', :password => 'foopass'
-    assert_redirected_to '/'
+    assert_redirected_to root_path
     assert_equal 'testuser', User.find(session[:user_id]).username
     assert_equal "#{STRINGS[:logged_in_prefix]} testuser", flash[:notice]
     assert_privileged
 
     post :persist_login, :username => 'joeuser', :password => 'barpass'
-    assert_redirected_to '/'
+    assert_redirected_to root_path
     assert_equal 'joeuser', User.find(session[:user_id]).username
     assert_equal "#{STRINGS[:logged_in_prefix]} joeuser", flash[:notice]
     assert_privileged
@@ -152,7 +152,7 @@ class LoginsControllerTest < ActionController::TestCase
     # test that if the user logs in again, they get redirected back to /,
     # not the previous return_to
     post :persist_login, :username => 'testuser', :password => 'foopass'
-    assert_redirected_to '/'
+    assert_redirected_to root_path
     assert_equal 'testuser', User.find(session[:user_id]).username
   end
 

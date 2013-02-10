@@ -13,6 +13,17 @@
 # limitations under the License.
 
 module RoutingTestHelper
+  def assert_recognizes(x, path, *args)
+    # take the mounted_path into consideration
+    mount = ClockworkRaven::Application.mounted_path
+    if path.is_a?(Hash)
+      path[:path] = "#{mount}#{path[:path]}" if path[:path]
+    else
+      path = "#{mount}#{path}" if path
+    end
+    super
+  end
+  
   def assert_resource_routed resource
     assert_routing({:method => 'get', :path => "/#{resource}"},
                    {:controller => resource, :action => 'index'})
