@@ -14,7 +14,7 @@
 
 %h1 Jobs
 
-= link_to "Advanced &raquo;".html_safe, '/resque', :target => '_blank'
+= link_to "Advanced &raquo;".html_safe, "#{ClockworkRaven::Application.mounted_path}/resque", :target => '_blank'
 
 %table.table
   %thead
