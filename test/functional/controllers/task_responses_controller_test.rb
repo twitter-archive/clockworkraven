@@ -180,10 +180,10 @@ class TaskResponsesControllerTest < ActionController::TestCase
     # test csv
 
     expected_csv = <<-END_CSV
-      item1,item2,tweet,metadata1,metadata2,#{mc1.label},#{mc2.label},#{fr1.label},#{fr2.label},MTurk User,Work Duration,Approval
-      #{r1.task.data["item1"]},#{r1.task.data["item2"]},#{r1.task.data["tweet"]},#{r1.task.data["metadata1"]},#{r1.task.data["metadata2"]},#{mc1_opt1.label},#{mc2_opt2.label},response 1,response 2,#{r1.m_turk_user_id},10,
-      #{r2.task.data["item1"]},#{r2.task.data["item2"]},#{r2.task.data["tweet"]},#{r2.task.data["metadata1"]},#{r2.task.data["metadata2"]},#{mc1_opt2.label},#{mc2_opt3.label},response 3,response 4,#{r2.m_turk_user_id},20,false
-      #{r3.task.data["item1"]},#{r3.task.data["item2"]},#{r3.task.data["tweet"]},#{r3.task.data["metadata1"]},#{r3.task.data["metadata2"]},#{mc1_opt3.label},#{mc2_opt1.label},response 5,response 6,#{r3.m_turk_user_id},30,true
+      item1,item2,tweet,metadata1,metadata2,#{mc1.label},#{mc2.label},#{fr1.label},#{fr2.label},HIT ID,MTurk User,Work Duration,Approval
+      #{r1.task.data["item1"]},#{r1.task.data["item2"]},#{r1.task.data["tweet"]},#{r1.task.data["metadata1"]},#{r1.task.data["metadata2"]},#{mc1_opt1.label},#{mc2_opt2.label},response 1,response 2,#{r1.task.mturk_hit},#{r1.m_turk_user_id},10,false
+      #{r2.task.data["item1"]},#{r2.task.data["item2"]},#{r2.task.data["tweet"]},#{r2.task.data["metadata1"]},#{r2.task.data["metadata2"]},#{mc1_opt2.label},#{mc2_opt3.label},response 3,response 4,#{r2.task.mturk_hit},#{r2.m_turk_user_id},20,false
+      #{r3.task.data["item1"]},#{r3.task.data["item2"]},#{r3.task.data["tweet"]},#{r3.task.data["metadata1"]},#{r3.task.data["metadata2"]},#{mc1_opt3.label},#{mc2_opt1.label},response 5,response 6,#{r3.task.mturk_hit},#{r3.m_turk_user_id},30,true
     END_CSV
     expected_csv = expected_csv.lines.map{|line| line.lstrip}.join
 
@@ -193,10 +193,10 @@ class TaskResponsesControllerTest < ActionController::TestCase
     # test tsv
 
     expected_tsv = <<-END_TSV
-      item1\titem2\ttweet\tmetadata1\tmetadata2\t#{mc1.label}\t#{mc2.label}\t#{fr1.label}\t#{fr2.label}\tMTurk User\tWork Duration\tApproval
-      #{r1.task.data["item1"]}\t#{r1.task.data["item2"]}\t#{r1.task.data["tweet"]}\t#{r1.task.data["metadata1"]}\t#{r1.task.data["metadata2"]}\t#{mc1_opt1.label}\t#{mc2_opt2.label}\tresponse 1\tresponse 2\t#{r1.m_turk_user_id}\t10\t
-      #{r2.task.data["item1"]}\t#{r2.task.data["item2"]}\t#{r2.task.data["tweet"]}\t#{r2.task.data["metadata1"]}\t#{r2.task.data["metadata2"]}\t#{mc1_opt2.label}\t#{mc2_opt3.label}\tresponse 3\tresponse 4\t#{r2.m_turk_user_id}\t20\tfalse
-      #{r3.task.data["item1"]}\t#{r3.task.data["item2"]}\t#{r3.task.data["tweet"]}\t#{r3.task.data["metadata1"]}\t#{r3.task.data["metadata2"]}\t#{mc1_opt3.label}\t#{mc2_opt1.label}\tresponse 5\tresponse 6\t#{r3.m_turk_user_id}\t30\ttrue
+      item1\titem2\ttweet\tmetadata1\tmetadata2\t#{mc1.label}\t#{mc2.label}\t#{fr1.label}\t#{fr2.label}\tHIT ID\tMTurk User\tWork Duration\tApproval
+      #{r1.task.data["item1"]}\t#{r1.task.data["item2"]}\t#{r1.task.data["tweet"]}\t#{r1.task.data["metadata1"]}\t#{r1.task.data["metadata2"]}\t#{mc1_opt1.label}\t#{mc2_opt2.label}\tresponse 1\tresponse 2\t#{r1.task.mturk_hit}\t#{r1.m_turk_user_id}\t10\tfalse
+      #{r2.task.data["item1"]}\t#{r2.task.data["item2"]}\t#{r2.task.data["tweet"]}\t#{r2.task.data["metadata1"]}\t#{r2.task.data["metadata2"]}\t#{mc1_opt2.label}\t#{mc2_opt3.label}\tresponse 3\tresponse 4\t#{r2.task.mturk_hit}\t#{r2.m_turk_user_id}\t20\tfalse
+      #{r3.task.data["item1"]}\t#{r3.task.data["item2"]}\t#{r3.task.data["tweet"]}\t#{r3.task.data["metadata1"]}\t#{r3.task.data["metadata2"]}\t#{mc1_opt3.label}\t#{mc2_opt1.label}\tresponse 5\tresponse 6\t#{r3.task.mturk_hit}\t#{r3.m_turk_user_id}\t30\ttrue
     END_TSV
     expected_tsv = expected_tsv.lines.map{|line| line.lstrip}.join
 

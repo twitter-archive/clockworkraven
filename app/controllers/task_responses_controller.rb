@@ -49,7 +49,7 @@ class TaskResponsesController < ApplicationController
       # headers
       csv << orig_fields_keys +
              (real_mc_questions + @eval.fr_questions).map{|q| q.label} +
-             ["HIT ID", "MTurk User"]
+             ["HIT ID", "MTurk User", "Work Duration", "Approval"]
 
       @task_responses.each do |task_response|
         # build the row
@@ -75,6 +75,8 @@ class TaskResponsesController < ApplicationController
 
         row.push(task_response.task.mturk_hit)
         row.push(task_response.m_turk_user_id)
+        row.push(task_response.work_duration)
+        row.push(!!task_response.approved)
 
         csv << row
       end
