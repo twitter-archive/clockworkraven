@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   def require_password_auth
     unless AUTH_CONFIG[:type] == :password
       flash[:error] = STRINGS[:password_auth_required]
-      redirect_to '/account'
+      redirect_to account_path
     end
   end
 
