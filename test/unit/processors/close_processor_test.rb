@@ -31,18 +31,18 @@ class CloseProcessorTest < ActiveSupport::TestCase
     fr2 = eval.fr_questions.second
 
     t1 = create :task, :mturk_hit => 'HIT_1', :evaluation => eval
-    t1.data['metadata1'] = 'resp1a'
-    t1.data['metadata2'] = 'resp2a'
+    t1.data['metadata1'] = mc1_1.label
+    t1.data['metadata2'] = mc2_1.label
     t1.save!
 
     t2 = create :task, :mturk_hit => 'HIT_2', :evaluation => eval
-    t2.data['metadata1'] = 'resp1a'
-    t2.data['metadata2'] = 'resp2b'
+    t2.data['metadata1'] = mc1_1.label
+    t2.data['metadata2'] = mc2_2.label
     t2.save!
 
     t3 = create :task, :mturk_hit => 'HIT_3', :evaluation => eval
-    t3.data['metadata1'] = 'resp1b'
-    t3.data['metadata2'] = 'resp2a'
+    t3.data['metadata1'] = mc1_2.label
+    t3.data['metadata2'] = mc2_1.label
     t3.save!
 
     # close! should get rid of existing task responses, so we make on here
@@ -124,10 +124,10 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # check that each task responses is correct
 
     # task 1
-    response_1 = eval.tasks.find_by_mturk_hit('HIT_1').task_response
+    response_1 = eval.tasks.find_by_mturk_hit('HIT_1').task_responses.first
 
     # correct number of responses?
-    #assert_equal 4, response_1.mc_question_responses.size
+    # assert_equal 4, response_1.mc_question_responses.size
     assert_equal 2, response_1.fr_question_responses.size
 
     # work duration and worker set correctly?
@@ -148,20 +148,15 @@ class CloseProcessorTest < ActiveSupport::TestCase
     ).first
 
     # metadata
+    #binding.pry
     assert_not_nil MCQuestionResponse.where(
       :task_response_id => response_1.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata1').
-                                           mc_question_options.
-                                           where(:label => 'resp1a').
-                                           first.id
+      :mc_question_option_id => mc1_1.id
     ).first
 
     assert_not_nil MCQuestionResponse.where(
       :task_response_id => response_1.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata2').
-                                           mc_question_options.
-                                           where(:label => 'resp2a').
-                                           first.id
+      :mc_question_option_id => mc2_1.id
     ).first
 
     # free-response questions
@@ -178,10 +173,10 @@ class CloseProcessorTest < ActiveSupport::TestCase
     ).first
 
     # task 2
-    response_2 = eval.tasks.find_by_mturk_hit('HIT_2').task_response
+    response_2 = eval.tasks.find_by_mturk_hit('HIT_2').task_responses.first
 
     # correct number of responses?
-    assert_equal 4, response_2.mc_question_responses.size
+    # assert_equal 4, response_2.mc_question_responses.size
     assert_equal 2, response_2.fr_question_responses.size
 
     # work duration and worker set correctly?
@@ -204,18 +199,12 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # metadata
     assert_not_nil MCQuestionResponse.where(
       :task_response_id => response_2.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata1').
-                                           mc_question_options.
-                                           where(:label => 'resp1a').
-                                           first.id
+      :mc_question_option_id => mc1_1.id
     ).first
 
     assert_not_nil MCQuestionResponse.where(
       :task_response_id => response_2.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata2').
-                                           mc_question_options.
-                                           where(:label => 'resp2b').
-                                           first.id
+      :mc_question_option_id => mc2_2.id
     ).first
 
     # free-response questions
@@ -232,10 +221,10 @@ class CloseProcessorTest < ActiveSupport::TestCase
     ).first
 
     # task 3
-    response_3 = eval.tasks.find_by_mturk_hit('HIT_3').task_response
+    response_3 = eval.tasks.find_by_mturk_hit('HIT_3').task_responses.first
 
     # correct number of responses?
-    assert_equal 4, response_3.mc_question_responses.size
+    # assert_equal 4, response_3.mc_question_responses.size
     assert_equal 2, response_3.fr_question_responses.size
 
     # work duration and worker set correctly?
@@ -258,18 +247,12 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # metadata
     assert_not_nil MCQuestionResponse.where(
       :task_response_id => response_3.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata1').
-                                           mc_question_options.
-                                           where(:label => 'resp1b').
-                                           first.id
+      :mc_question_option_id => mc1_2.id
     ).first
-
+    
     assert_not_nil MCQuestionResponse.where(
       :task_response_id => response_3.id,
-      :mc_question_option_id => MCQuestion.find_by_label('metadata2').
-                                           mc_question_options.
-                                           where(:label => 'resp2a').
-                                           first.id
+      :mc_question_option_id => mc2_1.id
     ).first
 
     # free-response questions
@@ -344,7 +327,7 @@ class CloseProcessorTest < ActiveSupport::TestCase
     # check that each task responses is correct
 
     # task 1
-    response_1 = eval.tasks.find_by_mturk_hit('HIT_1').task_response
+    response_1 = eval.tasks.find_by_mturk_hit('HIT_1').task_responses.first
 
     # correct number of responses?
     assert_equal 1, response_1.mc_question_responses.size
@@ -359,7 +342,7 @@ class CloseProcessorTest < ActiveSupport::TestCase
     ).first
 
     # task 2
-    response_2 = eval.tasks.find_by_mturk_hit('HIT_2').task_response
+    response_2 = eval.tasks.find_by_mturk_hit('HIT_2').task_responses.first
 
     # correct number of responses?
     assert_equal 1, response_2.mc_question_responses.size
