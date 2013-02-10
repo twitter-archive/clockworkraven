@@ -37,6 +37,7 @@ module MTurkUtils
       @mturk_prod = Amazon::WebServices::MechanicalTurkRequester.new(
         :AWSAccessKeyId => MTURK_CONFIG[:access_key_id],
         :AWSAccessKey   => MTURK_CONFIG[:access_key],
+        :SkipSSLCheck   => MTURK_CONFIG[:ssl_verify] == false || MTURK_CONFIG[:ssl_verify] == 'false' || MTURK_CONFIG[:ssl_verify] == 'none',
         :Host           => 'Prod'
       )
     end
@@ -46,6 +47,7 @@ module MTurkUtils
       @mturk_sandbox = Amazon::WebServices::MechanicalTurkRequester.new(
         :AWSAccessKeyId => MTURK_CONFIG[:access_key_id],
         :AWSAccessKey   => MTURK_CONFIG[:access_key],
+        :SkipSSLCheck   => MTURK_CONFIG[:ssl_verify] == false || MTURK_CONFIG[:ssl_verify] == 'false' || MTURK_CONFIG[:ssl_verify] == 'none',
         :Host           => 'Sandbox'
       )
     end
