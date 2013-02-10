@@ -8,6 +8,7 @@ Resque.redis = resque_config[rails_env]
 # drop connections
 Resque.after_fork = Proc.new {
   ActiveRecord::Base.verify_active_connections!
+  Resque.redis.client.reconnect
 }
 
 # load in the server so we can mount it at /resque in routes.rb
