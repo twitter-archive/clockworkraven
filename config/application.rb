@@ -28,6 +28,10 @@ module ClockworkRaven
 
   class Application < Rails::Application
     TIME_FORMAT = "%a, %b %d, %Y %l:%M %p"
+    
+    def self.mounted_path
+      ""  # empty for root, "/dir_name" for mounted
+    end
 
     WillPaginate.per_page = 10
 
@@ -57,6 +61,8 @@ module ClockworkRaven
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    config.assets.prefix = "#{mounted_path}/assets"
+    
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 

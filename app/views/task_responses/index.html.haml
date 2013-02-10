@@ -130,7 +130,7 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
                           :class => 'btn btn-danger btn-approval',
                           :data => {:response => task_response.id})
             .approval-spinner{:style => 'display:none'}
-              %img{:src => '/assets/ajax-loader.gif'}
+              %img{:src => image_path('ajax-loader.gif')}
             %div
               .clear
               -# Ban/Unban buttons
@@ -145,7 +145,7 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
                             :class => 'btn btn-inverse btn-unban',
                             :style => hide_if(!task_response.m_turk_user.banned))
                 .ban-spinner{:style => 'display:none'}
-                  %img{:src => '/assets/ajax-loader.gif'}
+                  %img{:src => image_path('ajax-loader.gif')}
 
               -# Trust/Untrust buttons
               .controls-wrapper
@@ -159,7 +159,7 @@ Effective pay rate, based on median time: #{format_cents @eval.median_pay_rate} 
                             :class => 'btn btn-warning btn-untrust',
                             :style => hide_if(!task_response.m_turk_user.trusted))
                 .trust-spinner{:style => 'display:none'}
-                  %img{:src => '/assets/ajax-loader.gif'}
+                  %img{:src => image_path('ajax-loader.gif')}
               .clear
 
           -# links for more info

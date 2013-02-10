@@ -13,56 +13,58 @@
 # limitations under the License.
 
 ClockworkRaven::Application.routes.draw do
-  resources :evaluations do
-    resources :tasks
+  scope ClockworkRaven::Application.mounted_path do
+    resources :evaluations do
+      resources :tasks
 
-    member do
-      get 'original_data'
-      get 'random_task'
-      post 'submit'
-      post 'purge'
-      post 'close'
-      post 'approve_all'
-      get 'edit_template'
-      put 'update_template'
-    end
-
-    resources :task_responses do
       member do
-        post 'approve'
-        post 'reject'
+        get 'original_data'
+        get 'random_task'
+        post 'submit'
+        post 'purge'
+        post 'close'
+        post 'approve_all'
+        get 'edit_template'
+        put 'update_template'
+      end
+
+      resources :task_responses do
+        member do
+          post 'approve'
+          post 'reject'
+        end
       end
     end
-  end
 
-  resources :m_turk_users do
-    member do
-      post 'trust'
-      post 'untrust'
-      post 'ban'
-      post 'unban'
+    resources :m_turk_users do
+      member do
+        post 'trust'
+        post 'untrust'
+        post 'ban'
+        post 'unban'
+      end
     end
-  end
 
-  resources :jobs do
-    member do
-      post 'kill'
+    resources :jobs do
+      member do
+        post 'kill'
+      end
     end
+
+    # login routes
+    get "login" => "logins#login"
+    post "login" => "logins#persist_login"
+    post "logout" => "logins#logout"
+
+    # account routes
+    get 'account' => 'users#show', :as => 'account'
+    get 'account/edit' => 'users#edit', :as => 'edit_account'
+    put 'account' => 'users#update', :as => 'update_account'
+    post 'account/reset_key' => 'users#reset_key', :as => 'reset_key'
+
+    # default: /evaluations
+    root :to => 'evaluations#index'
+
+    mount Resque::Server.new, :at => "/resque"
   end
-
-  # login routes
-  get "login" => "logins#login"
-  post "login" => "logins#persist_login"
-  post "logout" => "logins#logout"
-
-  # account routes
-  get 'account' => 'users#show', :as => 'account'
-  get 'account/edit' => 'users#edit', :as => 'edit_account'
-  put 'account' => 'users#update', :as => 'update_account'
-  post 'account/reset_key' => 'users#reset_key', :as => 'reset_key'
-
-  # default: /evaluations
-  root :to => 'evaluations#index'
-
-  mount Resque::Server.new, :at => "/resque"
-end
+end 
