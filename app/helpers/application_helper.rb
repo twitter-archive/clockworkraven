@@ -20,9 +20,12 @@ module ApplicationHelper
     # empty path is :other
     return :other if request.path == ''
 
-    parts = request.path.split '/'
+    path = request.path
+    unless ClockworkRaven::Application.mounted_path.blank?
+      path = path.gsub(/^#{ClockworkRaven::Application.mounted_path}/, "")
+    end
+    parts = path.split '/'
 
-    # path = "/"
     return :evaluations if parts.length == 0
 
     # path doesn't start with /

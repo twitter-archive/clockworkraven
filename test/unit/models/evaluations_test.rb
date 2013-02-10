@@ -15,6 +15,10 @@
 require 'test_helper'
 
 class EvaluationsTest < ActiveSupport::TestCase
+  def evaluation_path(eval)
+    "#{ClockworkRaven::Application.mounted_path}/evaluations/#{eval.id}"
+  end
+  
   test "names must be present and unique" do
     eval = build :evaluation, :name => nil
     assert eval.invalid?, "evaluation without name was valid"
@@ -278,8 +282,8 @@ class EvaluationsTest < ActiveSupport::TestCase
              with(SubmitProcessor, task_ids, :evaluation_id => eval.id)
 
     Job.expects(:create).
-        with(:complete_url => "/evaluations/#{eval.id}",
-             :back_url     => "/evaluations/#{eval.id}",
+        with(:complete_url => evaluation_path(eval),
+             :back_url     => evaluation_path(eval),
              :title        => "Submitting Tasks").
         returns(mock_job)
 
@@ -301,8 +305,8 @@ class EvaluationsTest < ActiveSupport::TestCase
              with(CloseProcessor, task_ids, :evaluation_id => eval.id)
 
     Job.expects(:create).
-        with(:complete_url => "/evaluations/#{eval.id}",
-             :back_url     => "/evaluations/#{eval.id}",
+        with(:complete_url => evaluation_path(eval),
+             :back_url     => evaluation_path(eval),
              :title        => "Closing Tasks").
         returns(mock_job)
 
@@ -324,8 +328,8 @@ class EvaluationsTest < ActiveSupport::TestCase
              with(ApproveProcessor, task_ids, :evaluation_id => eval.id)
 
     Job.expects(:create).
-        with(:complete_url => "/evaluations/#{eval.id}",
-             :back_url     => "/evaluations/#{eval.id}",
+        with(:complete_url => evaluation_path(eval),
+             :back_url     => evaluation_path(eval),
              :title        => "Approving Tasks").
         returns(mock_job)
 
@@ -347,8 +351,8 @@ class EvaluationsTest < ActiveSupport::TestCase
              with(PurgeProcessor, task_ids, :evaluation_id => eval.id)
 
     Job.expects(:create).
-        with(:complete_url => "/evaluations/#{eval.id}",
-             :back_url     => "/evaluations/#{eval.id}",
+        with(:complete_url => evaluation_path(eval),
+             :back_url     => evaluation_path(eval),
              :title        => "Removing Tasks").
         returns(mock_job)
 

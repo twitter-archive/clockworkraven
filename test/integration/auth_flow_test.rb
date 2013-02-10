@@ -31,35 +31,35 @@ class AuthFlowTest < ActionDispatch::IntegrationTest
     joeuser = open_session
 
     # request protected pages
-    testuser.get_via_redirect '/jobs'
-    joeuser.get_via_redirect '/evaluations/new'
+    testuser.get_via_redirect jobs_path
+    joeuser.get_via_redirect new_evaluation_path
 
-    assert_equal '/login', testuser.path
+    assert_equal login_path, testuser.path
     assert_equal STRINGS[:not_logged_in], testuser.flash[:notice]
 
-    assert_equal '/login', joeuser.path
+    assert_equal login_path, joeuser.path
     assert_equal STRINGS[:not_logged_in], testuser.flash[:notice]
 
     # failed login, then successful login
-    testuser.post_via_redirect '/login', :username => 'noaccess', :password => 'coolpass'
-    assert_equal '/login', testuser.path
+    testuser.post_via_redirect login_path, :username => 'noaccess', :password => 'coolpass'
+    assert_equal login_path, testuser.path
     assert_equal STRINGS[:invalid_login], testuser.flash[:error]
 
-    joeuser.post_via_redirect '/login', :username => 'joeuser', :password => 'barpass'
-    assert_equal '/evaluations/new', joeuser.path
+    joeuser.post_via_redirect login_path, :username => 'joeuser', :password => 'barpass'
+    assert_equal new_evaluation_path, joeuser.path
     assert_equal "#{STRINGS[:logged_in_prefix]} joeuser", joeuser.flash[:notice]
 
-    testuser.post_via_redirect '/login', :username => 'testuser', :password => 'foopass'
-    assert_equal '/jobs', testuser.path
+    testuser.post_via_redirect login_path, :username => 'testuser', :password => 'foopass'
+    assert_equal jobs_path, testuser.path
     assert_equal "#{STRINGS[:logged_in_prefix]} testuser", testuser.flash[:notice]
 
     # joeuser now logs out and in, to make sure that return_to doesn't carry over
-    joeuser.post_via_redirect '/logout'
-    assert_equal '/login', joeuser.path
+    joeuser.post_via_redirect logout_path
+    assert_equal login_path, joeuser.path
     assert_equal STRINGS[:logged_out], joeuser.flash[:notice]
 
-    joeuser.post_via_redirect '/login', :username => 'joeuser', :password => 'barpass'
-    assert_equal '/', joeuser.path
+    joeuser.post_via_redirect login_path, :username => 'joeuser', :password => 'barpass'
+    assert_equal root_path, joeuser.path
     assert_equal "#{STRINGS[:logged_in_prefix]} joeuser", joeuser.flash[:notice]
   end
 end

@@ -105,7 +105,7 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def request
     # return a mock request
-    mock :path => (@path || '/')
+    mock :path => (@path || root_path)
   end
 
   def controller
