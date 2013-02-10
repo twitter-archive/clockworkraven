@@ -8,6 +8,9 @@
 # Your AWSAccessKey
 :access_key: YOUR-ACCESS-KEY
 
+# SSL verification when talking to Amazon
+:ssl_verify: true
+
 # Qualification IDs
 :qualifications:
   # Don't change these 2 IDs
