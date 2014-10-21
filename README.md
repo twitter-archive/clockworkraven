@@ -63,19 +63,19 @@ you have marked as Trusted in Clockwork Raven.
 
        If you can't use an LDAP server, you can configure Clockwork Raven to use
        "password authentication," which will allow you to manually create
-       accounts. Copy `config/auth.example_password.yml` to `config/auth.yml`. Then,
-       you can create accounts by running "rake users:add" and change passwords
-       with `rake users:change_password`. Note that you will need to set up your
-       database (explained below) before using these rake tasks.
+       accounts. Copy `config/auth.example_password.yml` to `config/auth.yml`.
 4. Set up the database. If the databases you configured Clockwork Raven to use in
    `config/database.yml` do not exist, run `rake db:create` to create them.
    Then, run `rake db:structure:load` to load the database structure into your
    database.
-5. Start up the background workers. Just
+5. Now, you can create accounts by running "rake users:add" and change passwords
+   with `rake users:change_password`. Note that you will need to set up your
+   database (explained below) before using these rake tasks.
+6. Start up the background workers. Just
    run `rake raven:resque` to start up 4 background workers. You can start
    up more background workers by passing an argument to the rake task:
    `rake raven:resque[16]` will start up 16 background workers.
-6. Run the server. To run the server, run `rails server`.
+7. Run the server. To run the server, run `rails server`.
 
 ## Security
 
